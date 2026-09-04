@@ -57,7 +57,12 @@ export function Login() {
       await checkSession()
       navigate('/')
     } catch (err: any) {
-      setError('Credenciais inválidas. Por favor verifique o seu e-mail e palavra-passe.')
+      console.error('Erro de autenticação Appwrite:', err)
+      if (err?.message) {
+        setError(err.message)
+      } else {
+        setError('Credenciais inválidas ou erro de conexão com o servidor. Verifique suas credenciais.')
+      }
     } finally {
       setLoading(false)
     }

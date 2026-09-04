@@ -64,7 +64,7 @@ export function TopNav() {
               <div className="flex items-center gap-1.5">
                 <span className="text-[13px] font-medium text-foreground">{user.name || 'Utilizador'}</span>
                 {isAdmin && (
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/10 text-blue-500 tracking-wider">
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-primary/10 text-primary border border-primary/20 tracking-wider">
                     ADMIN
                   </span>
                 )}

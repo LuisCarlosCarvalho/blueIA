@@ -8,7 +8,7 @@ const VARIANT_MAP = Object.fromEntries(blockMetadata.map((b) => [b.type, new Set
 const DEFAULT_PROPS_MAP = Object.fromEntries(blockMetadata.map((b) => [b.type, b.defaultProps]))
 
 const GEMINI_MODEL = 'gemini-3-flash-preview'
-const STORAGE_KEY = 'openpage-gemini-key'
+const STORAGE_KEY = 'blueia-gemini-key'
 
 export interface GenerationResult {
   config: SiteConfig

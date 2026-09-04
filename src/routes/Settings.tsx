@@ -324,12 +324,13 @@ function AdminPanel() {
                 <h3 className="text-sm font-semibold text-foreground">Estado do Estúdio</h3>
               </div>
               <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold tracking-wider">
-                SEGURO E ATIVO
+                INTERFACE PRONTA
               </span>
             </div>
             <div className="text-[12.5px] text-muted-foreground space-y-1.5 pt-1">
-              <p>• Validação estrita de esquemas ativa (sem scripts remotos).</p>
-              <p>• Chaves de API restritas ao ambiente de servidor.</p>
+              <p>• Interface administrativa pronta para integração segura.</p>
+              <p>• Validação server-side: pendente de configuração.</p>
+              <p>• Chaves de API: isoladas no ambiente de servidor.</p>
             </div>
           </div>
         </div>
@@ -367,11 +368,11 @@ function AdminPanel() {
             <h3 className="text-sm font-semibold text-foreground">Camada de Persistência (TablesDB)</h3>
           </div>
           <span className="px-2.5 py-0.5 rounded-full bg-secondary text-muted-foreground text-[11px] font-semibold">
-            Em preparação
+            Ainda não iniciada
           </span>
         </div>
         <p className="text-[12.5px] text-muted-foreground leading-relaxed">
-          A persistência automatizada de páginas e revisões através do TablesDB está em preparação estrutural. Nenhuma gravação automática na base de dados é efetuada sem validação expressa.
+          Persistência TablesDB: ainda não iniciada. A persistência automatizada de páginas e revisões em coleções remotas está em preparação. Nenhuma gravação em base de dados é efetuada nesta etapa.
         </p>
       </div>
 
@@ -1083,38 +1084,36 @@ export function Settings() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-background pb-16">
+    <div className="w-full bg-background pb-16">
       {/* Top Header */}
-      <div className="px-4 py-6 md:px-8 lg:px-12 border-b border-border bg-background">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-xl font-bold text-foreground">Definições e Administração</h1>
-          <p className="text-sm text-muted-foreground mt-1">Configurações globais, integrações e ferramentas internas do Blue IA Studio.</p>
-        </div>
+      <div className="px-4 md:px-8 xl:px-10 py-6 border-b border-border bg-background">
+        <h1 className="text-xl font-bold text-foreground">Definições e Administração</h1>
+        <p className="text-sm text-muted-foreground mt-1">Configurações globais, integrações e ferramentas internas do Blue IA Studio.</p>
       </div>
 
-      {/* Main Container - Full Natural Page Scroll & Widened Grid */}
-      <div className="max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-6 flex flex-col md:flex-row gap-8 items-start">
+      {/* Main Container - Full Width & Fluid Responsive Grid */}
+      <div className="w-full px-4 md:px-8 xl:px-10 py-8 grid grid-cols-1 md:grid-cols-[280px_minmax(0,1fr)] gap-8 items-start">
         {/* Sidebar Navigation */}
-        <div className="w-full md:w-60 shrink-0 md:sticky md:top-4 bg-background flex md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0 border-b md:border-b-0 border-border z-10">
+        <div className="w-full md:w-[280px] shrink-0 md:sticky md:top-20 bg-background flex md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0 border-b md:border-b-0 border-border z-10">
           {availableTabs.map(({ value, label, icon: Icon }, i) => (
             <button
               key={value}
               onClick={() => setActiveTab(value)}
               style={{ animationDelay: `${i * 30}ms` }}
-              className={`shrink-0 md:w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[12.5px] transition-all text-left animate-fade-in-up ${
+              className={`shrink-0 md:w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] transition-all text-left animate-fade-in-up ${
                 activeTab === value
                   ? 'bg-muted text-foreground font-medium border border-border/60 shadow-sm'
                   : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
               }`}
             >
-              <Icon size={15} className={activeTab === value ? 'text-primary' : 'text-muted-foreground'} />
+              <Icon size={16} className={activeTab === value ? 'text-primary' : 'text-muted-foreground'} />
               <span>{label}</span>
             </button>
           ))}
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 w-full min-w-0">
+        <div className="w-full min-w-0">
           {settings.showSaved && (
             <div className="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[12px] font-medium animate-fade-in border border-primary/20">
               <Check size={13} />

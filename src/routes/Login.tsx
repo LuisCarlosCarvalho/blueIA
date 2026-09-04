@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { account } from '@/lib/appwrite'
 import { useAuthStore } from '@/store/authStore'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Volume2, VolumeX } from 'lucide-react'
 
 export function Login() {
   const navigate = useNavigate()
@@ -12,6 +12,35 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isMuted, setIsMuted] = useState(false)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+
+  // Set volume to 50% (0.5) and attempt to play audio unmuted
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = 0.5
+      videoRef.current.muted = false
+      videoRef.current.play().catch(() => {
+        if (videoRef.current) {
+          videoRef.current.muted = true
+          setIsMuted(true)
+          videoRef.current.play().catch(() => {})
+        }
+      })
+    }
+  }, [])
+
+  const toggleSound = () => {
+    if (videoRef.current) {
+      videoRef.current.volume = 0.5
+      const nextMuted = !videoRef.current.muted
+      videoRef.current.muted = nextMuted
+      setIsMuted(nextMuted)
+      if (!nextMuted) {
+        videoRef.current.play().catch(() => {})
+      }
+    }
+  }
 
   // Redirect if already logged in
   if (!isLoading && user) {
@@ -38,8 +67,8 @@ export function Login() {
     <div className="relative min-h-screen w-full overflow-hidden bg-black flex items-center justify-start px-6 md:pl-16 lg:pl-32">
       {/* Background Video */}
       <video
+        ref={videoRef}
         autoPlay
-        muted
         loop
         playsInline
         poster="/assets/poster.jpg"
@@ -52,16 +81,30 @@ export function Login() {
       {/* Dark overlay for contrast */}
       <div className="absolute inset-0 bg-background/85" />
 
+      {/* Sound Toggle Button */}
+      <button
+        type="button"
+        onClick={toggleSound}
+        className="absolute bottom-6 right-6 z-20 flex items-center gap-2 px-3.5 py-2 rounded-full bg-background/80 backdrop-blur-md border border-border text-foreground hover:bg-secondary text-[12px] font-medium transition-all shadow-lg"
+        title={isMuted ? 'Ativar áudio do vídeo' : 'Silenciar áudio do vídeo'}
+      >
+        {isMuted ? (
+          <VolumeX size={16} className="text-muted-foreground" />
+        ) : (
+          <Volume2 size={16} className="text-primary animate-pulse" />
+        )}
+        <span>{isMuted ? 'Ativar áudio' : 'Áudio ativo'}</span>
+      </button>
+
       {/* Login Card */}
       <div className="relative z-10 w-full max-w-[400px] p-8 glass-card bg-background/95 border border-border rounded-2xl shadow-2xl animate-fade-in-up">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4 shadow-[0_0_20px_rgba(34,197,94,0.15)]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Blue IA</h1>
-          <p className="text-sm text-muted-foreground mt-1">Aceda ao seu estúdio</p>
+        <div className="text-center mb-6">
+          <img
+            src="/assets/brand/logo.png"
+            alt="Blue IA Logo"
+            className="h-20 w-auto object-contain mx-auto mb-2 select-none filter drop-shadow-sm"
+          />
+          <p className="text-sm text-muted-foreground">Aceda ao seu estúdio</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">

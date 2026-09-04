@@ -112,8 +112,8 @@ export function Deploy() {
   return (
     <div className="h-full overflow-y-auto">
       <div className="px-4 md:px-12 pt-8">
-        <h1 className="text-[22px] font-display font-semibold tracking-tight animate-fade-in-up stagger-1">Export</h1>
-        <p className="text-text-2 text-[13px] mt-1 animate-fade-in-up stagger-2">Download or publish your site</p>
+        <h1 className="text-[22px] font-sans font-semibold tracking-tight animate-fade-in-up stagger-1">Export</h1>
+        <p className="text-muted-foreground text-[13px] mt-1 animate-fade-in-up stagger-2">Download or publish your site</p>
       </div>
 
       <div className="px-4 md:px-12 pt-6">
@@ -123,16 +123,16 @@ export function Deploy() {
               key={opt.label}
               onClick={() => !exporting && handleExport(opt.action)}
               style={{ animationDelay: `${i * 60}ms` }}
-              className={`flex items-start gap-3 p-4 rounded-xl border bg-bg-1 border-border-default card-lift hover:border-border-hover cursor-pointer hover:card-lift-hover animate-fade-in-up ${exporting ? 'opacity-60 pointer-events-none' : ''}`}
+              className={`flex items-start gap-3 p-4 rounded-xl border bg-background border-border card-lift hover:border-border cursor-pointer hover:card-lift-hover animate-fade-in-up ${exporting ? 'opacity-60 pointer-events-none' : ''}`}
             >
-              <div className="w-9 h-9 rounded-lg bg-green/10 border border-green/20 flex items-center justify-center text-green shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <opt.icon size={16} />
               </div>
               <div className="flex-1">
                 <span className="text-sm font-semibold">{opt.label}</span>
-                <p className="text-[11.5px] text-text-2 mt-0.5">{opt.description}</p>
+                <p className="text-[11.5px] text-muted-foreground mt-0.5">{opt.description}</p>
               </div>
-              <ExternalLink size={14} className="text-text-3 mt-1 shrink-0" />
+              <ExternalLink size={14} className="text-muted-foreground mt-1 shrink-0" />
             </div>
           ))}
         </div>
@@ -140,34 +140,34 @@ export function Deploy() {
 
       {hasDeployKey && (
         <div className="px-4 md:px-12 pt-8 animate-fade-in-up stagger-3">
-          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-text-3 mb-3">Publish</h2>
-          <div className="p-5 rounded-xl border bg-bg-1 border-border-default">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">Publish</h2>
+          <div className="p-5 rounded-xl border bg-background border-border">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green/10 border border-green/20 flex items-center justify-center text-green shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <Globe size={18} />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold">Publish to Web</h3>
-                <p className="text-[11.5px] text-text-2 mt-0.5">
+                <p className="text-[11.5px] text-muted-foreground mt-0.5">
                   Deploy your site to a live URL in seconds
                 </p>
 
                 {deployUrl && (
                   <div className="mt-3 flex items-center gap-2">
-                    <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-bg-3 border border-border-subtle">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green shrink-0" />
+                    <div className="flex-1 min-w-0 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                       <a
                         href={deployUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[12px] text-green hover:underline truncate"
+                        className="text-[12px] text-primary hover:underline truncate"
                       >
                         {deployUrl.replace('https://', '')}
                       </a>
                     </div>
                     <button
                       onClick={handleCopy}
-                      className="w-8 h-8 rounded-lg border border-border-default hover:border-border-hover flex items-center justify-center text-text-3 hover:text-text-1 transition-all shrink-0"
+                      className="w-8 h-8 rounded-lg border border-border hover:border-border flex items-center justify-center text-muted-foreground hover:text-muted-foreground transition-all shrink-0"
                       title="Copy URL"
                     >
                       {copied ? <Check size={13} /> : <Copy size={13} />}
@@ -176,7 +176,7 @@ export function Deploy() {
                       href={deployUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg border border-border-default hover:border-border-hover flex items-center justify-center text-text-3 hover:text-text-1 transition-all shrink-0"
+                      className="w-8 h-8 rounded-lg border border-border hover:border-border flex items-center justify-center text-muted-foreground hover:text-muted-foreground transition-all shrink-0"
                       title="Visit site"
                     >
                       <ExternalLink size={13} />
@@ -188,7 +188,7 @@ export function Deploy() {
                   <button
                     onClick={handlePublish}
                     disabled={publishing}
-                    className="px-4 py-1.5 rounded-lg bg-green text-bg-0 text-[12.5px] font-semibold hover:bg-green/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                    className="px-4 py-1.5 rounded-lg bg-primary text-bg-0 text-[12.5px] font-semibold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                   >
                     {publishing ? (
                       <>
@@ -205,7 +205,7 @@ export function Deploy() {
                     )}
                   </button>
                   {timeAgo && (
-                    <span className="text-[11px] text-text-3">Last published {timeAgo}</span>
+                    <span className="text-[11px] text-muted-foreground">Last published {timeAgo}</span>
                   )}
                 </div>
               </div>

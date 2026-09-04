@@ -64,7 +64,7 @@ export function Canvas() {
       {viewport === 'tablet' ? (
         <div className="relative z-[1]">
           {/* Tablet frame */}
-          <div className="border-[12px] border-bg-4 rounded-2xl bg-bg-4 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+          <div className="border-[12px] border-bg-4 rounded-2xl bg-muted shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
             <div className="rounded-lg overflow-hidden">
               {canvasContent}
             </div>
@@ -73,17 +73,17 @@ export function Canvas() {
       ) : viewport === 'mobile' ? (
         <div className="relative z-[1]">
           {/* Phone frame */}
-          <div className="border-[10px] border-bg-4 rounded-[2rem] bg-bg-4 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+          <div className="border-[10px] border-bg-4 rounded-[2rem] bg-muted shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
             {/* Notch */}
             <div className="flex justify-center -mt-[4px] mb-1">
-              <div className="w-24 h-5 bg-bg-4 rounded-b-xl" />
+              <div className="w-24 h-5 bg-muted rounded-b-xl" />
             </div>
             <div className="rounded-xl overflow-hidden">
               {canvasContent}
             </div>
             {/* Home indicator */}
             <div className="flex justify-center mt-2 pb-1">
-              <div className="w-28 h-1 bg-bg-5 rounded-full" />
+              <div className="w-28 h-1 bg-muted rounded-full" />
             </div>
           </div>
         </div>

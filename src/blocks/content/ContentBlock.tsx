@@ -22,7 +22,7 @@ export function ContentBlock({ block }: { block: BlockConfig }) {
   if (variant === 'highlight') {
     return (
       <div className="px-6 py-12 @lg:px-16 @lg:py-16">
-        <div className="reveal-slide-right reveal-d1 border-l-2 border-green pl-6 @lg:pl-8 bg-green-glow2 rounded-r-lg py-6 px-4">
+        <div className="reveal-slide-right reveal-d1 border-l-2 border-primary pl-6 @lg:pl-8 bg-primary-glow2 rounded-r-lg py-6 px-4">
           {rendered}
         </div>
       </div>

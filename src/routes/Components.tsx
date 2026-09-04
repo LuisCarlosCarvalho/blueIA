@@ -60,8 +60,8 @@ export function Components() {
     <div className="h-full overflow-y-auto">
       {/* Header */}
       <div className="px-4 md:px-12 pt-8">
-        <h1 className="text-[22px] font-display font-semibold tracking-tight animate-fade-in-up stagger-1">Component Library</h1>
-        <p className="text-text-2 text-[13px] mt-1 animate-fade-in-up stagger-2">
+        <h1 className="text-[22px] font-sans font-semibold tracking-tight animate-fade-in-up stagger-1">Component Library</h1>
+        <p className="text-muted-foreground text-[13px] mt-1 animate-fade-in-up stagger-2">
           {blockMetadata.length} components across {categories.length} categories
         </p>
       </div>
@@ -69,13 +69,13 @@ export function Components() {
       {/* Search */}
       <div className="px-4 md:px-12 pt-5 animate-fade-in stagger-3">
         <div className="relative max-w-xs">
-          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-3" />
+          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search components..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-7 pr-3 py-1.5 rounded-md border border-border-default bg-bg-2 text-text-0 text-[12px] outline-none focus:border-green placeholder:text-text-3"
+            className="w-full pl-7 pr-3 py-1.5 rounded-md border border-border bg-secondary text-foreground text-[12px] outline-none focus:border-primary placeholder:text-muted-foreground"
           />
         </div>
       </div>
@@ -86,8 +86,8 @@ export function Components() {
           onClick={() => setActiveCategory(null)}
           className={`px-3 py-1.5 rounded-full text-xs transition-all ${
             !activeCategory
-              ? 'text-text-0 bg-bg-3 border border-border-default'
-              : 'text-text-2 border border-transparent hover:text-text-1 hover:bg-bg-2'
+              ? 'text-foreground bg-muted border border-border'
+              : 'text-muted-foreground border border-transparent hover:text-muted-foreground hover:bg-secondary'
           }`}
         >
           All ({blockMetadata.length})
@@ -100,8 +100,8 @@ export function Components() {
               onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
               className={`px-3 py-1.5 rounded-full text-xs transition-all ${
                 activeCategory === cat
-                  ? 'text-text-0 bg-bg-3 border border-border-default'
-                  : 'text-text-2 border border-transparent hover:text-text-1 hover:bg-bg-2'
+                  ? 'text-foreground bg-muted border border-border'
+                  : 'text-muted-foreground border border-transparent hover:text-muted-foreground hover:bg-secondary'
               }`}
             >
               {cat} ({count})
@@ -125,12 +125,12 @@ export function Components() {
             <div
               key={meta.type}
               style={{ animationDelay: `${i * 50}ms` }}
-              className="bg-bg-1 border border-border-default rounded-xl overflow-hidden card-lift hover:border-border-hover hover:card-lift-hover cursor-pointer animate-fade-in-up"
+              className="bg-background border border-border rounded-xl overflow-hidden card-lift hover:border-border hover:card-lift-hover cursor-pointer animate-fade-in-up"
               onMouseEnter={() => setHoveredBlock(meta.type)}
               onMouseLeave={() => setHoveredBlock(null)}
             >
               {/* Mini preview */}
-              <div className="h-[140px] bg-bg-2 overflow-hidden relative">
+              <div className="h-[140px] bg-secondary overflow-hidden relative">
                 <div
                   className="origin-top-left pointer-events-none"
                   style={{ transform: 'scale(0.3)', width: '333%', height: '333%', ...cssVars, color: 'var(--color-text-0)', backgroundColor: 'var(--color-bg-1)' } as React.CSSProperties}
@@ -140,15 +140,15 @@ export function Components() {
 
                 {/* Variant tabs */}
                 {meta.variants.length > 1 && (
-                  <div className="absolute bottom-0 left-0 right-0 flex gap-1 px-2 py-1.5 backdrop-blur-sm bg-bg-0/60">
+                  <div className="absolute bottom-0 left-0 right-0 flex gap-1 px-2 py-1.5 backdrop-blur-sm bg-background/60">
                     {meta.variants.map((v, vi) => (
                       <button
                         key={v}
                         onClick={(e) => { e.stopPropagation(); setActiveVariants((prev) => ({ ...prev, [meta.type]: vi })) }}
                         className={`px-2 py-0.5 rounded-md text-[10px] transition-all ${
                           vi === variantIdx
-                            ? 'bg-green/10 text-green border border-green/20'
-                            : 'bg-bg-3/80 text-text-2 border border-transparent hover:text-text-0'
+                            ? 'bg-primary/10 text-primary border border-primary/20'
+                            : 'bg-muted/80 text-muted-foreground border border-transparent hover:text-foreground'
                         }`}
                       >
                         {v}
@@ -163,15 +163,15 @@ export function Components() {
                 <div className="flex items-start justify-between mb-1.5">
                   <div>
                     <h3 className="text-sm font-semibold">{meta.label}</h3>
-                    <p className="text-[11px] text-text-3 mt-0.5">{meta.description}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{meta.description}</p>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-bg-3 text-text-2 border border-border-default shrink-0 ml-2">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border shrink-0 ml-2">
                     {meta.variants.length} variant{meta.variants.length !== 1 ? 's' : ''}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between mt-3">
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-glow text-green font-medium">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary-glow text-primary font-medium">
                     {meta.category}
                   </span>
 
@@ -180,7 +180,7 @@ export function Components() {
                     {hoveredBlock === meta.type && (
                       <button
                         onClick={(e) => { e.stopPropagation(); toast(`${meta.label} schema: ${Object.keys(meta.defaultProps).join(', ')}`) }}
-                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] text-text-3 hover:text-text-1 hover:bg-bg-3 transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 rounded text-[10px] text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-colors"
                       >
                         <Code size={10} />
                         Schema
@@ -188,7 +188,7 @@ export function Components() {
                     )}
                     <button
                       onClick={(e) => { e.stopPropagation(); handleAdd(meta) }}
-                      className="flex items-center gap-1 px-2 py-1 rounded text-[10px] bg-green/10 text-green hover:bg-green/20 active:scale-[0.97] transition-all font-medium"
+                      className="flex items-center gap-1 px-2 py-1 rounded text-[10px] bg-primary/10 text-primary hover:bg-primary/20 active:scale-[0.97] transition-all font-medium"
                     >
                       <Plus size={10} />
                       Add

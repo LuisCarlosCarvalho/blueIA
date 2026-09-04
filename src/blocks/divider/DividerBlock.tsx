@@ -24,7 +24,7 @@ export function DividerBlock({ block }: { block: BlockConfig }) {
   // line (default)
   return (
     <div className="flex items-center justify-center" style={{ minHeight: `${height}px` }}>
-      <div className={`${widthClass} mx-auto border-t border-border-default`} />
+      <div className={`${widthClass} mx-auto border-t border-border`} />
     </div>
   )
 }

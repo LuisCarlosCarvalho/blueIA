@@ -43,10 +43,10 @@ function AddPagePopover({ onAdd, onClose }: { onAdd: (name: string, path: string
   }
 
   return (
-    <div className="absolute top-full left-0 mt-1 bg-bg-2 border border-border-default rounded-lg p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.4)] z-20 w-52">
+    <div className="absolute top-full left-0 mt-1 bg-secondary border border-border rounded-lg p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.4)] z-20 w-52">
       <div className="space-y-2">
         <div>
-          <label className="block text-[10px] text-text-3 mb-0.5">Page name</label>
+          <label className="block text-[10px] text-muted-foreground mb-0.5">Page name</label>
           <input
             ref={inputRef}
             value={name}
@@ -56,23 +56,23 @@ function AddPagePopover({ onAdd, onClose }: { onAdd: (name: string, path: string
             }}
             onKeyDown={(e) => { if (e.key === 'Enter') submit(); if (e.key === 'Escape') onClose() }}
             placeholder="About"
-            className="w-full px-2 py-1.5 rounded border border-border-default bg-bg-3 text-text-0 text-[11.5px] outline-none focus:border-green"
+            className="w-full px-2 py-1.5 rounded border border-border bg-muted text-foreground text-[11.5px] outline-none focus:border-primary"
           />
         </div>
         <div>
-          <label className="block text-[10px] text-text-3 mb-0.5">Path</label>
+          <label className="block text-[10px] text-muted-foreground mb-0.5">Path</label>
           <input
             value={path}
             onChange={(e) => setPath(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') submit(); if (e.key === 'Escape') onClose() }}
             placeholder="/about"
-            className="w-full px-2 py-1.5 rounded border border-border-default bg-bg-3 text-text-0 text-[11.5px] outline-none focus:border-green font-mono"
+            className="w-full px-2 py-1.5 rounded border border-border bg-muted text-foreground text-[11.5px] outline-none focus:border-primary font-mono"
           />
         </div>
         <button
           onClick={submit}
           disabled={!name.trim()}
-          className="w-full py-1.5 rounded bg-green text-black text-[11px] font-semibold hover:bg-green-dim transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-full py-1.5 rounded bg-primary text-black text-[11px] font-semibold hover:bg-primary-dim transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Add Page
         </button>
@@ -114,7 +114,7 @@ function PageTab({ page, isActive, onClick, onRename, onDelete, canDelete }: {
           if (e.key === 'Enter') commitRename()
           if (e.key === 'Escape') { setName(page.name); setEditing(false) }
         }}
-        className="px-2 py-1 rounded text-xs bg-bg-3 border border-green outline-none w-20"
+        className="px-2 py-1 rounded text-xs bg-muted border border-primary outline-none w-20"
         onClick={(e) => e.stopPropagation()}
       />
     )
@@ -127,7 +127,7 @@ function PageTab({ page, isActive, onClick, onRename, onDelete, canDelete }: {
         onDoubleClick={(e) => { e.stopPropagation(); setEditing(true) }}
         onContextMenu={(e) => { e.preventDefault(); setShowContext(true) }}
         className={`px-2 py-1 rounded text-xs transition-all ${
-          isActive ? 'bg-bg-3 text-text-0' : 'text-text-3 hover:text-text-1 hover:bg-bg-2'
+          isActive ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-muted-foreground hover:bg-secondary'
         }`}
         title={`${page.name} (${page.path})`}
       >
@@ -136,17 +136,17 @@ function PageTab({ page, isActive, onClick, onRename, onDelete, canDelete }: {
       {showContext && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setShowContext(false)} />
-          <div className="absolute top-full left-0 mt-1 bg-bg-2 border border-border-default rounded-lg p-1 shadow-[0_8px_24px_rgba(0,0,0,0.4)] z-20 min-w-[100px]">
+          <div className="absolute top-full left-0 mt-1 bg-secondary border border-border rounded-lg p-1 shadow-[0_8px_24px_rgba(0,0,0,0.4)] z-20 min-w-[100px]">
             <button
               onClick={() => { setShowContext(false); setEditing(true) }}
-              className="w-full text-left px-2.5 py-1.5 rounded text-[11px] text-text-1 hover:bg-bg-3 hover:text-text-0 transition-colors"
+              className="w-full text-left px-2.5 py-1.5 rounded text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             >
               Rename
             </button>
             {canDelete && (
               <button
                 onClick={() => { setShowContext(false); onDelete() }}
-                className="w-full text-left px-2.5 py-1.5 rounded text-[11px] text-text-1 hover:bg-status-red/10 hover:text-status-red transition-colors"
+                className="w-full text-left px-2.5 py-1.5 rounded text-[11px] text-muted-foreground hover:bg-status-red/10 hover:text-destructive transition-colors"
               >
                 Delete
               </button>
@@ -194,17 +194,17 @@ export function CanvasToolbar() {
   }
 
   return (
-    <div className="h-10 bg-bg-1 border-b border-border-default flex items-center px-3 gap-1">
+    <div className="h-10 bg-background border-b border-border flex items-center px-3 gap-1">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-1.5 text-xs text-text-3 shrink-0">
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
         <span
-          className="cursor-pointer hover:text-text-1 transition-colors"
+          className="cursor-pointer hover:text-muted-foreground transition-colors"
           onClick={() => navigate('/')}
         >
           Projects
         </span>
         <span>/</span>
-        <span className="text-text-0 font-medium max-w-[120px] truncate">{projectName}</span>
+        <span className="text-foreground font-medium max-w-[120px] truncate">{projectName}</span>
       </div>
 
       <div className="w-px h-5 bg-border-default mx-1.5 shrink-0" />
@@ -225,7 +225,7 @@ export function CanvasToolbar() {
         <div className="relative">
           <button
             onClick={() => setShowAddPage(!showAddPage)}
-            className="w-6 h-6 rounded flex items-center justify-center text-text-3 hover:text-green hover:bg-bg-2 transition-all"
+            className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-secondary transition-all"
             title="Add page"
             aria-label="Add page"
           >
@@ -252,8 +252,8 @@ export function CanvasToolbar() {
             onClick={() => setViewport(value)}
             className={`w-7 h-7 rounded flex items-center justify-center text-xs transition-all ${
               viewport === value
-                ? 'bg-bg-3 text-text-0'
-                : 'text-text-3 hover:text-text-1 hover:bg-bg-3'
+                ? 'bg-muted text-foreground'
+                : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted'
             }`}
           >
             <Icon size={14} />
@@ -270,7 +270,7 @@ export function CanvasToolbar() {
             if (label) toast(`Undo: ${label}`, { duration: 1500 })
           }}
           disabled={!canUndo()}
-          className="w-7 h-7 rounded flex items-center justify-center text-text-3 hover:text-text-1 hover:bg-bg-3 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-7 h-7 rounded flex items-center justify-center text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           title="Undo"
           aria-label="Undo"
         >
@@ -283,7 +283,7 @@ export function CanvasToolbar() {
             if (label) toast(`Redo: ${label}`, { duration: 1500 })
           }}
           disabled={!canRedo()}
-          className="w-7 h-7 rounded flex items-center justify-center text-text-3 hover:text-text-1 hover:bg-bg-3 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-7 h-7 rounded flex items-center justify-center text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           title="Redo"
           aria-label="Redo"
         >
@@ -296,7 +296,7 @@ export function CanvasToolbar() {
         <button
           onClick={togglePreview}
           className={`h-7 px-2 rounded flex items-center gap-1 text-[11px] transition-all ${
-            previewMode ? 'bg-green-glow text-green' : 'text-text-3 hover:text-text-1 hover:bg-bg-3'
+            previewMode ? 'bg-primary-glow text-primary' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted'
           }`}
           title="Preview (P)"
           aria-label="Toggle preview mode"
@@ -310,7 +310,7 @@ export function CanvasToolbar() {
         <button
           onClick={toggleJsonDrawer}
           className={`h-7 px-2 rounded flex items-center gap-1 text-[11px] transition-all ${
-            jsonDrawerOpen ? 'bg-green-glow text-green' : 'text-text-3 hover:text-text-1 hover:bg-bg-3'
+            jsonDrawerOpen ? 'bg-primary-glow text-primary' : 'text-muted-foreground hover:text-muted-foreground hover:bg-muted'
           }`}
           title="JSON (J)"
           aria-label="Toggle JSON drawer"
@@ -323,7 +323,7 @@ export function CanvasToolbar() {
         {/* History */}
         <button
           onClick={toggleHistory}
-          className="h-7 px-2 rounded flex items-center gap-1 text-[11px] text-text-3 hover:text-text-1 hover:bg-bg-3 transition-all"
+          className="h-7 px-2 rounded flex items-center gap-1 text-[11px] text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-all"
           title="History (H)"
           aria-label="Toggle version history"
         >
@@ -334,7 +334,7 @@ export function CanvasToolbar() {
         {/* Shortcuts help */}
         <button
           onClick={toggleShortcutsModal}
-          className="w-7 h-7 rounded flex items-center justify-center text-text-3 hover:text-text-1 hover:bg-bg-3 transition-all"
+          className="w-7 h-7 rounded flex items-center justify-center text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-all"
           title="Keyboard shortcuts (?)"
           aria-label="Show keyboard shortcuts"
         >
@@ -346,7 +346,7 @@ export function CanvasToolbar() {
         <button
           onClick={handleExport}
           disabled={exporting}
-          className="h-7 px-3 rounded-lg bg-green text-bg-0 text-[11.5px] font-semibold hover:bg-green/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+          className="h-7 px-3 rounded-lg bg-primary text-bg-0 text-[11.5px] font-semibold hover:bg-primary/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
         >
           {exporting ? (
             <>

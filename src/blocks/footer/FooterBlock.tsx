@@ -10,31 +10,31 @@ interface FooterProps {
 
 function FooterSimple({ props }: { props: FooterProps }) {
   return (
-    <footer className="px-6 @md:px-10 py-8 border-t border-border-subtle">
+    <footer className="px-6 @md:px-10 py-8 border-t border-border">
       <div className="flex flex-col @lg:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           {props.logoImage ? (
             <img src={props.logoImage} alt={props.logo} className="h-6 w-auto object-contain" />
           ) : (
-            <div className="w-6 h-6 rounded-md bg-green/10 flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-green" />
+            <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+              <div className="w-3 h-3 rounded-full bg-primary" />
             </div>
           )}
-          <span className="text-sm font-semibold text-text-1">{props.logo}</span>
+          <span className="text-sm font-semibold text-muted-foreground">{props.logo}</span>
         </div>
 
         <div className="flex items-center gap-4">
           {props.links.map((link, i) => (
             <span
               key={i}
-              className="text-[12px] text-text-3 hover:text-text-1 transition-colors cursor-pointer"
+              className="text-[12px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
             >
               {link}
             </span>
           ))}
         </div>
 
-        <span className="text-[11px] text-text-3">{props.copyright}</span>
+        <span className="text-[11px] text-muted-foreground">{props.copyright}</span>
       </div>
     </footer>
   )
@@ -49,7 +49,7 @@ function FooterMultiColumn({ props }: { props: FooterProps }) {
   ]
 
   return (
-    <footer className="px-6 @md:px-10 py-12 border-t border-border-subtle">
+    <footer className="px-6 @md:px-10 py-12 border-t border-border">
       <div className="grid grid-cols-2 @2xl:grid-cols-5 gap-8 mb-10">
         {/* Brand column */}
         <div className="col-span-2 @2xl:col-span-1">
@@ -57,13 +57,13 @@ function FooterMultiColumn({ props }: { props: FooterProps }) {
             {props.logoImage ? (
               <img src={props.logoImage} alt={props.logo} className="h-7 w-auto object-contain" />
             ) : (
-              <div className="w-7 h-7 rounded-md bg-green/10 flex items-center justify-center">
-                <div className="w-3.5 h-3.5 rounded-full bg-green" />
+              <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
+                <div className="w-3.5 h-3.5 rounded-full bg-primary" />
               </div>
             )}
             <span className="text-sm font-semibold">{props.logo}</span>
           </div>
-          <p className="text-[12px] text-text-3 leading-relaxed max-w-[200px]">
+          <p className="text-[12px] text-muted-foreground leading-relaxed max-w-[200px]">
             Build beautiful websites with structured JSON config.
           </p>
         </div>
@@ -71,13 +71,13 @@ function FooterMultiColumn({ props }: { props: FooterProps }) {
         {/* Link columns */}
         {columns.map((col, i) => (
           <div key={i}>
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-text-2 mb-3">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
               {col.title}
             </h4>
             <ul className="space-y-2">
               {col.links.map((link, j) => (
                 <li key={j}>
-                  <span className="text-[12.5px] text-text-3 hover:text-text-1 transition-colors cursor-pointer">
+                  <span className="text-[12.5px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer">
                     {link}
                   </span>
                 </li>
@@ -88,13 +88,13 @@ function FooterMultiColumn({ props }: { props: FooterProps }) {
       </div>
 
       {/* Bottom bar */}
-      <div className="pt-6 border-t border-border-subtle flex flex-col @lg:flex-row items-center justify-between gap-3">
-        <span className="text-[11px] text-text-3">{props.copyright}</span>
+      <div className="pt-6 border-t border-border flex flex-col @lg:flex-row items-center justify-between gap-3">
+        <span className="text-[11px] text-muted-foreground">{props.copyright}</span>
         <div className="flex gap-4">
           {props.links.map((link, i) => (
             <span
               key={i}
-              className="text-[11px] text-text-3 hover:text-text-1 transition-colors cursor-pointer"
+              className="text-[11px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
             >
               {link}
             </span>
@@ -108,12 +108,12 @@ function FooterMultiColumn({ props }: { props: FooterProps }) {
 function FooterMinimal({ props }: { props: FooterProps }) {
   return (
     <footer className="px-6 @md:px-10 py-6">
-      <div className="flex items-center justify-center gap-1.5 text-[11px] text-text-3">
+      <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
         <span>{props.copyright}</span>
         {props.links.length > 0 && <span className="mx-1">|</span>}
         {props.links.map((link, i) => (
           <span key={i}>
-            <span className="hover:text-text-1 transition-colors cursor-pointer">{link}</span>
+            <span className="hover:text-muted-foreground transition-colors cursor-pointer">{link}</span>
             {i < props.links.length - 1 && <span className="mx-1">|</span>}
           </span>
         ))}

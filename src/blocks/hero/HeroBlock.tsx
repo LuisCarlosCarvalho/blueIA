@@ -14,7 +14,7 @@ function HeroCentered({ props }: { props: HeroProps }) {
     <section className="px-6 @md:px-10 py-20 @md:py-28 text-center">
       {/* Badge */}
       {props.badge && (
-        <div className="reveal-fade-up reveal-d1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green/10 border border-green/20 text-green text-[11px] font-medium mb-6">
+        <div className="reveal-fade-up reveal-d1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium mb-6">
           <Sparkles size={12} />
           {props.badge}
         </div>
@@ -26,18 +26,18 @@ function HeroCentered({ props }: { props: HeroProps }) {
       </h1>
 
       {/* Subheadline */}
-      <p className="reveal-fade-up reveal-d3 text-text-2 text-base @md:text-lg leading-relaxed max-w-xl mx-auto mb-8">
+      <p className="reveal-fade-up reveal-d3 text-muted-foreground text-base @md:text-lg leading-relaxed max-w-xl mx-auto mb-8">
         {props.subheadline}
       </p>
 
       {/* CTAs */}
       <div className="reveal-fade-up reveal-d4 flex flex-wrap items-center justify-center gap-3">
-        <button className="px-6 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all hover:accent-glow-xl flex items-center gap-2">
+        <button className="px-6 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all hover:accent-glow-xl flex items-center gap-2">
           {props.primaryCta}
           <ArrowRight size={16} />
         </button>
         {props.secondaryCta && (
-          <button className="px-6 py-3 rounded-lg bg-bg-3 text-text-0 text-sm font-medium border border-border-default hover:bg-bg-4 hover:border-border-hover transition-all">
+          <button className="px-6 py-3 rounded-lg bg-muted text-foreground text-sm font-medium border border-border hover:bg-muted hover:border-border transition-all">
             {props.secondaryCta}
           </button>
         )}
@@ -52,7 +52,7 @@ function HeroSplit({ props }: { props: HeroProps }) {
       {/* Text side */}
       <div className="flex-1">
         {props.badge && (
-          <div className="reveal-fade-up reveal-d1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green/10 border border-green/20 text-green text-[11px] font-medium mb-4">
+          <div className="reveal-fade-up reveal-d1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium mb-4">
             <Sparkles size={12} />
             {props.badge}
           </div>
@@ -60,16 +60,16 @@ function HeroSplit({ props }: { props: HeroProps }) {
         <h1 className="reveal-fade-up reveal-d2 text-3xl @md:text-5xl font-bold tracking-tight leading-[1.1] mb-4">
           {props.headline}
         </h1>
-        <p className="reveal-fade-up reveal-d3 text-text-2 text-base leading-relaxed mb-6 max-w-lg">
+        <p className="reveal-fade-up reveal-d3 text-muted-foreground text-base leading-relaxed mb-6 max-w-lg">
           {props.subheadline}
         </p>
         <div className="reveal-fade-up reveal-d4 flex flex-wrap items-center gap-3">
-          <button className="px-6 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all flex items-center gap-2">
+          <button className="px-6 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all flex items-center gap-2">
             {props.primaryCta}
             <ArrowRight size={16} />
           </button>
           {props.secondaryCta && (
-            <button className="px-6 py-3 rounded-lg bg-bg-3 text-text-0 text-sm font-medium border border-border-default hover:bg-bg-4 transition-all">
+            <button className="px-6 py-3 rounded-lg bg-muted text-foreground text-sm font-medium border border-border hover:bg-muted transition-all">
               {props.secondaryCta}
             </button>
           )}
@@ -78,9 +78,9 @@ function HeroSplit({ props }: { props: HeroProps }) {
 
       {/* Visual side */}
       <div className="reveal-fade-up reveal-d3 flex-1 w-full">
-        <div className="aspect-[4/3] rounded-xl bg-bg-2 border border-border-default overflow-hidden relative">
+        <div className="aspect-[4/3] rounded-xl bg-secondary border border-border overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-br from-green/5 to-transparent" />
-          <div className="absolute inset-6 border border-dashed border-border-default rounded-lg flex items-center justify-center text-text-3 text-sm">
+          <div className="absolute inset-6 border border-dashed border-border rounded-lg flex items-center justify-center text-muted-foreground text-sm">
             Preview
           </div>
         </div>
@@ -94,11 +94,11 @@ function HeroGradient({ props }: { props: HeroProps }) {
     <section className="px-6 @md:px-10 py-20 @md:py-32 text-center relative overflow-hidden">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-green/5 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-green/8 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/8 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10">
         {props.badge && (
-          <div className="reveal-fade-up reveal-d1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green/10 border border-green/20 text-green text-[11px] font-medium mb-6">
+          <div className="reveal-fade-up reveal-d1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium mb-6">
             <Sparkles size={12} />
             {props.badge}
           </div>
@@ -108,17 +108,17 @@ function HeroGradient({ props }: { props: HeroProps }) {
           {props.headline}
         </h1>
 
-        <p className="reveal-fade-up reveal-d3 text-text-2 text-base @md:text-lg leading-relaxed max-w-xl mx-auto mb-8">
+        <p className="reveal-fade-up reveal-d3 text-muted-foreground text-base @md:text-lg leading-relaxed max-w-xl mx-auto mb-8">
           {props.subheadline}
         </p>
 
         <div className="reveal-fade-up reveal-d4 flex flex-wrap items-center justify-center gap-3">
-          <button className="px-6 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all hover:accent-glow-xl flex items-center gap-2">
+          <button className="px-6 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all hover:accent-glow-xl flex items-center gap-2">
             {props.primaryCta}
             <ArrowRight size={16} />
           </button>
           {props.secondaryCta && (
-            <button className="px-6 py-3 rounded-lg bg-bg-3 text-text-0 text-sm font-medium border border-border-default hover:bg-bg-4 transition-all">
+            <button className="px-6 py-3 rounded-lg bg-muted text-foreground text-sm font-medium border border-border hover:bg-muted transition-all">
               {props.secondaryCta}
             </button>
           )}
@@ -134,11 +134,11 @@ function HeroMinimal({ props }: { props: HeroProps }) {
       <h1 className="reveal-fade-up reveal-d1 text-5xl @md:text-7xl font-bold tracking-tighter leading-[1.05] mb-6 max-w-4xl mx-auto">
         {props.headline}
       </h1>
-      <p className="reveal-fade-up reveal-d2 text-text-2 text-lg @md:text-xl leading-relaxed max-w-lg mx-auto mb-10">
+      <p className="reveal-fade-up reveal-d2 text-muted-foreground text-lg @md:text-xl leading-relaxed max-w-lg mx-auto mb-10">
         {props.subheadline}
       </p>
       <div className="reveal-fade-up reveal-d3">
-        <button className="px-8 py-4 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all hover:accent-glow-xl flex items-center gap-2 mx-auto">
+        <button className="px-8 py-4 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all hover:accent-glow-xl flex items-center gap-2 mx-auto">
           {props.primaryCta}
           <ArrowRight size={16} />
         </button>

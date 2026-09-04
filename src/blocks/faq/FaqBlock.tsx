@@ -14,26 +14,26 @@ interface FaqProps {
 }
 
 const defaultFaqs: FaqItem[] = [
-  { question: 'What is OpenPage?', answer: 'OpenPage is a visual website builder that uses structured JSON config as the source of truth. Both humans and AI agents can edit the same config to build beautiful websites.' },
+  { question: 'What is Blue IA?', answer: 'Blue IA is a visual website builder that uses structured JSON config as the source of truth. Both humans and AI agents can edit the same config to build beautiful websites.' },
   { question: 'How does the JSON config work?', answer: 'Every website is represented as a JSON document with blocks, styles, and content. The visual editor reads and writes this JSON, and agents can make surgical edits via the API.' },
-  { question: 'Can I use my own components?', answer: 'Yes! OpenPage supports custom components. You can build your own blocks following our component schema and register them in the block registry.' },
-  { question: 'Is it free to use?', answer: 'OpenPage offers a free tier for personal projects with up to 5 blocks. Pro and Team plans unlock unlimited blocks, custom domains, and priority support.' },
+  { question: 'Can I use my own components?', answer: 'Yes! Blue IA supports custom components. You can build your own blocks following our component schema and register them in the block registry.' },
+  { question: 'Is it free to use?', answer: 'Blue IA offers a free tier for personal projects with up to 5 blocks. Pro and Team plans unlock unlimited blocks, custom domains, and priority support.' },
 ]
 
 function AccordionItem({ item, isOpen, onToggle }: { item: FaqItem; isOpen: boolean; onToggle: () => void }) {
   return (
-    <div className="border-b border-border-subtle">
+    <div className="border-b border-border">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between py-4 text-left group"
       >
-        <span className="text-[13.5px] font-medium text-text-0 group-hover:text-green transition-colors">
+        <span className="text-[13.5px] font-medium text-foreground group-hover:text-primary transition-colors">
           {item.question}
         </span>
         <ChevronDown
           size={16}
-          className={`text-text-3 shrink-0 ml-4 transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-green' : ''
+          className={`text-muted-foreground shrink-0 ml-4 transition-transform duration-200 ${
+            isOpen ? 'rotate-180 text-primary' : ''
           }`}
         />
       </button>
@@ -42,7 +42,7 @@ function AccordionItem({ item, isOpen, onToggle }: { item: FaqItem; isOpen: bool
           isOpen ? 'max-h-[500px] pb-4' : 'max-h-0'
         }`}
       >
-        <p className="text-[12.5px] text-text-2 leading-relaxed pr-8">
+        <p className="text-[12.5px] text-muted-foreground leading-relaxed pr-8">
           {item.answer}
         </p>
       </div>
@@ -62,7 +62,7 @@ export function FaqBlock({ block }: { block: BlockConfig }) {
           {props.title || 'Frequently Asked Questions'}
         </h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 

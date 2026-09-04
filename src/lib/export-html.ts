@@ -117,7 +117,7 @@ function starRatingHtml(rating: number): string {
     .map((i) =>
       i <= rating
         ? `<span class="text-yellow-400">${SVG_STAR_FILLED}</span>`
-        : `<span class="text-text-3">${SVG_STAR_EMPTY}</span>`
+        : `<span class="text-muted-foreground">${SVG_STAR_EMPTY}</span>`
     )
     .join('')
   return `<div class="flex gap-0.5">${stars}</div>`
@@ -141,25 +141,25 @@ function renderNavbar(block: BlockConfig): string {
   const navLinks = links
     .map(
       (l) =>
-        `          <span class="text-[13px] text-text-2 hover:text-text-0 transition-colors cursor-pointer">${escapeHtml(l)}</span>`
+        `          <span class="text-[13px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer">${escapeHtml(l)}</span>`
     )
     .join('\n')
 
   const logoHtml = logoImage
     ? `<img src="${escapeHtml(logoImage)}" alt="${logo}" class="h-8 w-auto object-contain" />`
-    : `<div class="w-8 h-8 rounded-lg bg-green/10 flex items-center justify-center"><div class="w-4 h-4 rounded-full bg-green"></div></div>`
+    : `<div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"><div class="w-4 h-4 rounded-full bg-primary"></div></div>`
 
   return `  <nav class="px-6 md:px-10 py-4 flex items-center justify-between">
     <div class="flex items-center gap-2">
       ${logoHtml}
-      <span class="font-semibold text-[15px] text-text-0 tracking-tight">${logo}</span>
+      <span class="font-semibold text-[15px] text-foreground tracking-tight">${logo}</span>
     </div>
     <div class="hidden lg:flex items-center gap-6">
 ${navLinks}
     </div>
     <div class="flex items-center gap-3">
-      <button class="px-4 py-2 rounded-lg bg-green text-black text-[13px] font-semibold hover:bg-green-dim transition-colors">${ctaText}</button>
-      <button class="lg:hidden w-9 h-9 rounded-lg border border-border-default flex items-center justify-center text-text-2 hover:text-text-0 hover:bg-bg-3 transition-colors">
+      <button class="px-4 py-2 rounded-lg bg-primary text-black text-[13px] font-semibold hover:bg-primary-dim transition-colors">${ctaText}</button>
+      <button class="lg:hidden w-9 h-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
         ${SVG_MENU}
       </button>
     </div>
@@ -180,22 +180,22 @@ function renderHeroCentered(block: BlockConfig): string {
   const secondaryCtaUrl = prop<string>(block.props, 'secondaryCtaUrl', '')
 
   const badgeHtml = badge
-    ? `      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green/10 border border-green/20 text-green text-[11px] font-medium mb-6">
+    ? `      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium mb-6">
         ${SVG_SPARKLES}
         ${escapeHtml(badge)}
       </div>`
     : ''
 
   const secondaryHtml = secondaryCta
-    ? `        ${renderLink(secondaryCta, secondaryCtaUrl, 'px-6 py-3 rounded-lg bg-bg-3 text-text-0 text-sm font-medium border border-border-default hover:bg-bg-4 hover:border-border-hover transition-all inline-block')}`
+    ? `        ${renderLink(secondaryCta, secondaryCtaUrl, 'px-6 py-3 rounded-lg bg-muted text-foreground text-sm font-medium border border-border hover:bg-muted hover:border-border transition-all inline-block')}`
     : ''
 
   return `  <section class="px-6 md:px-10 py-20 md:py-28 text-center">
 ${badgeHtml}
       <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-4 max-w-3xl mx-auto">${headline}</h1>
-      <p class="text-text-2 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-8">${subheadline}</p>
+      <p class="text-muted-foreground text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-8">${subheadline}</p>
       <div class="flex flex-wrap items-center justify-center gap-3">
-        ${renderLink(primaryCta, primaryCtaUrl, 'px-6 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all inline-flex items-center gap-2')}
+        ${renderLink(primaryCta, primaryCtaUrl, 'px-6 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all inline-flex items-center gap-2')}
 ${secondaryHtml}
       </div>
   </section>`
@@ -212,33 +212,33 @@ function renderHeroSplit(block: BlockConfig): string {
   const heroImage = prop<string>(block.props, 'heroImage', '')
 
   const badgeHtml = badge
-    ? `        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green/10 border border-green/20 text-green text-[11px] font-medium mb-4">
+    ? `        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium mb-4">
           ${SVG_SPARKLES}
           ${escapeHtml(badge)}
         </div>`
     : ''
 
   const secondaryHtml = secondaryCta
-    ? `          ${renderLink(secondaryCta, secondaryCtaUrl, 'px-6 py-3 rounded-lg bg-bg-3 text-text-0 text-sm font-medium border border-border-default hover:bg-bg-4 transition-all inline-block')}`
+    ? `          ${renderLink(secondaryCta, secondaryCtaUrl, 'px-6 py-3 rounded-lg bg-muted text-foreground text-sm font-medium border border-border hover:bg-muted transition-all inline-block')}`
     : ''
 
   const imageHtml = heroImage
     ? `          <img src="${escapeHtml(heroImage)}" alt="" class="absolute inset-0 w-full h-full object-cover" />`
     : `          <div class="absolute inset-0 bg-gradient-to-br from-green/5 to-transparent"></div>
-          <div class="absolute inset-6 border border-dashed border-border-default rounded-lg flex items-center justify-center text-text-3 text-sm">Preview</div>`
+          <div class="absolute inset-6 border border-dashed border-border rounded-lg flex items-center justify-center text-muted-foreground text-sm">Preview</div>`
 
   return `  <section class="px-6 md:px-10 py-16 md:py-24 flex flex-col lg:flex-row items-center gap-10">
       <div class="flex-1">
 ${badgeHtml}
         <h1 class="text-3xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-4">${headline}</h1>
-        <p class="text-text-2 text-base leading-relaxed mb-6 max-w-lg">${subheadline}</p>
+        <p class="text-muted-foreground text-base leading-relaxed mb-6 max-w-lg">${subheadline}</p>
         <div class="flex flex-wrap items-center gap-3">
-          ${renderLink(primaryCta, primaryCtaUrl, 'px-6 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all inline-flex items-center gap-2')}
+          ${renderLink(primaryCta, primaryCtaUrl, 'px-6 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all inline-flex items-center gap-2')}
 ${secondaryHtml}
         </div>
       </div>
       <div class="flex-1 w-full">
-        <div class="aspect-[4/3] rounded-xl bg-bg-2 border border-border-default overflow-hidden relative">
+        <div class="aspect-[4/3] rounded-xl bg-secondary border border-border overflow-hidden relative">
 ${imageHtml}
         </div>
       </div>
@@ -255,25 +255,25 @@ function renderHeroGradient(block: BlockConfig): string {
   const secondaryCtaUrl = prop<string>(block.props, 'secondaryCtaUrl', '')
 
   const badgeHtml = badge
-    ? `        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green/10 border border-green/20 text-green text-[11px] font-medium mb-6">
+    ? `        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-medium mb-6">
           ${SVG_SPARKLES}
           ${escapeHtml(badge)}
         </div>`
     : ''
 
   const secondaryHtml = secondaryCta
-    ? `          ${renderLink(secondaryCta, secondaryCtaUrl, 'px-6 py-3 rounded-lg bg-bg-3 text-text-0 text-sm font-medium border border-border-default hover:bg-bg-4 transition-all inline-block')}`
+    ? `          ${renderLink(secondaryCta, secondaryCtaUrl, 'px-6 py-3 rounded-lg bg-muted text-foreground text-sm font-medium border border-border hover:bg-muted transition-all inline-block')}`
     : ''
 
   return `  <section class="px-6 md:px-10 py-20 md:py-32 text-center relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-b from-green/5 via-transparent to-transparent pointer-events-none"></div>
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-green/[0.08] rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/[0.08] rounded-full blur-[100px] pointer-events-none"></div>
       <div class="relative z-10">
 ${badgeHtml}
-        <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-4 max-w-3xl mx-auto text-text-0">${headline}</h1>
-        <p class="text-text-2 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-8">${subheadline}</p>
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-4 max-w-3xl mx-auto text-foreground">${headline}</h1>
+        <p class="text-muted-foreground text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-8">${subheadline}</p>
         <div class="flex flex-wrap items-center justify-center gap-3">
-          ${renderLink(primaryCta, primaryCtaUrl, 'px-6 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all inline-flex items-center gap-2')}
+          ${renderLink(primaryCta, primaryCtaUrl, 'px-6 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all inline-flex items-center gap-2')}
 ${secondaryHtml}
         </div>
       </div>
@@ -306,20 +306,20 @@ function renderFeaturesGrid(block: BlockConfig): string {
   )
 
   const labelHtml = label
-    ? `        <div class="text-[11px] font-semibold uppercase tracking-widest text-green mb-2">${escapeHtml(label)}</div>`
+    ? `        <div class="text-[11px] font-semibold uppercase tracking-widest text-primary mb-2">${escapeHtml(label)}</div>`
     : ''
   const subtitleHtml = subtitle
-    ? `        <p class="text-text-2 text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
+    ? `        <p class="text-muted-foreground text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
     : ''
 
   const cards = items
     .map(
-      (item) => `        <div class="group bg-bg-2 border border-border-default rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-border-hover hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)]">
-          <div class="w-10 h-10 rounded-lg bg-green/10 border border-green/20 flex items-center justify-center text-green mb-3">
+      (item) => `        <div class="group bg-secondary border border-border rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)]">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-3">
             ${featureIconSvg(item.icon || 'Z')}
           </div>
           <h3 class="text-sm font-semibold mb-1">${escapeHtml(item.title)}</h3>
-          <p class="text-[12.5px] text-text-2 leading-relaxed">${escapeHtml(item.description)}</p>
+          <p class="text-[12.5px] text-muted-foreground leading-relaxed">${escapeHtml(item.description)}</p>
         </div>`
     )
     .join('\n')
@@ -347,21 +347,21 @@ function renderFeaturesList(block: BlockConfig): string {
   )
 
   const labelHtml = label
-    ? `        <div class="text-[11px] font-semibold uppercase tracking-widest text-green mb-2">${escapeHtml(label)}</div>`
+    ? `        <div class="text-[11px] font-semibold uppercase tracking-widest text-primary mb-2">${escapeHtml(label)}</div>`
     : ''
   const subtitleHtml = subtitle
-    ? `        <p class="text-text-2 text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
+    ? `        <p class="text-muted-foreground text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
     : ''
 
   const rows = items
     .map(
-      (item) => `        <div class="flex gap-4 p-4 rounded-xl bg-bg-2 border border-border-default transition-all hover:border-border-hover">
-          <div class="w-10 h-10 rounded-lg bg-green/10 border border-green/20 flex items-center justify-center text-green shrink-0">
+      (item) => `        <div class="flex gap-4 p-4 rounded-xl bg-secondary border border-border transition-all hover:border-border">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
             ${featureIconSvg(item.icon || 'Z')}
           </div>
           <div>
             <h3 class="text-sm font-semibold mb-0.5">${escapeHtml(item.title)}</h3>
-            <p class="text-[12.5px] text-text-2 leading-relaxed">${escapeHtml(item.description)}</p>
+            <p class="text-[12.5px] text-muted-foreground leading-relaxed">${escapeHtml(item.description)}</p>
           </div>
         </div>`
     )
@@ -449,39 +449,39 @@ function renderPricingSimple(block: BlockConfig): string {
   const tiers = prop<PricingTier[]>(block.props, 'tiers', defaultTiers)
 
   const subtitleHtml = subtitle
-    ? `        <p class="text-text-2 text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
+    ? `        <p class="text-muted-foreground text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
     : ''
 
   const cards = tiers
     .map((tier) => {
       const featuredBorder = tier.featured
-        ? 'bg-bg-2 border-2 border-green'
-        : 'bg-bg-2 border border-border-default hover:border-border-hover'
+        ? 'bg-secondary border-2 border-primary'
+        : 'bg-secondary border border-border hover:border-border'
       const featuredBadge = tier.featured
-        ? `          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-green text-black text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+        ? `          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-black text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
             ${SVG_STAR_10}
             Recommended
           </div>`
         : ''
       const btnClass = tier.featured
-        ? 'w-full py-2.5 rounded-lg text-sm font-semibold transition-all bg-green text-black hover:bg-green-dim'
-        : 'w-full py-2.5 rounded-lg text-sm font-semibold transition-all bg-bg-3 text-text-0 border border-border-default hover:bg-bg-4 hover:border-border-hover'
+        ? 'w-full py-2.5 rounded-lg text-sm font-semibold transition-all bg-primary text-black hover:bg-primary-dim'
+        : 'w-full py-2.5 rounded-lg text-sm font-semibold transition-all bg-muted text-foreground border border-border hover:bg-muted hover:border-border'
 
       const features = tier.features
         .map(
           (f) =>
-            `            <li class="flex items-start gap-2 text-[12.5px] text-text-1">
-              <span class="text-green shrink-0 mt-0.5">${SVG_CHECK}</span>
+            `            <li class="flex items-start gap-2 text-[12.5px] text-muted-foreground">
+              <span class="text-primary shrink-0 mt-0.5">${SVG_CHECK}</span>
               ${escapeHtml(f)}
             </li>`
         )
         .join('\n')
 
       const periodHtml = tier.period
-        ? `<span class="text-text-3 text-sm">${escapeHtml(tier.period)}</span>`
+        ? `<span class="text-muted-foreground text-sm">${escapeHtml(tier.period)}</span>`
         : ''
       const descHtml = tier.description
-        ? `            <p class="text-[11px] text-text-3">${escapeHtml(tier.description)}</p>`
+        ? `            <p class="text-[11px] text-muted-foreground">${escapeHtml(tier.description)}</p>`
         : ''
 
       return `        <div class="relative rounded-xl p-6 flex flex-col transition-all ${featuredBorder}">
@@ -521,12 +521,12 @@ function renderPricingComparison(block: BlockConfig): string {
   const allFeatures = [...new Set(tiers.flatMap((t) => t.features))]
 
   const subtitleHtml = subtitle
-    ? `        <p class="text-text-2 text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
+    ? `        <p class="text-muted-foreground text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
     : ''
 
   const headerCells = tiers
     .map((tier) => {
-      const cls = tier.featured ? 'text-green' : 'text-text-0'
+      const cls = tier.featured ? 'text-primary' : 'text-foreground'
       return `              <th class="py-3 px-3 text-center font-semibold ${cls}">
                 ${escapeHtml(tier.name)}
                 <div class="text-lg font-bold mt-0.5">${escapeHtml(tier.price)}</div>
@@ -540,12 +540,12 @@ function renderPricingComparison(block: BlockConfig): string {
         .map((tier) => {
           const has = tier.features.includes(feature)
           return has
-            ? `              <td class="py-2.5 px-3 text-center"><span class="text-green inline-block">${SVG_CHECK}</span></td>`
-            : `              <td class="py-2.5 px-3 text-center text-text-3">-</td>`
+            ? `              <td class="py-2.5 px-3 text-center"><span class="text-primary inline-block">${SVG_CHECK}</span></td>`
+            : `              <td class="py-2.5 px-3 text-center text-muted-foreground">-</td>`
         })
         .join('\n')
-      return `            <tr class="border-b border-border-subtle">
-              <td class="py-2.5 px-3 text-text-1">${escapeHtml(feature)}</td>
+      return `            <tr class="border-b border-border">
+              <td class="py-2.5 px-3 text-muted-foreground">${escapeHtml(feature)}</td>
 ${cells}
             </tr>`
     })
@@ -559,8 +559,8 @@ ${subtitleHtml}
       <div class="max-w-3xl mx-auto overflow-x-auto">
         <table class="w-full text-left text-[12.5px]">
           <thead>
-            <tr class="border-b border-border-default">
-              <th class="py-3 px-3 text-text-3 font-medium">Feature</th>
+            <tr class="border-b border-border">
+              <th class="py-3 px-3 text-muted-foreground font-medium">Feature</th>
 ${headerCells}
             </tr>
           </thead>
@@ -592,7 +592,7 @@ function renderCtaSimple(block: BlockConfig): string {
   const buttonUrl = prop<string>(block.props, 'buttonUrl', '')
 
   const subHtml = subheadline
-    ? `        <p class="text-text-2 text-sm mb-6 max-w-md mx-auto">${escapeHtml(subheadline)}</p>`
+    ? `        <p class="text-muted-foreground text-sm mb-6 max-w-md mx-auto">${escapeHtml(subheadline)}</p>`
     : ''
 
   return `  <section class="px-6 md:px-10 py-16 md:py-20 text-center relative overflow-hidden">
@@ -600,7 +600,7 @@ function renderCtaSimple(block: BlockConfig): string {
       <div class="relative z-10">
         <h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-3">${headline}</h2>
 ${subHtml}
-        ${renderLink(buttonText, buttonUrl, 'px-8 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all inline-flex items-center gap-2')}
+        ${renderLink(buttonText, buttonUrl, 'px-8 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all inline-flex items-center gap-2')}
       </div>
   </section>`
 }
@@ -612,17 +612,17 @@ function renderCtaSplit(block: BlockConfig): string {
   const buttonUrl = prop<string>(block.props, 'buttonUrl', '')
 
   const subHtml = subheadline
-    ? `          <p class="text-text-2 text-sm">${escapeHtml(subheadline)}</p>`
+    ? `          <p class="text-muted-foreground text-sm">${escapeHtml(subheadline)}</p>`
     : ''
 
   return `  <section class="px-6 md:px-10 py-12 md:py-16">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 p-8 rounded-xl bg-bg-2 border border-border-default relative overflow-hidden">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 p-8 rounded-xl bg-secondary border border-border relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-r from-green/5 to-transparent pointer-events-none"></div>
         <div class="relative z-10">
           <h2 class="text-xl md:text-2xl font-bold tracking-tight mb-1">${headline}</h2>
 ${subHtml}
         </div>
-        ${renderLink(buttonText, buttonUrl, 'relative z-10 px-6 py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all shrink-0 inline-flex items-center gap-2')}
+        ${renderLink(buttonText, buttonUrl, 'relative z-10 px-6 py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all shrink-0 inline-flex items-center gap-2')}
       </div>
   </section>`
 }
@@ -649,24 +649,24 @@ function renderFooterSimple(block: BlockConfig): string {
   const linksHtml = links
     .map(
       (l) =>
-        `        <span class="text-[12px] text-text-3 hover:text-text-1 transition-colors cursor-pointer">${escapeHtml(l)}</span>`
+        `        <span class="text-[12px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer">${escapeHtml(l)}</span>`
     )
     .join('\n')
 
   const footerLogoHtml = logoImage
     ? `<img src="${escapeHtml(logoImage)}" alt="${logo}" class="h-6 w-auto object-contain" />`
-    : `<div class="w-6 h-6 rounded-md bg-green/10 flex items-center justify-center"><div class="w-3 h-3 rounded-full bg-green"></div></div>`
+    : `<div class="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center"><div class="w-3 h-3 rounded-full bg-primary"></div></div>`
 
-  return `  <footer class="px-6 md:px-10 py-8 border-t border-border-subtle">
+  return `  <footer class="px-6 md:px-10 py-8 border-t border-border">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-2">
           ${footerLogoHtml}
-          <span class="text-sm font-semibold text-text-1">${logo}</span>
+          <span class="text-sm font-semibold text-muted-foreground">${logo}</span>
         </div>
         <div class="flex items-center gap-4">
 ${linksHtml}
         </div>
-        <span class="text-[11px] text-text-3">${copyright}</span>
+        <span class="text-[11px] text-muted-foreground">${copyright}</span>
       </div>
   </footer>`
 }
@@ -695,11 +695,11 @@ function renderFooterMultiColumn(block: BlockConfig): string {
       const colLinks = col.links
         .map(
           (l) =>
-            `            <li><span class="text-[12.5px] text-text-3 hover:text-text-1 transition-colors cursor-pointer">${escapeHtml(l)}</span></li>`
+            `            <li><span class="text-[12.5px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer">${escapeHtml(l)}</span></li>`
         )
         .join('\n')
       return `        <div>
-          <h4 class="text-[11px] font-semibold uppercase tracking-wider text-text-2 mb-3">${escapeHtml(col.title)}</h4>
+          <h4 class="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">${escapeHtml(col.title)}</h4>
           <ul class="space-y-2">
 ${colLinks}
           </ul>
@@ -710,27 +710,27 @@ ${colLinks}
   const bottomLinks = links
     .map(
       (l) =>
-        `          <span class="text-[11px] text-text-3 hover:text-text-1 transition-colors cursor-pointer">${escapeHtml(l)}</span>`
+        `          <span class="text-[11px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer">${escapeHtml(l)}</span>`
     )
     .join('\n')
 
   const mcLogoHtml = logoImage
     ? `<img src="${escapeHtml(logoImage)}" alt="${logo}" class="h-7 w-auto object-contain" />`
-    : `<div class="w-7 h-7 rounded-md bg-green/10 flex items-center justify-center"><div class="w-3.5 h-3.5 rounded-full bg-green"></div></div>`
+    : `<div class="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center"><div class="w-3.5 h-3.5 rounded-full bg-primary"></div></div>`
 
-  return `  <footer class="px-6 md:px-10 py-12 border-t border-border-subtle">
+  return `  <footer class="px-6 md:px-10 py-12 border-t border-border">
       <div class="grid grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
         <div class="col-span-2 lg:col-span-1">
           <div class="flex items-center gap-2 mb-3">
             ${mcLogoHtml}
             <span class="text-sm font-semibold">${logo}</span>
           </div>
-          <p class="text-[12px] text-text-3 leading-relaxed max-w-[200px]">Build beautiful websites with structured JSON config.</p>
+          <p class="text-[12px] text-muted-foreground leading-relaxed max-w-[200px]">Build beautiful websites with structured JSON config.</p>
         </div>
 ${colsHtml}
       </div>
-      <div class="pt-6 border-t border-border-subtle flex flex-col md:flex-row items-center justify-between gap-3">
-        <span class="text-[11px] text-text-3">${copyright}</span>
+      <div class="pt-6 border-t border-border flex flex-col md:flex-row items-center justify-between gap-3">
+        <span class="text-[11px] text-muted-foreground">${copyright}</span>
         <div class="flex gap-4">
 ${bottomLinks}
         </div>
@@ -745,14 +745,14 @@ function renderFooterMinimal(block: BlockConfig): string {
   const linksHtml = links
     .map((l, i) => {
       const sep = i < links.length - 1 ? '<span class="mx-1">|</span>' : ''
-      return `<span class="hover:text-text-1 transition-colors cursor-pointer">${escapeHtml(l)}</span>${sep}`
+      return `<span class="hover:text-muted-foreground transition-colors cursor-pointer">${escapeHtml(l)}</span>${sep}`
     })
     .join('')
 
   const divider = links.length > 0 ? '<span class="mx-1">|</span>' : ''
 
   return `  <footer class="px-6 md:px-10 py-6">
-      <div class="flex items-center justify-center gap-1.5 text-[11px] text-text-3">
+      <div class="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
         <span>${copyright}</span>
         ${divider}
         ${linksHtml}
@@ -787,7 +787,7 @@ const defaultTestimonials: TestimonialItem[] = [
   {
     name: 'Sarah Chen',
     role: 'CEO at TechCorp',
-    quote: 'OpenPage completely changed how we build landing pages. The JSON config approach is genius.',
+    quote: 'Blue IA completely changed how we build landing pages. The JSON config approach is genius.',
     rating: 5,
   },
   {
@@ -812,21 +812,21 @@ function renderTestimonials(block: BlockConfig): string {
   const items = prop<TestimonialItem[]>(block.props, 'items', defaultTestimonials)
 
   const subtitleHtml = subtitle
-    ? `        <p class="text-text-2 text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
+    ? `        <p class="text-muted-foreground text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
     : ''
 
   const cards = items
     .map((item) => {
       const ratingHtml = item.rating ? `          ${starRatingHtml(item.rating)}` : ''
-      return `        <div class="bg-bg-2 border border-border-default rounded-xl p-5 transition-all hover:border-border-hover">
-          <span class="text-green/30 block mb-3">${SVG_QUOTE}</span>
-          <p class="text-[13px] text-text-1 leading-relaxed mb-4 italic">"${escapeHtml(item.quote)}"</p>
+      return `        <div class="bg-secondary border border-border rounded-xl p-5 transition-all hover:border-border">
+          <span class="text-primary/30 block mb-3">${SVG_QUOTE}</span>
+          <p class="text-[13px] text-muted-foreground leading-relaxed mb-4 italic">"${escapeHtml(item.quote)}"</p>
 ${ratingHtml}
-          <div class="flex items-center gap-3 mt-4 pt-4 border-t border-border-subtle">
-            ${item.avatar ? `<img src="${escapeHtml(item.avatar)}" alt="${escapeHtml(item.name)}" class="w-9 h-9 rounded-full object-cover border border-border-default" />` : `<div class="w-9 h-9 rounded-full bg-bg-4 border border-border-default flex items-center justify-center text-[11px] font-semibold text-text-2">${initials(item.name)}</div>`}
+          <div class="flex items-center gap-3 mt-4 pt-4 border-t border-border">
+            ${item.avatar ? `<img src="${escapeHtml(item.avatar)}" alt="${escapeHtml(item.name)}" class="w-9 h-9 rounded-full object-cover border border-border" />` : `<div class="w-9 h-9 rounded-full bg-muted border border-border flex items-center justify-center text-[11px] font-semibold text-muted-foreground">${initials(item.name)}</div>`}
             <div>
               <div class="text-[12.5px] font-semibold">${escapeHtml(item.name)}</div>
-              <div class="text-[11px] text-text-3">${escapeHtml(item.role)}</div>
+              <div class="text-[11px] text-muted-foreground">${escapeHtml(item.role)}</div>
             </div>
           </div>
         </div>`
@@ -870,9 +870,9 @@ function renderStatsGrid(block: BlockConfig): string {
 
   const cards = items
     .map(
-      (item) => `        <div class="text-center p-4 rounded-xl bg-bg-2 border border-border-default">
-          <div class="text-3xl md:text-4xl font-bold tracking-tight text-green mb-1">${escapeHtml(item.value)}</div>
-          <div class="text-[12px] text-text-2 font-medium">${escapeHtml(item.label)}</div>
+      (item) => `        <div class="text-center p-4 rounded-xl bg-secondary border border-border">
+          <div class="text-3xl md:text-4xl font-bold tracking-tight text-primary mb-1">${escapeHtml(item.value)}</div>
+          <div class="text-[12px] text-muted-foreground font-medium">${escapeHtml(item.label)}</div>
         </div>`
     )
     .join('\n')
@@ -891,14 +891,14 @@ function renderStatsBar(block: BlockConfig): string {
   const statsHtml = items
     .map(
       (item) => `          <div class="text-center">
-            <div class="text-2xl md:text-3xl font-bold tracking-tight text-text-0 mb-0.5">${escapeHtml(item.value)}</div>
-            <div class="text-[11px] text-text-3 font-medium uppercase tracking-wider">${escapeHtml(item.label)}</div>
+            <div class="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-0.5">${escapeHtml(item.value)}</div>
+            <div class="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">${escapeHtml(item.label)}</div>
           </div>`
     )
     .join('\n')
 
   return `  <section class="px-6 md:px-10 py-10">
-      <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12 py-6 px-4 rounded-xl bg-bg-2 border border-border-default">
+      <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12 py-6 px-4 rounded-xl bg-secondary border border-border">
 ${statsHtml}
       </div>
   </section>`
@@ -924,9 +924,9 @@ interface FaqItem {
 
 const defaultFaqs: FaqItem[] = [
   {
-    question: 'What is OpenPage?',
+    question: 'What is Blue IA?',
     answer:
-      'OpenPage is a visual website builder that uses structured JSON config as the source of truth. Both humans and AI agents can edit the same config to build beautiful websites.',
+      'Blue IA is a visual website builder that uses structured JSON config as the source of truth. Both humans and AI agents can edit the same config to build beautiful websites.',
   },
   {
     question: 'How does the JSON config work?',
@@ -936,12 +936,12 @@ const defaultFaqs: FaqItem[] = [
   {
     question: 'Can I use my own components?',
     answer:
-      'Yes! OpenPage supports custom components. You can build your own blocks following our component schema and register them in the block registry.',
+      'Yes! Blue IA supports custom components. You can build your own blocks following our component schema and register them in the block registry.',
   },
   {
     question: 'Is it free to use?',
     answer:
-      'OpenPage offers a free tier for personal projects with up to 5 blocks. Pro and Team plans unlock unlimited blocks, custom domains, and priority support.',
+      'Blue IA offers a free tier for personal projects with up to 5 blocks. Pro and Team plans unlock unlimited blocks, custom domains, and priority support.',
   },
 ]
 
@@ -953,18 +953,18 @@ function renderFaq(block: BlockConfig): string {
   const items = prop<FaqItem[]>(block.props, 'items', defaultFaqs)
 
   const subtitleHtml = subtitle
-    ? `        <p class="text-text-2 text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
+    ? `        <p class="text-muted-foreground text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
     : ''
 
   const accordionItems = items
     .map(
-      (item, i) => `        <div class="border-b border-border-subtle">
+      (item, i) => `        <div class="border-b border-border">
           <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between py-4 text-left group" aria-expanded="${i === 0 ? 'true' : 'false'}">
-            <span class="text-[13.5px] font-medium text-text-0 group-hover:text-green transition-colors">${escapeHtml(item.question)}</span>
-            <span class="faq-chevron text-text-3 shrink-0 ml-4 transition-transform duration-200${i === 0 ? ' rotate-180 text-green' : ''}">${SVG_CHEVRON_DOWN}</span>
+            <span class="text-[13.5px] font-medium text-foreground group-hover:text-primary transition-colors">${escapeHtml(item.question)}</span>
+            <span class="faq-chevron text-muted-foreground shrink-0 ml-4 transition-transform duration-200${i === 0 ? ' rotate-180 text-primary' : ''}">${SVG_CHEVRON_DOWN}</span>
           </button>
           <div class="faq-content overflow-hidden transition-all duration-200${i === 0 ? ' max-h-[500px] pb-4' : ' max-h-0'}">
-            <p class="text-[12.5px] text-text-2 leading-relaxed pr-8">${escapeHtml(item.answer)}</p>
+            <p class="text-[12.5px] text-muted-foreground leading-relaxed pr-8">${escapeHtml(item.answer)}</p>
           </div>
         </div>`
     )
@@ -1004,15 +1004,15 @@ function renderTeam(block: BlockConfig): string {
   const members = prop<TeamMember[]>(block.props, 'members', defaultMembers)
 
   const subtitleHtml = subtitle
-    ? `        <p class="text-text-2 text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
+    ? `        <p class="text-muted-foreground text-sm max-w-lg mx-auto">${escapeHtml(subtitle)}</p>`
     : ''
 
   const cards = members
     .map(
       (m) => `        <div class="text-center group">
-          ${m.avatar ? `<img src="${escapeHtml(m.avatar)}" alt="${escapeHtml(m.name)}" class="w-20 h-20 mx-auto rounded-full object-cover border-2 border-border-default mb-3 transition-all group-hover:border-green/30" />` : `<div class="w-20 h-20 mx-auto rounded-full bg-bg-3 border-2 border-border-default flex items-center justify-center text-xl font-bold text-text-3 mb-3 transition-all group-hover:border-green/30">${initials(m.name)}</div>`}
+          ${m.avatar ? `<img src="${escapeHtml(m.avatar)}" alt="${escapeHtml(m.name)}" class="w-20 h-20 mx-auto rounded-full object-cover border-2 border-border mb-3 transition-all group-hover:border-primary/30" />` : `<div class="w-20 h-20 mx-auto rounded-full bg-muted border-2 border-border flex items-center justify-center text-xl font-bold text-muted-foreground mb-3 transition-all group-hover:border-primary/30">${initials(m.name)}</div>`}
           <h3 class="text-sm font-semibold">${escapeHtml(m.name)}</h3>
-          <p class="text-[11px] text-text-3 mt-0.5">${escapeHtml(m.role)}</p>
+          <p class="text-[11px] text-muted-foreground mt-0.5">${escapeHtml(m.role)}</p>
         </div>`
     )
     .join('\n')
@@ -1037,7 +1037,7 @@ function renderContact(block: BlockConfig): string {
   const subtitle = prop<string>(block.props, 'subtitle', '')
 
   const subtitleHtml = subtitle
-    ? `          <p class="text-text-2 text-sm">${escapeHtml(subtitle)}</p>`
+    ? `          <p class="text-muted-foreground text-sm">${escapeHtml(subtitle)}</p>`
     : ''
 
   return `  <section class="px-6 md:px-10 py-16 md:py-20">
@@ -1049,19 +1049,19 @@ ${subtitleHtml}
         <form onsubmit="return false" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-[11.5px] text-text-2 mb-1.5 font-medium">Name</label>
-              <input type="text" placeholder="Your name" class="w-full px-3 py-2.5 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green placeholder:text-text-3 transition-colors" />
+              <label class="block text-[11.5px] text-muted-foreground mb-1.5 font-medium">Name</label>
+              <input type="text" placeholder="Your name" class="w-full px-3 py-2.5 rounded-lg border border-border bg-secondary text-foreground text-[13px] outline-none focus:border-primary placeholder:text-muted-foreground transition-colors" />
             </div>
             <div>
-              <label class="block text-[11.5px] text-text-2 mb-1.5 font-medium">Email</label>
-              <input type="email" placeholder="you@example.com" class="w-full px-3 py-2.5 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green placeholder:text-text-3 transition-colors" />
+              <label class="block text-[11.5px] text-muted-foreground mb-1.5 font-medium">Email</label>
+              <input type="email" placeholder="you@example.com" class="w-full px-3 py-2.5 rounded-lg border border-border bg-secondary text-foreground text-[13px] outline-none focus:border-primary placeholder:text-muted-foreground transition-colors" />
             </div>
           </div>
           <div>
-            <label class="block text-[11.5px] text-text-2 mb-1.5 font-medium">Message</label>
-            <textarea rows="4" placeholder="How can we help?" class="w-full px-3 py-2.5 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green placeholder:text-text-3 resize-y transition-colors"></textarea>
+            <label class="block text-[11.5px] text-muted-foreground mb-1.5 font-medium">Message</label>
+            <textarea rows="4" placeholder="How can we help?" class="w-full px-3 py-2.5 rounded-lg border border-border bg-secondary text-foreground text-[13px] outline-none focus:border-primary placeholder:text-muted-foreground resize-y transition-colors"></textarea>
           </div>
-          <button type="submit" class="w-full py-3 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all flex items-center justify-center gap-2">
+          <button type="submit" class="w-full py-3 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all flex items-center justify-center gap-2">
             ${SVG_SEND}
             Send Message
           </button>
@@ -1096,16 +1096,16 @@ function renderNewsletter(block: BlockConfig): string {
 
   return `  <section class="px-6 md:px-10 py-12 md:py-16">
       <div class="max-w-xl mx-auto text-center">
-        <div class="w-12 h-12 rounded-xl bg-green/10 border border-green/20 flex items-center justify-center text-green mx-auto mb-4">
+        <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mx-auto mb-4">
           ${SVG_MAIL}
         </div>
         <h2 class="text-xl md:text-2xl font-bold tracking-tight mb-2">${title}</h2>
-        <p class="text-text-2 text-sm mb-6">${subtitle}</p>
+        <p class="text-muted-foreground text-sm mb-6">${subtitle}</p>
         <form onsubmit="return false" class="flex gap-2 max-w-sm mx-auto">
-          <input type="email" placeholder="you@example.com" class="flex-1 px-4 py-2.5 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green placeholder:text-text-3 transition-colors" />
-          <button type="submit" class="px-5 py-2.5 rounded-lg bg-green text-black text-sm font-semibold hover:bg-green-dim transition-all shrink-0">${buttonText}</button>
+          <input type="email" placeholder="you@example.com" class="flex-1 px-4 py-2.5 rounded-lg border border-border bg-secondary text-foreground text-[13px] outline-none focus:border-primary placeholder:text-muted-foreground transition-colors" />
+          <button type="submit" class="px-5 py-2.5 rounded-lg bg-primary text-black text-sm font-semibold hover:bg-primary-dim transition-all shrink-0">${buttonText}</button>
         </form>
-        <p class="text-[11px] text-text-3 mt-3">${proofText}</p>
+        <p class="text-[11px] text-muted-foreground mt-3">${proofText}</p>
       </div>
   </section>`
 }
@@ -1131,15 +1131,15 @@ function renderLogoCloud(block: BlockConfig): string {
     .map(
       (name) => `        <div class="group cursor-pointer transition-all">
           <div class="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-all group-hover:scale-105">
-            <span class="text-text-3 group-hover:text-green transition-colors">${logoPlaceholderSvg(name)}</span>
-            <span class="text-sm font-semibold text-text-3 group-hover:text-text-0 tracking-tight transition-colors">${escapeHtml(name)}</span>
+            <span class="text-muted-foreground group-hover:text-primary transition-colors">${logoPlaceholderSvg(name)}</span>
+            <span class="text-sm font-semibold text-muted-foreground group-hover:text-foreground tracking-tight transition-colors">${escapeHtml(name)}</span>
           </div>
         </div>`
     )
     .join('\n')
 
   return `  <section class="px-6 md:px-10 py-10 md:py-14">
-      <p class="text-center text-[11px] font-medium uppercase tracking-widest text-text-3 mb-6">${title}</p>
+      <p class="text-center text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-6">${title}</p>
       <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12">
 ${logosHtml}
       </div>
@@ -1260,7 +1260,7 @@ export function exportSiteToHTML(config: SiteConfig, options?: ExportSiteOptions
           b.nextElementSibling.style.maxHeight = '0';
           b.nextElementSibling.style.paddingBottom = '0';
           var c = b.querySelector('.faq-chevron');
-          if (c) { c.style.transform = ''; c.classList.remove('text-green'); c.classList.add('text-text-3'); }
+          if (c) { c.style.transform = ''; c.classList.remove('text-primary'); c.classList.add('text-muted-foreground'); }
         });
 
         // Toggle current
@@ -1268,7 +1268,7 @@ export function exportSiteToHTML(config: SiteConfig, options?: ExportSiteOptions
           btn.setAttribute('aria-expanded', 'true');
           content.style.maxHeight = '500px';
           content.style.paddingBottom = '1rem';
-          if (chevron) { chevron.style.transform = 'rotate(180deg)'; chevron.classList.add('text-green'); chevron.classList.remove('text-text-3'); }
+          if (chevron) { chevron.style.transform = 'rotate(180deg)'; chevron.classList.add('text-primary'); chevron.classList.remove('text-muted-foreground'); }
         }
       }
     </script>`
@@ -1346,7 +1346,7 @@ ${ogDescriptionMeta}${ogImageMeta}${faviconLink}
       --color-border-subtle: ${theme.borderSubtle};
       --color-border-hover: ${theme.borderHover};
       --font-sans: "${theme.fontSans}", -apple-system, system-ui, sans-serif;
-      --font-display: "${theme.fontDisplay}", system-ui, sans-serif;
+      --font-sans: "${theme.fontDisplay}", system-ui, sans-serif;
       --font-mono: "${theme.fontMono}", ui-monospace, monospace;
       --radius-default: ${theme.radius}px;
       --radius-lg: ${theme.radiusLg}px;

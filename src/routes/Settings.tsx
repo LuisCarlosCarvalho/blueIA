@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import {
-  Settings2, Search as SearchIcon, Key, Check,
+  Settings2, Search as SearchIcon, Key, Check, ShieldAlert, Download, Component
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { useProjectsStore, type ProjectSettings } from '@/store/projectsStore'
 import { useEditorStore } from '@/store/editorStore'
+import { useAuthStore } from '@/store/authStore'
 
-type SettingsTab = 'general' | 'seo' | 'api'
+type SettingsTab = 'general' | 'seo' | 'api' | 'help' | 'admin'
 
 const tabDefs: { value: SettingsTab; label: string; icon: typeof Settings2 }[] = [
-  { value: 'general', label: 'General', icon: Settings2 },
+  { value: 'general', label: 'Geral', icon: Settings2 },
   { value: 'seo', label: 'SEO', icon: SearchIcon },
-  { value: 'api', label: 'API Keys', icon: Key },
+  { value: 'api', label: 'Chaves de API', icon: Key },
+  { value: 'help', label: 'Ajuda e Suporte', icon: ShieldAlert as any },
 ]
 
 function useSettingsState() {
@@ -48,20 +49,21 @@ function useSettingsState() {
 function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-5">
-      <label className="block text-[11.5px] text-text-2 mb-1.5 font-medium">{label}</label>
+      <label className="block text-[11.5px] text-muted-foreground mb-1.5 font-medium">{label}</label>
       {children}
     </div>
   )
 }
 
-function ControlledInput({ settingsKey, placeholder, settings }: { settingsKey: string; placeholder?: string; settings: ReturnType<typeof useSettingsState> }) {
+function ControlledInput({ settingsKey, placeholder, settings, disabled }: { settingsKey: string; placeholder?: string; settings: ReturnType<typeof useSettingsState>; disabled?: boolean }) {
   return (
     <input
       type="text"
       value={settings.data[settingsKey] || ''}
       placeholder={placeholder}
       onChange={(e) => settings.update(settingsKey, e.target.value)}
-      className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green placeholder:text-text-3 transition-colors"
+      disabled={disabled}
+      className="w-full px-3 py-2 rounded-lg border border-border bg-secondary text-foreground text-[13px] outline-none focus:border-primary placeholder:text-muted-foreground/70 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     />
   )
 }
@@ -72,7 +74,7 @@ function ControlledTextarea({ settingsKey, rows = 3, settings }: { settingsKey: 
       value={settings.data[settingsKey] || ''}
       rows={rows}
       onChange={(e) => settings.update(settingsKey, e.target.value)}
-      className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green resize-y transition-colors"
+      className="w-full px-3 py-2 rounded-lg border border-border bg-secondary text-foreground text-[13px] outline-none focus:border-primary resize-y transition-colors"
     />
   )
 }
@@ -80,17 +82,17 @@ function ControlledTextarea({ settingsKey, rows = 3, settings }: { settingsKey: 
 function GeneralPanel({ settings }: { settings: ReturnType<typeof useSettingsState> }) {
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">General</h2>
-      <FieldGroup label="Site Name"><ControlledInput settingsKey="siteName" settings={settings} /></FieldGroup>
-      <FieldGroup label="Site Description"><ControlledTextarea settingsKey="siteDescription" settings={settings} /></FieldGroup>
-      <FieldGroup label="Favicon URL"><ControlledInput settingsKey="faviconUrl" placeholder="https://example.com/favicon.ico" settings={settings} /></FieldGroup>
-      <FieldGroup label="Language">
+      <h2 className="text-lg font-semibold mb-4 text-foreground">Geral</h2>
+      <FieldGroup label="Nome do Site"><ControlledInput settingsKey="siteName" settings={settings} /></FieldGroup>
+      <FieldGroup label="Descrição do Site"><ControlledTextarea settingsKey="siteDescription" settings={settings} /></FieldGroup>
+      <FieldGroup label="Favicon URL"><ControlledInput settingsKey="faviconUrl" placeholder="https://exemplo.com/favicon.ico" settings={settings} /></FieldGroup>
+      <FieldGroup label="Idioma">
         <select
-          value={settings.data.language || 'English'}
+          value={settings.data.language || 'Português'}
           onChange={(e) => settings.update('language', e.target.value)}
-          className="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green cursor-pointer"
+          className="w-full px-3 py-2 rounded-lg border border-border bg-secondary text-foreground text-[13px] outline-none focus:border-primary cursor-pointer"
         >
-          <option>English</option><option>German</option><option>Spanish</option><option>French</option>
+          <option>Português</option><option>English</option><option>German</option><option>Spanish</option><option>French</option>
         </select>
       </FieldGroup>
     </div>
@@ -98,20 +100,20 @@ function GeneralPanel({ settings }: { settings: ReturnType<typeof useSettingsSta
 }
 
 function SeoPanel({ settings }: { settings: ReturnType<typeof useSettingsState> }) {
-  const title = settings.data.seoTitle || 'My Website - Build with OpenPage'
-  const description = settings.data.seoDescription || 'A beautiful website built with structured JSON config.'
-  const domain = settings.data.customDomain || 'mywebsite.com'
+  const title = settings.data.seoTitle || 'O Meu Site - Construído com Blue IA'
+  const description = settings.data.seoDescription || 'Um site incrível construído com base em JSON.'
+  const domain = settings.data.customDomain || 'omeusite.com'
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">SEO</h2>
-      <FieldGroup label="Page Title"><ControlledInput settingsKey="seoTitle" settings={settings} /></FieldGroup>
-      <FieldGroup label="Meta Description"><ControlledTextarea settingsKey="seoDescription" settings={settings} /></FieldGroup>
-      <FieldGroup label="OG Image URL"><ControlledInput settingsKey="ogImageUrl" placeholder="https://example.com/og.png" settings={settings} /></FieldGroup>
+      <h2 className="text-lg font-semibold mb-4 text-foreground">SEO</h2>
+      <FieldGroup label="Título da Página"><ControlledInput settingsKey="seoTitle" settings={settings} /></FieldGroup>
+      <FieldGroup label="Descrição Meta"><ControlledTextarea settingsKey="seoDescription" settings={settings} /></FieldGroup>
+      <FieldGroup label="URL da Imagem OG"><ControlledInput settingsKey="ogImageUrl" placeholder="https://exemplo.com/og.png" settings={settings} /></FieldGroup>
 
       {/* Live Google preview */}
-      <div className="mt-6 p-4 rounded-xl bg-bg-2 border border-border-default">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-text-3 mb-3">Google Preview</div>
+      <div className="mt-6 p-4 rounded-xl bg-secondary border border-border">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 mb-3">Pré-visualização do Google</div>
         <div className="text-[#8ab4f8] text-sm hover:underline cursor-pointer">{title}</div>
         <div className="text-[#bdc1c6] text-[11px] mt-0.5">https://{domain}</div>
         <div className="text-[#9aa0a6] text-[11.5px] mt-1 leading-relaxed">
@@ -123,82 +125,100 @@ function SeoPanel({ settings }: { settings: ReturnType<typeof useSettingsState> 
 }
 
 function ApiPanel({ settings }: { settings: ReturnType<typeof useSettingsState> }) {
-  const [geminiKey, setGeminiKey] = useState(localStorage.getItem('openpage-gemini-key') || '')
-  const [showKey, setShowKey] = useState(false)
-  const [testing, setTesting] = useState(false)
-
-  function handleKeyChange(value: string) {
-    setGeminiKey(value)
-    if (value) {
-      localStorage.setItem('openpage-gemini-key', value)
-    } else {
-      localStorage.removeItem('openpage-gemini-key')
-    }
-  }
-
-  async function handleTest() {
-    if (!geminiKey) return
-    setTesting(true)
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models?key=${geminiKey}`,
-      )
-      if (res.ok) {
-        toast.success('API key is valid')
-      } else {
-        toast.error(`Invalid key: ${res.status}`)
-      }
-    } catch {
-      toast.error('Connection failed')
-    } finally {
-      setTesting(false)
-    }
-  }
-
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">API Keys</h2>
+      <h2 className="text-lg font-semibold mb-4 text-foreground">Chaves de API</h2>
 
-      <FieldGroup label="Deploy Access Key">
+      <FieldGroup label="Chave de Acesso para Deploy">
         <ControlledInput
           settingsKey="deployAccessKey"
-          placeholder="Must match OPENPAGE_DEPLOY_KEY on server"
+          placeholder="Deve corresponder a OPENPAGE_DEPLOY_KEY no servidor"
           settings={settings}
+          disabled={true}
         />
-        <p className="text-[11px] text-text-3 mt-1.5">
-          Required for one-click publishing. Stored in your project settings.
+        <p className="text-[11px] text-muted-foreground/90 mt-1.5 font-medium">
+          As chaves de integração são configuradas e protegidas exclusivamente no servidor.
         </p>
       </FieldGroup>
 
       <FieldGroup label="Gemini API Key">
-        <div className="flex gap-2">
-          <input
-            type={showKey ? 'text' : 'password'}
-            value={geminiKey}
-            placeholder="AIza..."
-            onChange={(e) => handleKeyChange(e.target.value)}
-            className="flex-1 px-3 py-2 rounded-lg border border-border-default bg-bg-2 text-text-0 text-[13px] outline-none focus:border-green placeholder:text-text-3 transition-colors font-mono"
-          />
-          <button
-            onClick={() => setShowKey(!showKey)}
-            className="px-3 py-2 rounded-lg border border-border-default bg-bg-2 text-text-2 text-[12px] hover:text-text-0 hover:bg-bg-3 transition-colors shrink-0"
-          >
-            {showKey ? 'Hide' : 'Show'}
-          </button>
-          <button
-            onClick={handleTest}
-            disabled={!geminiKey || testing}
-            className="px-3 py-2 rounded-lg bg-green/10 text-green text-[12px] font-medium hover:bg-green/20 transition-colors shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {testing ? 'Testing...' : 'Test'}
-          </button>
-        </div>
-        <p className="text-[11px] text-text-3 mt-1.5">
-          Used for client-side AI generation. Get one at{' '}
-          <span className="text-text-2">aistudio.google.com</span>
+        <ControlledInput
+          settingsKey="geminiKeyDisabled"
+          placeholder="AIza..."
+          settings={settings}
+          disabled={true}
+        />
+        <p className="text-[11px] text-muted-foreground/90 mt-1.5 font-medium">
+          As chaves de integração são configuradas e protegidas exclusivamente no servidor.
         </p>
       </FieldGroup>
+    </div>
+  )
+}
 
+function HelpPanel() {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-lg font-semibold mb-1 text-foreground">Ajuda e Suporte</h2>
+      <div className="p-6 rounded-xl border border-border bg-background cursor-not-allowed transition-colors opacity-70">
+        <div className="flex items-center gap-2 mb-2 text-foreground">
+          <ShieldAlert size={18} />
+          <span className="text-[14px] font-medium">Centro de Suporte</span>
+        </div>
+        <p className="text-[13px] text-muted-foreground mt-2">Em preparação</p>
+      </div>
+    </div>
+  )
+}
+
+function AdminPanel() {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-lg font-semibold mb-1 text-foreground">Administração</h2>
+        <p className="text-sm text-muted-foreground mb-6">Configurações globais e estado da plataforma.</p>
+
+        <FieldGroup label="Integração de Inteligência Artificial">
+          <div className="p-4 rounded-xl border border-border bg-secondary flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-[13px] font-medium text-foreground">Estado da API do Gemini</div>
+                <div className="text-[11.5px] text-muted-foreground mt-0.5">O sistema utiliza uma API Key gerida no backend para evitar exposição.</div>
+              </div>
+              <div className="px-2 py-1 rounded-full bg-status-yellow/10 text-status-yellow text-[10px] font-bold tracking-wider">
+                AGUARDANDO SERVIDOR
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-border mt-1">
+              <button disabled className="px-4 py-2 rounded-lg bg-primary/50 text-black/50 text-[12px] font-semibold cursor-not-allowed w-auto" title="Disponível após configuração segura no servidor">
+                Testar ligação da API
+              </button>
+            </div>
+          </div>
+        </FieldGroup>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold mb-3 text-foreground">Gestão de Plataforma</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="p-4 rounded-xl border border-border bg-background hover:bg-secondary cursor-not-allowed transition-colors opacity-70">
+            <div className="flex items-center gap-2 mb-2 text-foreground">
+              <Component size={16} />
+              <span className="text-[13px] font-medium">Gestão de Templates</span>
+            </div>
+            <p className="text-[11.5px] text-muted-foreground">Em preparação</p>
+          </div>
+
+          <div className="p-4 rounded-xl border border-border bg-background hover:bg-secondary cursor-not-allowed transition-colors opacity-70">
+            <div className="flex items-center gap-2 mb-2 text-foreground">
+              <Download size={16} />
+              <span className="text-[13px] font-medium">Importação / Exportação</span>
+            </div>
+            <p className="text-[11.5px] text-muted-foreground">Em preparação</p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -206,44 +226,68 @@ function ApiPanel({ settings }: { settings: ReturnType<typeof useSettingsState> 
 export function Settings() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('general')
   const settings = useSettingsState()
+  const { user } = useAuthStore()
+
+  // Administrative state derived exclusively from Appwrite session
+  const isAdmin = Boolean(user?.labels?.includes('admin'))
+
+  useEffect(() => {
+    if (!isAdmin && activeTab === 'admin') {
+      setActiveTab('general')
+    }
+  }, [isAdmin, activeTab])
+
+  const availableTabs = [...tabDefs]
+  if (isAdmin) {
+    availableTabs.push({ value: 'admin', label: 'Painel Admin', icon: ShieldAlert as any })
+  }
 
   const panels: Record<SettingsTab, React.ReactNode> = {
     general: <GeneralPanel settings={settings} />,
     seo: <SeoPanel settings={settings} />,
     api: <ApiPanel settings={settings} />,
+    help: <HelpPanel />,
+    admin: isAdmin ? <AdminPanel /> : null,
   }
 
   return (
-    <div className="h-full flex flex-col md:flex-row overflow-hidden">
-      {/* Sidebar */}
-      <div className="md:w-52 bg-bg-1 border-b md:border-b-0 md:border-r border-border-default p-2 shrink-0 flex md:flex-col gap-1 overflow-x-auto">
-        {tabDefs.map(({ value, label, icon: Icon }, i) => (
-          <button
-            key={value}
-            onClick={() => setActiveTab(value)}
-            style={{ animationDelay: `${i * 40}ms` }}
-            className={`shrink-0 md:w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12.5px] transition-all text-left animate-fade-in-up ${
-              activeTab === value
-                ? 'bg-bg-3 text-text-0'
-                : 'text-text-2 hover:text-text-0 hover:bg-bg-2'
-            }`}
-          >
-            <Icon size={14} />
-            {label}
-          </button>
-        ))}
+    <div className="h-full flex flex-col overflow-hidden bg-background">
+      <div className="shrink-0 px-4 py-6 md:px-8 border-b border-border bg-background">
+        <h1 className="text-xl font-bold text-foreground">Definições e Administração</h1>
+        <p className="text-sm text-muted-foreground mt-1">Configurações globais, integrações e ferramentas internas do Blue IA Studio.</p>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-2xl relative">
-        {settings.showSaved && (
-          <div className="absolute top-3 right-6 flex items-center gap-1.5 text-green text-[11px] animate-fade-in">
-            <Check size={12} />
-            Saved
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        {/* Sidebar */}
+        <div className="md:w-52 bg-background border-b md:border-b-0 md:border-r border-border p-2 shrink-0 flex md:flex-col gap-1 overflow-x-auto">
+          {availableTabs.map(({ value, label, icon: Icon }, i) => (
+            <button
+              key={value}
+              onClick={() => setActiveTab(value)}
+              style={{ animationDelay: `${i * 40}ms` }}
+              className={`shrink-0 md:w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12.5px] transition-all text-left animate-fade-in-up ${
+                activeTab === value
+                  ? 'bg-muted text-foreground'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+              }`}
+            >
+              <Icon size={14} />
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-2xl relative">
+          {settings.showSaved && (
+            <div className="absolute top-3 right-6 flex items-center gap-1.5 text-green text-[11px] animate-fade-in">
+              <Check size={12} />
+              Guardado
+            </div>
+          )}
+          <div key={activeTab} className="animate-fade-in-up">
+            {panels[activeTab]}
           </div>
-        )}
-        <div key={activeTab} className="animate-fade-in-up">
-          {panels[activeTab]}
         </div>
       </div>
     </div>

@@ -1,0 +1,21 @@
+export const businessSegments = [
+  "Pet Shop e Bem-Estar Animal",
+  "Restaurante e Gastronomia",
+  "Clínica de Estética e Dermatologia",
+  "Salão de Beleza e Cabeleireiro",
+  "Barbearia Masculina",
+  "Imobiliária e Mediação",
+  "Advocacia e Serviços Jurídicos",
+  "Contabilidade e Fiscalidade",
+  "Saúde e Clínicas Médicas",
+  "Clínica Dentária e Ortodontia",
+  "Ginásio e Fitness",
+  "E-commerce e Loja Online",
+  "Comércio Local e Loja Física",
+  "Construção, Obras e Reformas",
+  "Logística e Transportes",
+  "Serviços Profissionais e Consultoria",
+  "Educação, Cursos e Formação",
+  "Eventos, Fotografia e Festas",
+  "Outro Segmento de Negócio"
+] as const;

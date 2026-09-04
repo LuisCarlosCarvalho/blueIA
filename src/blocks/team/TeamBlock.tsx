@@ -30,18 +30,18 @@ export function TeamBlock({ block }: { block: BlockConfig }) {
           {props.title || 'Meet the Team'}
         </h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 
       <div className="grid grid-cols-2 @2xl:grid-cols-4 gap-4 max-w-3xl mx-auto">
         {members.map((member, i) => (
           <div key={i} className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} text-center group`}>
-            <div className="w-20 h-20 mx-auto rounded-full bg-bg-3 border-2 border-border-default flex items-center justify-center text-xl font-bold text-text-3 mb-3 transition-all group-hover:border-green/30 group-hover:accent-glow-sm">
+            <div className="w-20 h-20 mx-auto rounded-full bg-muted border-2 border-border flex items-center justify-center text-xl font-bold text-muted-foreground mb-3 transition-all group-hover:border-primary/30 group-hover:accent-glow-sm">
               {member.name.split(' ').map(n => n[0]).join('')}
             </div>
             <h3 className="text-sm font-semibold">{member.name}</h3>
-            <p className="text-[11px] text-text-3 mt-0.5">{member.role}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{member.role}</p>
           </div>
         ))}
       </div>

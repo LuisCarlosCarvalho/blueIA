@@ -12,7 +12,7 @@ export function renderMarkdown(text: string): ReactNode[] {
 
   function flushList() {
     if (listItems.length > 0) {
-      nodes.push(createElement('ul', { key: key++, className: 'list-disc list-inside space-y-1 mb-4 text-text-1' }, ...listItems))
+      nodes.push(createElement('ul', { key: key++, className: 'list-disc list-inside space-y-1 mb-4 text-muted-foreground' }, ...listItems))
       listItems = []
     }
   }
@@ -29,12 +29,12 @@ export function renderMarkdown(text: string): ReactNode[] {
     // Headers
     if (trimmed.startsWith('### ')) {
       flushList()
-      nodes.push(createElement('h3', { key: key++, className: 'text-lg font-semibold font-display mb-2 mt-4' }, inlineFormat(trimmed.slice(4))))
+      nodes.push(createElement('h3', { key: key++, className: 'text-lg font-semibold font-sans mb-2 mt-4' }, inlineFormat(trimmed.slice(4))))
       continue
     }
     if (trimmed.startsWith('## ')) {
       flushList()
-      nodes.push(createElement('h2', { key: key++, className: 'text-xl font-semibold font-display mb-3 mt-5' }, inlineFormat(trimmed.slice(3))))
+      nodes.push(createElement('h2', { key: key++, className: 'text-xl font-semibold font-sans mb-3 mt-5' }, inlineFormat(trimmed.slice(3))))
       continue
     }
 
@@ -46,7 +46,7 @@ export function renderMarkdown(text: string): ReactNode[] {
 
     // Paragraph
     flushList()
-    nodes.push(createElement('p', { key: key++, className: 'text-text-1 leading-relaxed mb-3' }, inlineFormat(trimmed)))
+    nodes.push(createElement('p', { key: key++, className: 'text-muted-foreground leading-relaxed mb-3' }, inlineFormat(trimmed)))
   }
 
   flushList()
@@ -75,7 +75,7 @@ function inlineFormat(text: string): ReactNode[] {
 
     if (boldIdx <= italicIdx && boldMatch) {
       if (boldIdx > 0) parts.push(remaining.slice(0, boldIdx))
-      parts.push(createElement('strong', { key: key++, className: 'font-semibold text-text-0' }, boldMatch[1]))
+      parts.push(createElement('strong', { key: key++, className: 'font-semibold text-foreground' }, boldMatch[1]))
       remaining = remaining.slice(boldIdx + boldMatch[0].length)
     } else if (italicMatch) {
       if (italicIdx > 0) parts.push(remaining.slice(0, italicIdx))

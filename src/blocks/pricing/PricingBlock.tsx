@@ -53,7 +53,7 @@ function PricingSimple({ props }: { props: PricingProps }) {
       <div className="reveal-fade-up reveal-d1 text-center mb-10">
         <h2 className="text-2xl @md:text-3xl font-bold tracking-tight mb-2">{props.title}</h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 
@@ -63,12 +63,12 @@ function PricingSimple({ props }: { props: PricingProps }) {
             key={i}
             className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} relative rounded-xl p-6 flex flex-col transition-all ${
               tier.featured
-                ? 'bg-bg-2 border-2 border-green accent-glow-ring'
-                : 'bg-bg-2 border border-border-default hover:border-border-hover'
+                ? 'bg-secondary border-2 border-primary accent-glow-ring'
+                : 'bg-secondary border border-border hover:border-border'
             }`}
           >
             {tier.featured && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-green text-black text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-black text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                 <Star size={10} fill="currentColor" />
                 Recommended
               </div>
@@ -77,21 +77,21 @@ function PricingSimple({ props }: { props: PricingProps }) {
             <div className="mb-4">
               <h3 className="text-sm font-semibold mb-1">{tier.name}</h3>
               {tier.description && (
-                <p className="text-[11px] text-text-3">{tier.description}</p>
+                <p className="text-[11px] text-muted-foreground">{tier.description}</p>
               )}
             </div>
 
             <div className="mb-4">
               <span className="text-3xl font-bold tracking-tight">{tier.price}</span>
               {tier.period && (
-                <span className="text-text-3 text-sm">{tier.period}</span>
+                <span className="text-muted-foreground text-sm">{tier.period}</span>
               )}
             </div>
 
             <ul className="space-y-2 mb-6 flex-1">
               {tier.features.map((feature, j) => (
-                <li key={j} className="flex items-start gap-2 text-[12.5px] text-text-1">
-                  <Check size={14} className="text-green shrink-0 mt-0.5" />
+                <li key={j} className="flex items-start gap-2 text-[12.5px] text-muted-foreground">
+                  <Check size={14} className="text-primary shrink-0 mt-0.5" />
                   {feature}
                 </li>
               ))}
@@ -100,8 +100,8 @@ function PricingSimple({ props }: { props: PricingProps }) {
             <button
               className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all ${
                 tier.featured
-                  ? 'bg-green text-black hover:bg-green-dim hover:accent-glow-lg'
-                  : 'bg-bg-3 text-text-0 border border-border-default hover:bg-bg-4 hover:border-border-hover'
+                  ? 'bg-primary text-black hover:bg-primary-dim hover:accent-glow-lg'
+                  : 'bg-muted text-foreground border border-border hover:bg-muted hover:border-border'
               }`}
             >
               {tier.cta}
@@ -122,17 +122,17 @@ function PricingComparison({ props }: { props: PricingProps }) {
       <div className="reveal-fade-up reveal-d1 text-center mb-10">
         <h2 className="text-2xl @md:text-3xl font-bold tracking-tight mb-2">{props.title}</h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 
       <div className="reveal-fade-up reveal-d2 max-w-3xl mx-auto overflow-x-auto">
         <table className="w-full text-left text-[12.5px]">
           <thead>
-            <tr className="border-b border-border-default">
-              <th className="py-3 px-3 text-text-3 font-medium">Feature</th>
+            <tr className="border-b border-border">
+              <th className="py-3 px-3 text-muted-foreground font-medium">Feature</th>
               {tiers.map((tier, i) => (
-                <th key={i} className={`py-3 px-3 text-center font-semibold ${tier.featured ? 'text-green' : 'text-text-0'}`}>
+                <th key={i} className={`py-3 px-3 text-center font-semibold ${tier.featured ? 'text-primary' : 'text-foreground'}`}>
                   {tier.name}
                   <div className="text-lg font-bold mt-0.5">{tier.price}</div>
                 </th>
@@ -141,14 +141,14 @@ function PricingComparison({ props }: { props: PricingProps }) {
           </thead>
           <tbody>
             {allFeatures.map((feature, i) => (
-              <tr key={i} className="border-b border-border-subtle">
-                <td className="py-2.5 px-3 text-text-1">{feature}</td>
+              <tr key={i} className="border-b border-border">
+                <td className="py-2.5 px-3 text-muted-foreground">{feature}</td>
                 {tiers.map((tier, j) => (
                   <td key={j} className="py-2.5 px-3 text-center">
                     {tier.features.includes(feature) ? (
-                      <Check size={14} className="text-green mx-auto" />
+                      <Check size={14} className="text-primary mx-auto" />
                     ) : (
-                      <span className="text-text-3">-</span>
+                      <span className="text-muted-foreground">-</span>
                     )}
                   </td>
                 ))}

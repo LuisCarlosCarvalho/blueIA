@@ -49,13 +49,13 @@ function ComponentsPanel() {
     <div className="flex flex-col flex-1 overflow-hidden">
       <div className="px-3 pt-2.5 pb-1.5">
         <div className="relative">
-          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-text-3" />
+          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search components..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pr-2 py-1.5 rounded-md border border-border-default bg-bg-2 text-text-0 text-[11px] outline-none focus:border-green placeholder:text-text-3"
+            className="w-full pr-2 py-1.5 rounded-md border border-border bg-secondary text-foreground text-[11px] outline-none focus:border-primary placeholder:text-muted-foreground"
             style={{ paddingLeft: '1.625rem' }}
           />
         </div>
@@ -64,7 +64,7 @@ function ComponentsPanel() {
       <div className="flex-1 overflow-y-auto px-2 pb-2">
         {Object.entries(grouped).map(([category, items]) => (
           <div key={category}>
-            <div className="text-[9px] font-semibold uppercase tracking-wider text-text-3 px-1.5 pt-2.5 pb-1">
+            <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground px-1.5 pt-2.5 pb-1">
               {category}
             </div>
             {items.map((meta) => {
@@ -73,20 +73,20 @@ function ComponentsPanel() {
                 <button
                   key={meta.type}
                   onClick={() => handleAdd(meta.type)}
-                  className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12px] text-text-1 hover:bg-bg-3 hover:text-text-0 transition-colors text-left group"
+                  className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-left group"
                 >
-                  <div className="w-[22px] h-[22px] rounded border border-border-default bg-bg-3 flex items-center justify-center text-[10px] shrink-0">
+                  <div className="w-[22px] h-[22px] rounded border border-border bg-muted flex items-center justify-center text-[10px] shrink-0">
                     <Icon size={12} />
                   </div>
                   <span className="flex-1">{meta.label}</span>
-                  <Plus size={11} className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Plus size={11} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
               )
             })}
           </div>
         ))}
         {filtered.length === 0 && (
-          <div className="px-2 py-6 text-center text-[11px] text-text-3">
+          <div className="px-2 py-6 text-center text-[11px] text-muted-foreground">
             No components match "{search}"
           </div>
         )}
@@ -101,14 +101,14 @@ export function LeftSidebar() {
   const [tab, setTab] = useState<Tab>('layers')
 
   return (
-    <div className="hidden md:flex w-[280px] bg-bg-1 border-r border-border-default flex-col shrink-0">
-      <div className="flex border-b border-border-default shrink-0">
+    <div className="hidden md:flex w-[280px] bg-background border-r border-border flex-col shrink-0">
+      <div className="flex border-b border-border shrink-0">
         <button
           onClick={() => setTab('layers')}
           className={`flex-1 py-2 text-[11px] font-medium transition-colors ${
             tab === 'layers'
-              ? 'text-text-0 border-b border-green'
-              : 'text-text-3 hover:text-text-1'
+              ? 'text-foreground border-b border-primary'
+              : 'text-muted-foreground hover:text-muted-foreground'
           }`}
         >
           Layers
@@ -117,8 +117,8 @@ export function LeftSidebar() {
           onClick={() => setTab('components')}
           className={`flex-1 py-2 text-[11px] font-medium transition-colors ${
             tab === 'components'
-              ? 'text-text-0 border-b border-green'
-              : 'text-text-3 hover:text-text-1'
+              ? 'text-foreground border-b border-primary'
+              : 'text-muted-foreground hover:text-muted-foreground'
           }`}
         >
           Components

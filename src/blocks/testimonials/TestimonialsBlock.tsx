@@ -17,7 +17,7 @@ interface TestimonialsProps {
 }
 
 const defaultTestimonials: Testimonial[] = [
-  { name: 'Sarah Chen', role: 'CEO at TechCorp', quote: 'OpenPage completely changed how we build landing pages. The JSON config approach is genius.', rating: 5 },
+  { name: 'Sarah Chen', role: 'CEO at TechCorp', quote: 'Blue IA completely changed how we build landing pages. The JSON config approach is genius.', rating: 5 },
   { name: 'Marcus Johnson', role: 'Lead Developer', quote: 'Finally, a tool where both designers and AI agents can work together seamlessly.', rating: 5 },
   { name: 'Emma Wilson', role: 'Product Manager', quote: 'We shipped our marketing site in half the time. The component library is incredible.', rating: 4 },
 ]
@@ -29,7 +29,7 @@ function StarRating({ rating }: { rating: number }) {
         <Star
           key={i}
           size={12}
-          className={i <= rating ? 'text-status-yellow fill-status-yellow' : 'text-text-3'}
+          className={i <= rating ? 'text-status-yellow fill-status-yellow' : 'text-muted-foreground'}
         />
       ))}
     </div>
@@ -46,7 +46,7 @@ function TestimonialsCards({ props }: { props: TestimonialsProps }) {
           {props.title || 'What people say'}
         </h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 
@@ -54,24 +54,24 @@ function TestimonialsCards({ props }: { props: TestimonialsProps }) {
         {items.map((item, i) => (
           <div
             key={i}
-            className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} bg-bg-2 border border-border-default rounded-xl p-5 transition-all hover:border-border-hover`}
+            className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} bg-secondary border border-border rounded-xl p-5 transition-all hover:border-border`}
           >
-            <Quote size={20} className="text-green/30 mb-3" />
-            <p className="text-[13px] text-text-1 leading-relaxed mb-4 italic">
+            <Quote size={20} className="text-primary/30 mb-3" />
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-4 italic">
               "{item.quote}"
             </p>
             {item.rating && <StarRating rating={item.rating} />}
-            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border-subtle">
+            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border">
               {item.avatar ? (
-                <img src={item.avatar} alt={item.name} className="w-9 h-9 rounded-full object-cover border border-border-default" />
+                <img src={item.avatar} alt={item.name} className="w-9 h-9 rounded-full object-cover border border-border" />
               ) : (
-                <div className="w-9 h-9 rounded-full bg-bg-4 border border-border-default flex items-center justify-center text-[11px] font-semibold text-text-2">
+                <div className="w-9 h-9 rounded-full bg-muted border border-border flex items-center justify-center text-[11px] font-semibold text-muted-foreground">
                   {item.name.split(' ').map(n => n[0]).join('')}
                 </div>
               )}
               <div>
                 <div className="text-[12.5px] font-semibold">{item.name}</div>
-                <div className="text-[11px] text-text-3">{item.role}</div>
+                <div className="text-[11px] text-muted-foreground">{item.role}</div>
               </div>
             </div>
           </div>
@@ -103,8 +103,8 @@ function TestimonialsCarousel({ props }: { props: TestimonialsProps }) {
 
       <div className="reveal-fade-up reveal-d2 max-w-2xl mx-auto">
         <div className="text-center">
-          <Quote size={32} className="text-green/20 mx-auto mb-4" />
-          <p className="text-lg text-text-0 leading-relaxed mb-4 italic">
+          <Quote size={32} className="text-primary/20 mx-auto mb-4" />
+          <p className="text-lg text-foreground leading-relaxed mb-4 italic">
             "{item.quote}"
           </p>
           {item.rating && (
@@ -114,15 +114,15 @@ function TestimonialsCarousel({ props }: { props: TestimonialsProps }) {
           )}
           <div className="flex items-center justify-center gap-3">
             {item.avatar ? (
-              <img src={item.avatar} alt={item.name} className="w-10 h-10 rounded-full object-cover border border-border-default" />
+              <img src={item.avatar} alt={item.name} className="w-10 h-10 rounded-full object-cover border border-border" />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-bg-4 border border-border-default flex items-center justify-center text-xs font-semibold text-text-2">
+              <div className="w-10 h-10 rounded-full bg-muted border border-border flex items-center justify-center text-xs font-semibold text-muted-foreground">
                 {item.name.split(' ').map(n => n[0]).join('')}
               </div>
             )}
             <div className="text-left">
               <div className="text-sm font-semibold">{item.name}</div>
-              <div className="text-[11px] text-text-3">{item.role}</div>
+              <div className="text-[11px] text-muted-foreground">{item.role}</div>
             </div>
           </div>
 
@@ -130,7 +130,7 @@ function TestimonialsCarousel({ props }: { props: TestimonialsProps }) {
           <div className="flex items-center justify-center gap-4 mt-6">
             <button
               onClick={() => goTo(safeIndex - 1)}
-              className="w-8 h-8 rounded-full border border-border-default bg-bg-2 flex items-center justify-center text-text-2 hover:text-text-0 hover:border-border-hover transition-colors"
+              className="w-8 h-8 rounded-full border border-border bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border transition-colors"
             >
               <ChevronLeft size={16} />
             </button>
@@ -140,14 +140,14 @@ function TestimonialsCarousel({ props }: { props: TestimonialsProps }) {
                   key={i}
                   onClick={() => goTo(i)}
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    i === safeIndex ? 'bg-green' : 'bg-bg-4 hover:bg-bg-5'
+                    i === safeIndex ? 'bg-primary' : 'bg-muted hover:bg-muted'
                   }`}
                 />
               ))}
             </div>
             <button
               onClick={() => goTo(safeIndex + 1)}
-              className="w-8 h-8 rounded-full border border-border-default bg-bg-2 flex items-center justify-center text-text-2 hover:text-text-0 hover:border-border-hover transition-colors"
+              className="w-8 h-8 rounded-full border border-border bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border transition-colors"
             >
               <ChevronRight size={16} />
             </button>
@@ -166,8 +166,8 @@ function TestimonialsSpotlight({ props }: { props: TestimonialsProps }) {
   return (
     <section className="px-6 @md:px-10 py-16 @md:py-24">
       <div className="max-w-2xl mx-auto text-center">
-        <div className="reveal-fade-up reveal-d1"><Quote size={48} className="text-green/20 mx-auto mb-6" /></div>
-        <p className="reveal-fade-up reveal-d2 text-xl @md:text-2xl text-text-0 leading-relaxed mb-8 italic font-display">
+        <div className="reveal-fade-up reveal-d1"><Quote size={48} className="text-primary/20 mx-auto mb-6" /></div>
+        <p className="reveal-fade-up reveal-d2 text-xl @md:text-2xl text-foreground leading-relaxed mb-8 italic font-sans">
           "{item.quote}"
         </p>
         {item.rating && (
@@ -176,12 +176,12 @@ function TestimonialsSpotlight({ props }: { props: TestimonialsProps }) {
           </div>
         )}
         <div className="flex items-center justify-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-bg-4 border border-border-default flex items-center justify-center text-sm font-semibold text-text-2">
+          <div className="w-12 h-12 rounded-full bg-muted border border-border flex items-center justify-center text-sm font-semibold text-muted-foreground">
             {item.name.split(' ').map(n => n[0]).join('')}
           </div>
           <div className="text-left">
             <div className="text-sm font-semibold">{item.name}</div>
-            <div className="text-[12px] text-text-3">{item.role}</div>
+            <div className="text-[12px] text-muted-foreground">{item.role}</div>
           </div>
         </div>
       </div>

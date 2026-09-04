@@ -7,7 +7,7 @@ interface SkeletonProps {
 export function Skeleton({ className = '', width, height }: SkeletonProps) {
   return (
     <div
-      className={`bg-bg-3 rounded animate-shimmer ${className}`}
+      className={`bg-muted rounded animate-shimmer ${className}`}
       style={{
         width,
         height,
@@ -21,7 +21,7 @@ export function Skeleton({ className = '', width, height }: SkeletonProps) {
 
 export function SkeletonCard() {
   return (
-    <div className="bg-bg-1 border border-border-default rounded-xl overflow-hidden">
+    <div className="bg-background border border-border rounded-xl overflow-hidden">
       <Skeleton className="!rounded-none" height={120} />
       <div className="px-4 py-3 space-y-2">
         <Skeleton height={14} width="60%" />

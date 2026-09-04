@@ -71,7 +71,7 @@ export function GenerationOverlay() {
       }`}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-bg-0/90 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-background/90 backdrop-blur-md" />
 
       {/* Animated glow orb */}
       <div
@@ -84,40 +84,40 @@ export function GenerationOverlay() {
 
       <div className="relative flex flex-col items-center gap-8 max-w-md px-8">
         {/* Wireframe animation */}
-        <div className="relative w-[200px] h-[130px] rounded-lg border border-border-default bg-bg-1/80 overflow-hidden">
+        <div className="relative w-[200px] h-[130px] rounded-lg border border-border bg-background/80 overflow-hidden">
           {/* Animated wireframe blocks */}
-          <div className="absolute top-0 left-0 right-0 h-4 bg-bg-3/60 flex items-center px-2 gap-1">
-            <div className="w-6 h-1.5 rounded-sm bg-green/40" />
+          <div className="absolute top-0 left-0 right-0 h-4 bg-muted/60 flex items-center px-2 gap-1">
+            <div className="w-6 h-1.5 rounded-sm bg-primary/40" />
             <div className="flex-1" />
-            <div className="w-3 h-1.5 rounded-sm bg-bg-4" />
-            <div className="w-3 h-1.5 rounded-sm bg-bg-4" />
-            <div className="w-3 h-1.5 rounded-sm bg-bg-4" />
+            <div className="w-3 h-1.5 rounded-sm bg-muted" />
+            <div className="w-3 h-1.5 rounded-sm bg-muted" />
+            <div className="w-3 h-1.5 rounded-sm bg-muted" />
           </div>
           <div className="absolute top-6 left-3 right-3 space-y-1.5">
-            <div className="h-2 w-16 rounded-sm bg-green/30 gen-shimmer" style={{ animationDelay: '0ms' }} />
-            <div className="h-4 w-full rounded-sm bg-bg-4/80 gen-shimmer" style={{ animationDelay: '100ms' }} />
-            <div className="h-2 w-3/4 rounded-sm bg-bg-4/50 gen-shimmer" style={{ animationDelay: '200ms' }} />
+            <div className="h-2 w-16 rounded-sm bg-primary/30 gen-shimmer" style={{ animationDelay: '0ms' }} />
+            <div className="h-4 w-full rounded-sm bg-muted/80 gen-shimmer" style={{ animationDelay: '100ms' }} />
+            <div className="h-2 w-3/4 rounded-sm bg-muted/50 gen-shimmer" style={{ animationDelay: '200ms' }} />
             <div className="flex gap-1.5 pt-1">
-              <div className="h-3 w-12 rounded-sm bg-green/40 gen-shimmer" style={{ animationDelay: '300ms' }} />
-              <div className="h-3 w-10 rounded-sm bg-bg-4/60 gen-shimmer" style={{ animationDelay: '350ms' }} />
+              <div className="h-3 w-12 rounded-sm bg-primary/40 gen-shimmer" style={{ animationDelay: '300ms' }} />
+              <div className="h-3 w-10 rounded-sm bg-muted/60 gen-shimmer" style={{ animationDelay: '350ms' }} />
             </div>
           </div>
           <div className="absolute bottom-2 left-3 right-3 flex gap-1.5">
-            <div className="flex-1 h-8 rounded bg-bg-3/60 gen-shimmer" style={{ animationDelay: '400ms' }} />
-            <div className="flex-1 h-8 rounded bg-bg-3/60 gen-shimmer" style={{ animationDelay: '500ms' }} />
-            <div className="flex-1 h-8 rounded bg-bg-3/60 gen-shimmer" style={{ animationDelay: '600ms' }} />
+            <div className="flex-1 h-8 rounded bg-muted/60 gen-shimmer" style={{ animationDelay: '400ms' }} />
+            <div className="flex-1 h-8 rounded bg-muted/60 gen-shimmer" style={{ animationDelay: '500ms' }} />
+            <div className="flex-1 h-8 rounded bg-muted/60 gen-shimmer" style={{ animationDelay: '600ms' }} />
           </div>
           {/* Scan line */}
-          <div className="absolute left-0 right-0 h-px bg-green/40 gen-scan" />
+          <div className="absolute left-0 right-0 h-px bg-primary/40 gen-scan" />
         </div>
 
         {/* Status */}
         <div className="text-center">
-          <p className="text-text-0 text-[16px] font-display font-semibold mb-2 tracking-tight">
+          <p className="text-foreground text-[16px] font-sans font-semibold mb-2 tracking-tight">
             Building your site
           </p>
-          <div className="flex items-center justify-center gap-2 text-green text-[13px] tabular-nums">
-            <div className="w-4 h-4 rounded-full border-2 border-green/30 border-t-green animate-spin" />
+          <div className="flex items-center justify-center gap-2 text-primary text-[13px] tabular-nums">
+            <div className="w-4 h-4 rounded-full border-2 border-primary/30 border-t-green animate-spin" />
             <span>{elapsed}s</span>
           </div>
         </div>
@@ -128,10 +128,10 @@ export function GenerationOverlay() {
             <div key={step.label} className="flex items-center gap-3">
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold border transition-all duration-500 ${
                 i < activeStep
-                  ? 'bg-green/20 border-green/40 text-green'
+                  ? 'bg-primary/20 border-primary/40 text-primary'
                   : i === activeStep
-                    ? 'border-green text-green animate-pulse'
-                    : 'border-border-default text-text-3'
+                    ? 'border-primary text-primary animate-pulse'
+                    : 'border-border text-muted-foreground'
               }`}>
                 {i < activeStep ? (
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
@@ -142,13 +142,13 @@ export function GenerationOverlay() {
                 )}
               </div>
               <span className={`text-[12px] transition-colors duration-500 ${
-                i < activeStep ? 'text-text-2' : i === activeStep ? 'text-text-0 font-medium' : 'text-text-3'
+                i < activeStep ? 'text-muted-foreground' : i === activeStep ? 'text-foreground font-medium' : 'text-muted-foreground'
               }`}>
                 {step.label}
               </span>
               {i === activeStep && (
-                <div className="flex-1 h-1 rounded-full bg-bg-3 overflow-hidden ml-auto max-w-[80px]">
-                  <div className="h-full bg-green/60 rounded-full gen-progress" />
+                <div className="flex-1 h-1 rounded-full bg-muted overflow-hidden ml-auto max-w-[80px]">
+                  <div className="h-full bg-primary/60 rounded-full gen-progress" />
                 </div>
               )}
             </div>
@@ -158,7 +158,7 @@ export function GenerationOverlay() {
         {/* Cancel */}
         <button
           onClick={() => clearGeneration()}
-          className="px-4 py-2 rounded-lg bg-bg-2 text-text-2 text-[12px] border border-border-default hover:bg-bg-3 hover:text-text-0 hover:border-border-hover transition-all inline-flex items-center gap-1.5"
+          className="px-4 py-2 rounded-lg bg-secondary text-muted-foreground text-[12px] border border-border hover:bg-muted hover:text-foreground hover:border-border transition-all inline-flex items-center gap-1.5"
         >
           <X size={12} />
           Cancel

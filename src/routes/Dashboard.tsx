@@ -1,38 +1,33 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { Search, Sparkles, Trash2, FolderOpen, Copy, Pencil, Layers, Briefcase, UtensilsCrossed, Building2, BookOpen } from 'lucide-react'
-import { NavLink } from 'react-router-dom'
+import { Search, Sparkles, Trash2, FolderOpen, Copy, Pencil } from 'lucide-react'
 import { useProjectsStore, type Project } from '@/store/projectsStore'
 import { useConfigStore, defaultConfig } from '@/store/configStore'
 import { useEditorStore } from '@/store/editorStore'
 import { hexToRgb } from '@/lib/theme-presets'
-import { templateMeta, buildTemplate } from '@/lib/templates'
-
-const templateIcons: Record<string, typeof Briefcase> = {
-  Briefcase, UtensilsCrossed, Building2, BookOpen,
-}
+import { SegmentSelect } from '@/components/SegmentSelect'
 
 const suggestions = [
   {
-    label: 'SaaS landing page',
-    prompt: 'Create a SaaS landing page for a project management tool called "FlowBoard". Include a hero with a compelling headline about team productivity, a features grid highlighting task boards, real-time collaboration, and analytics. Add a pricing section with Free, Pro ($12/mo), and Enterprise tiers. Use a clean, modern dark theme with blue accents.',
+    label: 'Landing page SaaS',
+    prompt: 'Cria uma landing page SaaS para uma ferramenta de gestão de projetos chamada "FlowBoard". Inclui um hero com título apelativo sobre produtividade, grelha de funcionalidades com quadros de tarefas e analytics. Adiciona preços (Grátis, Pro $12/mês, Enterprise). Usa um tema escuro e moderno com detalhes a azul.',
   },
   {
-    label: 'Portfolio site',
-    prompt: 'Create a portfolio site for a freelance product designer named Alex Chen. Include a hero section with a strong personal headline, a project gallery showcasing 4-6 case studies with titles and descriptions, a testimonials section with client quotes, an about/bio section, and a contact form. Use a minimal, sophisticated aesthetic with warm neutral tones.',
+    label: 'Site de Portfólio',
+    prompt: 'Cria um site de portfólio para o designer freelance Alex Chen. Inclui secção hero com título forte, galeria com 4-6 casos de estudo, depoimentos de clientes e formulário de contacto. Usa uma estética minimalista e sofisticada com tons neutros.',
   },
   {
-    label: 'Restaurant website',
-    prompt: 'Create a website for an upscale Italian restaurant called "Trattoria Luna". Include a hero with an inviting headline about authentic cuisine, a features section highlighting handmade pasta, wood-fired pizza, and a curated wine list. Add a content block with the chef\'s philosophy, a testimonials section with diner reviews, and a CTA to make reservations. Use warm, earthy tones with gold accents.',
+    label: 'Website de Restaurante',
+    prompt: 'Cria um website para o restaurante italiano de luxo "Trattoria Luna". Inclui hero sobre cozinha autêntica, secção de funcionalidades focando na massa fresca e forno a lenha. Adiciona filosofia do chef, avaliações e call-to-action para reservas. Usa tons quentes e terrosos com pormenores dourados.',
   },
   {
-    label: 'AI startup',
-    prompt: 'Create a landing page for an AI startup called "NeuralFlow" that builds intelligent document processing tools. Include a hero with a bold headline about automating workflows, a features grid with smart extraction, multi-language support, and enterprise security. Add a stats section with impressive numbers, a pricing comparison table, customer testimonials from CTOs, and a strong CTA. Use a sleek dark theme with green accents.',
+    label: 'Startup de IA',
+    prompt: 'Cria uma landing page para a startup de IA "NeuralFlow". Inclui hero forte sobre automatização, grelha de funcionalidades com extração inteligente e segurança enterprise. Adiciona estatísticas, tabela de comparação e testemunhos de CTOs. Usa um tema escuro elegante com detalhes em verde.',
   },
 ]
 
-const filters = ['All', 'Published', 'Drafts'] as const
+const filters = ['Todos', 'Publicado', 'Rascunho'] as const
 type Filter = (typeof filters)[number]
 
 const fallbackAccents = ['#22c55e', '#3b82f6', '#f472b6', '#8b5cf6', '#e8a838', '#06b6d4', '#10b981', '#ef4444']
@@ -47,55 +42,29 @@ function projectAccent(project: Project): string {
 }
 
 function PromptSection() {
-  const navigate = useNavigate()
-  const addProject = useProjectsStore((s) => s.addProject)
-  const setConfig = useConfigStore((s) => s.setConfig)
-  const setActiveProject = useEditorStore((s) => s.setActiveProject)
-  const editorSetGenerating = useEditorStore((s) => s.setGenerating)
-
   const [prompt, setPrompt] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  function startBlank() {
-    const id = addProject('Untitled Project')
-    setActiveProject(id)
-    setConfig(defaultConfig)
-    navigate('/editor')
-  }
-
-  function startFromTemplate(tplId: string, tplName: string) {
-    const id = addProject(tplName)
-    setActiveProject(id)
-    setConfig(buildTemplate(tplId, tplName))
-    navigate('/editor')
-  }
 
   function generate(text: string) {
     const trimmed = text.trim()
     if (!trimmed) return
 
-    // Create placeholder project, set generation state, navigate immediately
-    const placeholderName = trimmed.split(/\s+/).slice(0, 4).join(' ')
-    const id = addProject(placeholderName.charAt(0).toUpperCase() + placeholderName.slice(1))
-    setActiveProject(id)
-    setConfig(defaultConfig)
-    editorSetGenerating(trimmed)
-    navigate('/editor')
+    // TODO: AI generation logic goes here. Disabled for now.
+    toast('Criação com IA em desenvolvimento.')
   }
 
-  const hasGeminiKey = !!localStorage.getItem('openpage-gemini-key')
   const isFocused = prompt.length > 0
 
   return (
     <div className="relative overflow-hidden">
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-green/[0.07] rounded-full blur-[150px]" />
+        <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-primary/[0.07] rounded-full blur-[150px]" />
       </div>
 
       <div className="relative flex flex-col items-center pt-16 pb-6 px-6">
-        <h1 className="text-[36px] font-display font-bold tracking-tight mb-2 text-center animate-fade-in-up stagger-1">What will you build?</h1>
-        <p className="text-text-2 text-[15px] mb-8 text-center animate-fade-in-up stagger-2">Describe your site and AI generates the layout, copy, and theme.</p>
+        <h1 className="text-[36px] font-sans font-bold tracking-tight mb-2 text-center animate-fade-in-up stagger-1">O que pretende criar hoje?</h1>
+        <p className="text-muted-foreground text-[15px] mb-8 text-center animate-fade-in-up stagger-2">Descreva o seu site e a IA cria a estrutura, conteúdo e estilo.</p>
 
         {/* Prompt card - gradient border wrapper */}
         <div className={`w-full max-w-[680px] rounded-2xl p-px transition-all duration-300 animate-scale-in stagger-3 ${
@@ -103,7 +72,7 @@ function PromptSection() {
             ? 'bg-gradient-to-b from-green/40 via-green/20 to-green/5 shadow-[0_0_80px_rgba(34,197,94,0.15)]'
             : 'bg-gradient-to-b from-border-hover via-border-default to-border-subtle shadow-[0_0_60px_rgba(34,197,94,0.06)] hover:from-green/25 hover:via-green/10 hover:to-green/5 hover:shadow-[0_0_80px_rgba(34,197,94,0.1)]'
         }`}>
-          <div className="bg-bg-1 rounded-[15px] overflow-hidden">
+          <div className="bg-background rounded-[15px] overflow-hidden">
             <textarea
               ref={textareaRef}
               value={prompt}
@@ -114,8 +83,8 @@ function PromptSection() {
                 }
               }}
               rows={3}
-              placeholder="A landing page for a modern fitness app with dark theme..."
-              className="w-full px-5 pt-5 pb-3 bg-transparent text-text-0 text-[14px] placeholder:text-text-3 resize-none leading-relaxed"
+              placeholder="Uma landing page para uma aplicação de fitness..."
+              className="w-full px-5 pt-5 pb-3 bg-transparent text-foreground text-[14px] placeholder:text-muted-foreground resize-none leading-relaxed"
             />
 
             {/* Bottom bar */}
@@ -125,7 +94,7 @@ function PromptSection() {
                   <button
                     key={s.label}
                     onClick={() => { setPrompt(s.prompt); textareaRef.current?.focus() }}
-                    className="px-2.5 py-1 rounded-full text-text-3 text-[11px] border border-border-default hover:text-text-0 hover:bg-bg-3 hover:border-border-hover transition-all"
+                    className="px-2.5 py-1 rounded-full text-muted-foreground text-[11px] border border-border hover:text-foreground hover:bg-muted hover:border-border transition-all"
                   >
                     {s.label}
                   </button>
@@ -133,76 +102,22 @@ function PromptSection() {
               </div>
               <div className="flex items-center gap-2 shrink-0 ml-3">
                 {prompt.trim() && (
-                  <span className="text-[10px] text-text-3 hidden sm:inline">
+                  <span className="text-[10px] text-muted-foreground hidden sm:inline">
                     {navigator.platform?.includes('Mac') ? '\u2318' : 'Ctrl'}+Enter
                   </span>
                 )}
                 <button
                   onClick={() => generate(prompt)}
-                  disabled={!prompt.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-green text-black text-[13px] font-semibold hover:bg-green-dim active:scale-[0.97] transition-all disabled:opacity-20 disabled:cursor-not-allowed inline-flex items-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.4)]"
+                  disabled={true}
+                  title="Em desenvolvimento. Geração de IA chegará em breve."
+                  className="px-5 py-2.5 rounded-xl bg-primary/50 text-black/50 text-[13px] font-semibold transition-all cursor-not-allowed inline-flex items-center gap-2"
                 >
                   <Sparkles size={14} />
-                  Generate
+                  Criar com IA
                 </button>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Template cards */}
-        <div className="w-full max-w-[680px] mt-5 grid grid-cols-2 md:grid-cols-4 gap-2.5 animate-fade-in-up stagger-5">
-          {templateMeta.map((tpl) => {
-            const rgb = hexToRgb(tpl.accent)
-            const Icon = templateIcons[tpl.icon] || Layers
-            return (
-              <button
-                key={tpl.id}
-                onClick={() => startFromTemplate(tpl.id, tpl.name)}
-                className="group relative bg-bg-1 border border-border-default rounded-xl p-3.5 text-left transition-all hover:border-border-hover card-lift hover:card-lift-hover active:scale-[0.97]"
-              >
-                <div
-                  className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  style={{ background: `rgba(${rgb}, 0.06)` }}
-                />
-                <div className="relative">
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <div
-                      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all opacity-70 group-hover:opacity-100 group-hover:scale-110"
-                      style={{ background: `rgba(${rgb}, 0.12)`, color: tpl.accent }}
-                    >
-                      <Icon size={14} />
-                    </div>
-                    <div className="text-[12.5px] font-semibold text-text-0">{tpl.name}</div>
-                  </div>
-                  <div className="text-[10.5px] text-text-2 leading-snug">{tpl.description}</div>
-                  <div className="mt-2.5 flex items-center gap-1 text-[10px] text-text-3">
-                    <Layers size={10} />
-                    {tpl.blockCount} blocks
-                  </div>
-                </div>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Start blank + API key hint */}
-        <div className="mt-3 flex flex-col items-center gap-1.5">
-          <button
-            onClick={startBlank}
-            className="text-text-3 text-[11px] hover:text-text-1 transition-colors"
-          >
-            or start blank
-          </button>
-          {!hasGeminiKey && (
-            <p className="text-text-3 text-[10.5px]">
-              Using template mode.{' '}
-              <NavLink to="/settings" className="text-green hover:text-green-dim transition-colors">
-                Add a Gemini API key
-              </NavLink>
-              {' '}for AI-generated sites.
-            </p>
-          )}
         </div>
       </div>
     </div>
@@ -263,10 +178,10 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <div
       onClick={openProject}
-      className="group bg-bg-1 border border-border-default rounded-xl overflow-hidden cursor-pointer card-lift hover:border-border-hover hover:card-lift-hover"
+      className="group bg-background border border-border rounded-xl overflow-hidden cursor-pointer card-lift hover:border-border hover:card-lift-hover"
     >
       {/* Thumbnail */}
-      <div className="h-32 bg-bg-2 relative overflow-hidden">
+      <div className="h-32 bg-secondary relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity duration-300"
           style={{ background: `linear-gradient(135deg, ${accent}, transparent)` }}
@@ -275,9 +190,9 @@ function ProjectCard({ project }: { project: Project }) {
         {/* Action buttons */}
         <div className="absolute top-2 right-2 z-10 flex gap-1">
           <button
-            onClick={(e) => { e.stopPropagation(); duplicateProject(project.id); toast('Project duplicated') }}
+            onClick={(e) => { e.stopPropagation(); duplicateProject(project.id); toast('Projeto duplicado') }}
             aria-label={`Duplicate ${project.name}`}
-            className="p-1.5 rounded-md border bg-bg-0/80 border-border-default text-text-3 opacity-0 group-hover:opacity-100 hover:text-green hover:border-green/30 transition-all"
+            className="p-1.5 rounded-md border bg-background/80 border-border text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-primary hover:border-primary/30 transition-all"
           >
             <Copy size={12} />
           </button>
@@ -286,11 +201,11 @@ function ProjectCard({ project }: { project: Project }) {
             aria-label={confirming ? `Confirm delete ${project.name}` : `Delete ${project.name}`}
             className={`rounded-md border transition-all ${
               confirming
-                ? 'px-2 py-1 bg-status-red/90 border-status-red text-white text-[10px] font-medium opacity-100'
-                : 'p-1.5 bg-bg-0/80 border-border-default text-text-3 opacity-0 group-hover:opacity-100 hover:text-status-red hover:border-status-red/30'
+                ? 'px-2 py-1 bg-status-red/90 border-destructive text-white text-[10px] font-medium opacity-100'
+                : 'p-1.5 bg-background/80 border-border text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive hover:border-destructive/30'
             }`}
           >
-            {confirming ? 'Delete?' : <Trash2 size={12} />}
+            {confirming ? 'Apagar?' : <Trash2 size={12} />}
           </button>
         </div>
 
@@ -299,7 +214,7 @@ function ProjectCard({ project }: { project: Project }) {
           {layout === 0 && (
             <>
               <div className="h-2 rounded-sm w-2/3" style={{ background: `rgba(${rgb}, 0.15)` }} />
-              <div className="h-1.5 bg-bg-4/40 rounded-sm w-1/2" />
+              <div className="h-1.5 bg-muted/40 rounded-sm w-1/2" />
               <div className="flex gap-1.5 mt-auto">
                 <div className="flex-1 h-6 rounded" style={{ background: `rgba(${rgb}, 0.07)` }} />
                 <div className="flex-1 h-6 rounded" style={{ background: `rgba(${rgb}, 0.07)` }} />
@@ -312,8 +227,8 @@ function ProjectCard({ project }: { project: Project }) {
               <div className="flex gap-2 flex-1">
                 <div className="flex-1 flex flex-col gap-1">
                   <div className="h-2 rounded-sm w-3/4" style={{ background: `rgba(${rgb}, 0.15)` }} />
-                  <div className="h-1.5 bg-bg-4/40 rounded-sm w-full" />
-                  <div className="h-1.5 bg-bg-4/40 rounded-sm w-2/3" />
+                  <div className="h-1.5 bg-muted/40 rounded-sm w-full" />
+                  <div className="h-1.5 bg-muted/40 rounded-sm w-2/3" />
                   <div className="h-4 rounded w-1/2 mt-auto" style={{ background: `rgba(${rgb}, 0.12)` }} />
                 </div>
                 <div className="w-16 rounded" style={{ background: `rgba(${rgb}, 0.06)` }} />
@@ -326,11 +241,11 @@ function ProjectCard({ project }: { project: Project }) {
                 <div className="h-2 rounded-sm w-1/3" style={{ background: `rgba(${rgb}, 0.15)` }} />
               </div>
               <div className="flex justify-center">
-                <div className="h-1.5 bg-bg-4/40 rounded-sm w-2/3" />
+                <div className="h-1.5 bg-muted/40 rounded-sm w-2/3" />
               </div>
               <div className="flex gap-1 mt-auto justify-center">
                 <div className="w-12 h-4 rounded" style={{ background: `rgba(${rgb}, 0.12)` }} />
-                <div className="w-12 h-4 rounded bg-bg-4/30" />
+                <div className="w-12 h-4 rounded bg-muted/30" />
               </div>
             </>
           )}
@@ -350,29 +265,91 @@ function ProjectCard({ project }: { project: Project }) {
               if (e.key === 'Escape') { setName(project.name); setEditing(false) }
             }}
             onClick={(e) => e.stopPropagation()}
-            className="text-[13px] font-semibold mb-1 bg-transparent border-b border-green outline-none w-full"
+            className="text-[13px] font-semibold mb-1 bg-transparent border-b border-primary outline-none w-full"
           />
         ) : (
           <div
-            className="text-[13px] font-semibold mb-1 transition-colors text-text-0 flex items-center gap-1.5 group/name"
+            className="text-[13px] font-semibold mb-1 transition-colors text-foreground flex items-center gap-1.5 group/name"
             onDoubleClick={(e) => { e.stopPropagation(); setEditing(true) }}
             title="Double-click to rename"
           >
             <span className="truncate">{project.name}</span>
-            <Pencil size={10} className="text-text-3 opacity-0 group-hover:opacity-100 group-hover/name:opacity-60 transition-opacity shrink-0" />
+            <Pencil size={10} className="text-muted-foreground opacity-0 group-hover:opacity-100 group-hover/name:opacity-60 transition-opacity shrink-0" />
           </div>
         )}
-        <div className="text-[10.5px] text-text-2 flex items-center gap-2">
+        <div className="text-[10.5px] text-muted-foreground flex items-center gap-2">
           <span className="flex items-center gap-1.5">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
-                project.status === 'published' ? 'bg-green' : 'bg-status-yellow'
+                project.status === 'published' ? 'bg-primary' : 'bg-status-yellow'
               }`}
             />
-            {project.status === 'published' ? 'Published' : 'Draft'}
+            {project.status === 'published' ? 'Publicado' : 'Rascunho'}
           </span>
-          <span className="text-text-3">{project.updatedAt}</span>
+          <span className="text-muted-foreground">{project.updatedAt}</span>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function IdentificacaoProjeto() {
+  const [nomeProjeto, setNomeProjeto] = useState('')
+  const [nomeCliente, setNomeCliente] = useState('')
+  const [segmento, setSegmento] = useState('')
+  const [ramo, setRamo] = useState('')
+
+  return (
+    <div className="w-full max-w-[680px] mx-auto mt-8 mb-4">
+      <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+        <h2 className="text-base font-semibold text-foreground tracking-tight">Identificação do Projeto e Cliente</h2>
+        <p className="text-[13px] text-muted-foreground mb-6">Dados fundamentais de catálogo e organização interna</p>
+
+        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[12.5px] font-medium text-foreground">Nome do Projeto <span className="text-destructive">*</span></label>
+              <input
+                type="text"
+                required
+                value={nomeProjeto}
+                onChange={(e) => setNomeProjeto(e.target.value)}
+                className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-sm text-foreground focus:border-primary outline-none transition-colors"
+                placeholder="Ex: Landing Page SaaS"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[12.5px] font-medium text-foreground">Nome do Cliente / Empresa <span className="text-destructive">*</span></label>
+              <input
+                type="text"
+                required
+                value={nomeCliente}
+                onChange={(e) => setNomeCliente(e.target.value)}
+                className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-sm text-foreground focus:border-primary outline-none transition-colors"
+                placeholder="Ex: Blue IA"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[12.5px] font-medium text-foreground">Segmento do Negócio <span className="text-destructive">*</span></label>
+              <SegmentSelect
+                value={segmento}
+                onChange={setSegmento}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[12.5px] font-medium text-foreground">Ramo de Atividade / Nicho Específico <span className="text-destructive">*</span></label>
+              <input
+                type="text"
+                required
+                value={ramo}
+                onChange={(e) => setRamo(e.target.value)}
+                className="w-full px-3 py-2 bg-secondary border border-border rounded-lg text-sm text-foreground focus:border-primary outline-none transition-colors"
+                placeholder="Ex: Software de Inteligência Artificial"
+              />
+            </div>
+          </div>
+          {/* No submit button yet, as it's just client side state validation */}
+        </form>
       </div>
     </div>
   )
@@ -380,32 +357,34 @@ function ProjectCard({ project }: { project: Project }) {
 
 export function Dashboard() {
   const projects = useProjectsStore((s) => s.projects)
-  const [filter, setFilter] = useState<Filter>('All')
+  const [filter, setFilter] = useState<Filter>('Todos')
   const [search, setSearch] = useState('')
 
   const filtered = projects.filter((p) => {
-    if (filter === 'Published' && p.status !== 'published') return false
-    if (filter === 'Drafts' && p.status !== 'draft') return false
+    if (filter === 'Publicado' && p.status !== 'published') return false
+    if (filter === 'Rascunho' && p.status !== 'draft') return false
     if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false
     return true
   })
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto pb-12">
       <PromptSection />
+
+      <IdentificacaoProjeto />
 
       {/* Projects section */}
       {projects.length > 0 && (
         <>
           <div className="px-4 md:px-12 pt-4">
-            <div className="border-t border-border-subtle" />
+            <div className="border-t border-border" />
           </div>
 
           <div className="px-4 md:px-12 pt-5 flex flex-col sm:flex-row gap-2 items-start sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <h2 className="text-[13px] font-semibold text-text-1 animate-fade-in">
-                Your projects
-                <span className="text-text-3 font-normal ml-1.5">({projects.length})</span>
+              <h2 className="text-[13px] font-semibold text-muted-foreground animate-fade-in">
+                Os seus projetos
+                <span className="text-muted-foreground font-normal ml-1.5">({projects.length})</span>
               </h2>
               <div className="flex gap-1">
                 {filters.map((f) => (
@@ -414,8 +393,8 @@ export function Dashboard() {
                     onClick={() => setFilter(f)}
                     className={`px-2.5 py-1 rounded-full text-[11px] transition-all ${
                       filter === f
-                        ? 'text-text-0 bg-bg-3 border border-border-default'
-                        : 'text-text-2 border border-transparent hover:text-text-1 hover:bg-bg-2'
+                        ? 'text-foreground bg-muted border border-border'
+                        : 'text-muted-foreground border border-transparent hover:text-muted-foreground hover:bg-secondary'
                     }`}
                   >
                     {f}
@@ -426,14 +405,14 @@ export function Dashboard() {
             <div className="relative">
               <Search
                 size={13}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-3"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Pesquisar..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-7 pr-3 py-1.5 rounded-md border border-border-default bg-bg-2 text-text-0 text-[12px] w-44 outline-none focus:border-green placeholder:text-text-3"
+                className="pl-7 pr-3 py-1.5 rounded-md border border-border bg-secondary text-foreground text-[12px] w-44 outline-none focus:border-primary placeholder:text-muted-foreground"
               />
             </div>
           </div>
@@ -448,13 +427,13 @@ export function Dashboard() {
             </div>
           ) : (
             <div className="px-4 md:px-12 pt-8 pb-12 flex flex-col items-center text-center">
-              <FolderOpen size={28} className="text-text-3 mb-2" />
-              <p className="text-text-2 text-[13px]">No projects match your filter</p>
+              <FolderOpen size={28} className="text-muted-foreground mb-2" />
+              <p className="text-muted-foreground text-[13px]">Nenhum projeto encontrado</p>
               <button
-                onClick={() => { setFilter('All'); setSearch('') }}
-                className="mt-2 text-green text-[12px] hover:text-green-dim transition-colors"
+                onClick={() => { setFilter('Todos'); setSearch('') }}
+                className="mt-2 text-primary text-[12px] hover:text-primary-dim transition-colors"
               >
-                Clear filters
+                Limpar filtros
               </button>
             </div>
           )}

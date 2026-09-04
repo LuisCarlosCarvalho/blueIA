@@ -16,7 +16,7 @@ function LogoPlaceholder({ name }: { name: string }) {
           width="28"
           height="28"
           viewBox="0 0 28 28"
-          className="text-text-3 group-hover:text-green transition-colors"
+          className="text-muted-foreground group-hover:text-primary transition-colors"
         >
           <rect
             x="1"
@@ -40,7 +40,7 @@ function LogoPlaceholder({ name }: { name: string }) {
             {name.charAt(0).toUpperCase()}
           </text>
         </svg>
-        <span className="text-sm font-semibold text-text-3 group-hover:text-text-0 tracking-tight transition-colors">
+        <span className="text-sm font-semibold text-muted-foreground group-hover:text-foreground tracking-tight transition-colors">
           {name}
         </span>
       </div>
@@ -54,7 +54,7 @@ export function LogoCloudBlock({ block }: { block: BlockConfig }) {
 
   return (
     <section className="px-6 @md:px-10 py-10 @md:py-14">
-      <p className="reveal-fade-up reveal-d1 text-center text-[11px] font-medium uppercase tracking-widest text-text-3 mb-6">
+      <p className="reveal-fade-up reveal-d1 text-center text-[11px] font-medium uppercase tracking-widest text-muted-foreground mb-6">
         {props.title || 'Trusted by teams at'}
       </p>
 

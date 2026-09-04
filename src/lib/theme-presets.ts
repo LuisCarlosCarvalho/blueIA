@@ -304,7 +304,6 @@ export function themeToCSS(theme: ThemeConfig): Record<string, string> {
     '--color-border-hover': theme.borderHover,
     '--color-accent-rgb': rgb,
     '--font-sans': `"${theme.fontSans}", -apple-system, system-ui, sans-serif`,
-    '--font-display': `"${theme.fontDisplay}", system-ui, sans-serif`,
     '--font-mono': `"${theme.fontMono}", ui-monospace, monospace`,
     '--radius-default': `${theme.radius}px`,
     '--radius-lg': `${theme.radiusLg}px`,

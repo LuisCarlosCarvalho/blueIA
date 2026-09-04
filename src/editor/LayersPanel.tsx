@@ -65,20 +65,20 @@ function SortableLayer({ block, isSelected, onSelect, onDuplicate, onRemove }: {
       style={style}
       onClick={onSelect}
       className={`group px-2.5 py-2 rounded-md text-[12.5px] flex items-center gap-2 transition-all cursor-pointer select-none relative ${
-        isSelected ? 'bg-green-glow text-green' : 'text-text-1 hover:bg-bg-3 hover:text-text-0'
+        isSelected ? 'bg-primary-glow text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
       }`}
     >
       <div
         {...attributes}
         {...listeners}
-        className="opacity-0 group-hover:opacity-100 transition-opacity text-text-3 cursor-grab active:cursor-grabbing"
+        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground cursor-grab active:cursor-grabbing"
         aria-label={`Drag to reorder ${blockLabels[block.type]}`}
       >
         <GripVertical size={12} />
       </div>
 
       <div className={`w-[26px] h-[26px] rounded flex items-center justify-center text-[11px] shrink-0 border ${
-        isSelected ? 'border-green/30 bg-green-glow' : 'border-border-default bg-bg-3'
+        isSelected ? 'border-primary/30 bg-primary-glow' : 'border-border bg-muted'
       }`}>
         <Icon size={13} />
       </div>
@@ -88,14 +88,14 @@ function SortableLayer({ block, isSelected, onSelect, onDuplicate, onRemove }: {
       <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={(e) => { e.stopPropagation(); onDuplicate() }}
-          className="w-[22px] h-[22px] rounded flex items-center justify-center text-text-3 hover:bg-bg-4 hover:text-text-0 transition-all"
+          className="w-[22px] h-[22px] rounded flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
           aria-label={`Duplicate ${blockLabels[block.type]}`}
         >
           <Copy size={11} />
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onRemove() }}
-          className="w-[22px] h-[22px] rounded flex items-center justify-center text-text-3 hover:bg-status-red/10 hover:text-status-red transition-all"
+          className="w-[22px] h-[22px] rounded flex items-center justify-center text-muted-foreground hover:bg-status-red/10 hover:text-destructive transition-all"
           aria-label={`Remove ${blockLabels[block.type]}`}
         >
           <Trash2 size={11} />
@@ -119,7 +119,7 @@ function AddComponentPopover({ onAdd, onClose }: { onAdd: (type: BlockType) => v
   }, {})
 
   return (
-    <div className="absolute bottom-[52px] left-2 right-2 bg-bg-2 border border-border-default rounded-lg p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.4)] z-10 max-h-[280px] overflow-y-auto">
+    <div className="absolute bottom-[52px] left-2 right-2 bg-secondary border border-border rounded-lg p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.4)] z-10 max-h-[280px] overflow-y-auto">
       <input
         autoFocus
         type="text"
@@ -127,11 +127,11 @@ function AddComponentPopover({ onAdd, onClose }: { onAdd: (type: BlockType) => v
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onKeyDown={(e) => e.key === 'Escape' && onClose()}
-        className="w-full px-2 py-1.5 rounded border border-border-default bg-bg-3 text-text-0 text-[11.5px] outline-none focus:border-green mb-1"
+        className="w-full px-2 py-1.5 rounded border border-border bg-muted text-foreground text-[11.5px] outline-none focus:border-primary mb-1"
       />
       {Object.entries(grouped).map(([category, items]) => (
         <div key={category}>
-          <div className="text-[9px] font-semibold uppercase tracking-wider text-text-3 px-1.5 pt-2 pb-1">
+          <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground px-1.5 pt-2 pb-1">
             {category}
           </div>
           {items.map((meta) => {
@@ -140,20 +140,20 @@ function AddComponentPopover({ onAdd, onClose }: { onAdd: (type: BlockType) => v
               <button
                 key={meta.type}
                 onClick={() => { onAdd(meta.type); onClose() }}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded text-[12px] text-text-1 hover:bg-bg-3 hover:text-text-0 transition-colors text-left"
+                className="w-full flex items-center gap-2 px-2 py-1.5 rounded text-[12px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-left"
               >
-                <div className="w-[22px] h-[22px] rounded border border-border-default bg-bg-3 flex items-center justify-center text-[10px] shrink-0">
+                <div className="w-[22px] h-[22px] rounded border border-border bg-muted flex items-center justify-center text-[10px] shrink-0">
                   <Icon size={12} />
                 </div>
                 <span>{meta.label}</span>
-                <span className="ml-auto text-[10px] text-text-3">{meta.variants.length}v</span>
+                <span className="ml-auto text-[10px] text-muted-foreground">{meta.variants.length}v</span>
               </button>
             )
           })}
         </div>
       ))}
       {filtered.length === 0 && (
-        <div className="px-2 py-3 text-center text-[11px] text-text-3 flex items-center justify-center gap-1.5">
+        <div className="px-2 py-3 text-center text-[11px] text-muted-foreground flex items-center justify-center gap-1.5">
           <Search size={12} />
           No components match "{search}"
         </div>
@@ -205,10 +205,10 @@ export function LayersPanel() {
   return (
     <div className="flex flex-col flex-1 overflow-hidden relative">
       <div className="px-3 pt-2.5 pb-1.5 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-text-3">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           Layers
         </span>
-        <span className="text-[10px] text-text-3">{blocks.length}</span>
+        <span className="text-[10px] text-muted-foreground">{blocks.length}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 pb-2">
@@ -242,10 +242,10 @@ export function LayersPanel() {
       </div>
 
       {/* Add component */}
-      <div className="p-2 border-t border-border-subtle relative">
+      <div className="p-2 border-t border-border relative">
         <button
           onClick={() => setShowPopover(!showPopover)}
-          className="w-full py-2 rounded-md border border-dashed border-border-default text-text-2 text-xs flex items-center justify-center gap-1.5 transition-all hover:border-green hover:text-green hover:bg-green-glow2"
+          className="w-full py-2 rounded-md border border-dashed border-border text-muted-foreground text-xs flex items-center justify-center gap-1.5 transition-all hover:border-primary hover:text-primary hover:bg-primary-glow2"
         >
           <Plus size={13} />
           Add Component

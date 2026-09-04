@@ -14,10 +14,10 @@ function NavbarDefault({ props }: { props: NavbarProps }) {
     <nav className="px-6 @md:px-10 py-4 flex items-center justify-between">
       {/* Logo */}
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg bg-green/10 flex items-center justify-center">
-          <div className="w-4 h-4 rounded-full bg-green" />
+        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+          <div className="w-4 h-4 rounded-full bg-primary" />
         </div>
-        <span className="font-semibold text-[15px] text-text-0 tracking-tight">{logo}</span>
+        <span className="font-semibold text-[15px] text-foreground tracking-tight">{logo}</span>
       </div>
 
       {/* Desktop nav links */}
@@ -25,7 +25,7 @@ function NavbarDefault({ props }: { props: NavbarProps }) {
         {links.map((link, i) => (
           <span
             key={i}
-            className="text-[13px] text-text-2 hover:text-text-0 transition-colors cursor-pointer"
+            className="text-[13px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             {link}
           </span>
@@ -34,10 +34,10 @@ function NavbarDefault({ props }: { props: NavbarProps }) {
 
       {/* CTA + mobile menu */}
       <div className="flex items-center gap-3">
-        <button className="px-4 py-2 rounded-lg bg-green text-black text-[13px] font-semibold hover:bg-green-dim transition-colors">
+        <button className="px-4 py-2 rounded-lg bg-primary text-black text-[13px] font-semibold hover:bg-primary-dim transition-colors">
           {ctaText}
         </button>
-        <button className="@2xl:hidden w-9 h-9 rounded-lg border border-border-default flex items-center justify-center text-text-2 hover:text-text-0 hover:bg-bg-3 transition-colors">
+        <button className="@2xl:hidden w-9 h-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
           <Menu size={16} />
         </button>
       </div>
@@ -56,7 +56,7 @@ function NavbarCentered({ props }: { props: NavbarProps }) {
       {/* Left links */}
       <div className="hidden @2xl:flex items-center gap-6 flex-1">
         {leftLinks.map((link, i) => (
-          <span key={i} className="text-[13px] text-text-2 hover:text-text-0 transition-colors cursor-pointer">
+          <span key={i} className="text-[13px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
             {link}
           </span>
         ))}
@@ -64,26 +64,26 @@ function NavbarCentered({ props }: { props: NavbarProps }) {
 
       {/* Center logo */}
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg bg-green/10 flex items-center justify-center">
-          <div className="w-4 h-4 rounded-full bg-green" />
+        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+          <div className="w-4 h-4 rounded-full bg-primary" />
         </div>
-        <span className="font-semibold text-[15px] text-text-0 tracking-tight">{logo}</span>
+        <span className="font-semibold text-[15px] text-foreground tracking-tight">{logo}</span>
       </div>
 
       {/* Right links + CTA */}
       <div className="hidden @2xl:flex items-center gap-6 flex-1 justify-end">
         {rightLinks.map((link, i) => (
-          <span key={i} className="text-[13px] text-text-2 hover:text-text-0 transition-colors cursor-pointer">
+          <span key={i} className="text-[13px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
             {link}
           </span>
         ))}
-        <button className="px-4 py-2 rounded-lg bg-green text-black text-[13px] font-semibold hover:bg-green-dim transition-colors ml-2">
+        <button className="px-4 py-2 rounded-lg bg-primary text-black text-[13px] font-semibold hover:bg-primary-dim transition-colors ml-2">
           {ctaText}
         </button>
       </div>
 
       {/* Mobile menu */}
-      <button className="@2xl:hidden w-9 h-9 rounded-lg border border-border-default flex items-center justify-center text-text-2 hover:text-text-0 hover:bg-bg-3 transition-colors">
+      <button className="@2xl:hidden w-9 h-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
         <Menu size={16} />
       </button>
     </nav>

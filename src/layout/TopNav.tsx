@@ -1,26 +1,38 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Pencil, Settings, Menu, X, Star } from 'lucide-react'
+import { LayoutDashboard, Pencil, Settings, Menu, X, LogOut } from 'lucide-react'
 import { useState } from 'react'
+import { useAuthStore } from '@/store/authStore'
 
 const links = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/editor', label: 'Editor', icon: Pencil },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/settings', label: 'Definições', icon: Settings },
 ]
 
 export function TopNav() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { logout, user } = useAuthStore()
+
+  // Calculate initials
+  const initials = user?.name
+    ? user.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()
+    : 'U'
+
+  const isAdmin = Boolean(user?.labels?.includes('admin'))
 
   return (
-    <header className="h-12 bg-bg-1 border-b border-border-default flex items-center px-4 gap-2 fixed top-0 left-0 right-0 z-50">
+    <header className="h-12 bg-background border-b border-border flex items-center px-4 gap-2 fixed top-0 left-0 right-0 z-50">
       {/* Logo */}
       <NavLink to="/" className="flex items-center gap-2 mr-6 select-none">
-        <svg viewBox="0 0 24 24" className="w-5 h-5">
-          <circle cx="12" cy="12" r="10" fill="#22c55e" />
-        </svg>
-        <span className="font-display font-bold text-base text-text-0 tracking-tight">
-          OpenPage
-        </span>
+        <img src="/assets/brand/logo.png" alt="Blue IA Logo" className="w-6 h-6 object-contain" />
+        <div className="flex flex-col -gap-1">
+          <span className="font-sans font-bold text-[13px] leading-tight text-foreground tracking-tight">
+            Blue IA
+          </span>
+          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-none">
+            Studio
+          </span>
+        </div>
       </NavLink>
 
       {/* Desktop nav */}
@@ -33,8 +45,8 @@ export function TopNav() {
             className={({ isActive }) =>
               `px-3.5 flex items-center text-[13px] relative transition-colors whitespace-nowrap gap-1.5 after:content-[""] after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:rounded-t after:transition-all after:duration-200 ${
                 isActive
-                  ? 'text-text-0 after:bg-green after:opacity-100'
-                  : 'text-text-2 hover:text-text-1 after:bg-transparent after:opacity-0'
+                  ? 'text-foreground after:bg-primary after:opacity-100'
+                  : 'text-muted-foreground hover:text-muted-foreground after:bg-transparent after:opacity-0'
               }`
             }
           >
@@ -45,21 +57,39 @@ export function TopNav() {
       </nav>
 
       {/* Right side */}
-      <div className="ml-auto flex items-center gap-2">
-        <a
-          href="https://github.com/buildingopen/openpage"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border-default text-text-2 text-[11.5px] hover:text-text-0 hover:border-border-hover hover:bg-bg-2 transition-all"
-          title="Star on GitHub"
-        >
-          <Star size={12} />
-          GitHub
-        </a>
+      <div className="ml-auto flex items-center gap-4">
+        {user && (
+          <div className="hidden md:flex items-center gap-3 border-r border-border pr-4">
+            <div className="flex flex-col items-end">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[13px] font-medium text-foreground">{user.name || 'Utilizador'}</span>
+                {isAdmin && (
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/10 text-blue-500 tracking-wider">
+                    ADMIN
+                  </span>
+                )}
+              </div>
+              <span className="text-[11px] text-muted-foreground">{user.email}</span>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center text-[12px] font-semibold text-foreground">
+              {initials}
+            </div>
+          </div>
+        )}
+
+        {user && (
+          <button
+            onClick={() => logout()}
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+            title="Terminar sessão"
+          >
+            <LogOut size={16} />
+          </button>
+        )}
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden w-8 h-8 flex items-center justify-center text-text-2 hover:text-text-0"
+          className="md:hidden w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
@@ -70,7 +100,7 @@ export function TopNav() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="absolute top-12 left-0 right-0 bg-bg-1 border-b border-border-default md:hidden z-50">
+        <div className="absolute top-12 left-0 right-0 bg-background border-b border-border md:hidden z-50">
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -79,7 +109,7 @@ export function TopNav() {
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-2 px-4 py-3 text-[13px] transition-colors ${
-                  isActive ? 'text-green bg-green-glow' : 'text-text-1 hover:bg-bg-2'
+                  isActive ? 'text-primary bg-primary-glow' : 'text-muted-foreground hover:bg-secondary'
                 }`
               }
             >

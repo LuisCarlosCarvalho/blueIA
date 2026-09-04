@@ -35,11 +35,11 @@ class BlockErrorBoundary extends Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="px-6 py-8 text-center border border-status-red/20 bg-status-red/5 rounded-lg mx-4 my-2">
-          <p className="text-status-red text-sm font-medium mb-1">
+        <div className="px-6 py-8 text-center border border-destructive/20 bg-status-red/5 rounded-lg mx-4 my-2">
+          <p className="text-destructive text-sm font-medium mb-1">
             Failed to render {this.props.blockType} block
           </p>
-          <p className="text-text-3 text-xs">
+          <p className="text-muted-foreground text-xs">
             {this.state.error?.message || 'An unexpected error occurred'}
           </p>
         </div>
@@ -52,7 +52,7 @@ class BlockErrorBoundary extends Component<
 // Fallback for unregistered block types
 function PlaceholderBlock({ block }: { block: BlockConfig }) {
   return (
-    <div className="px-9 py-7 text-center text-text-3 text-sm">
+    <div className="px-9 py-7 text-center text-muted-foreground text-sm">
       {block.type} block (coming soon)
     </div>
   )

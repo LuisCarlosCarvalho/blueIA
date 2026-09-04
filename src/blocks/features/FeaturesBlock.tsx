@@ -34,13 +34,13 @@ function FeaturesGrid({ props }: { props: FeaturesProps }) {
       {/* Header */}
       <div className="reveal-fade-up reveal-d1 text-center mb-10">
         {props.label && (
-          <div className="text-[11px] font-semibold uppercase tracking-widest text-green mb-2">
+          <div className="text-[11px] font-semibold uppercase tracking-widest text-primary mb-2">
             {props.label}
           </div>
         )}
         <h2 className="text-2xl @md:text-3xl font-bold tracking-tight mb-2">{props.title}</h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 
@@ -51,13 +51,13 @@ function FeaturesGrid({ props }: { props: FeaturesProps }) {
           return (
             <div
               key={i}
-              className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} group bg-bg-2 border border-border-default rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-border-hover hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)]`}
+              className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} group bg-secondary border border-border rounded-xl p-5 transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)]`}
             >
-              <div className="w-10 h-10 rounded-lg bg-green/10 border border-green/20 flex items-center justify-center text-green mb-3 transition-all group-hover:bg-green/15 group-hover:accent-glow-md">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-3 transition-all group-hover:bg-primary/15 group-hover:accent-glow-md">
                 <Icon size={18} />
               </div>
               <h3 className="text-sm font-semibold mb-1">{item.title}</h3>
-              <p className="text-[12.5px] text-text-2 leading-relaxed">{item.description}</p>
+              <p className="text-[12.5px] text-muted-foreground leading-relaxed">{item.description}</p>
             </div>
           )
         })}
@@ -71,13 +71,13 @@ function FeaturesList({ props }: { props: FeaturesProps }) {
     <section className="px-6 @md:px-10 py-16 @md:py-20">
       <div className="reveal-fade-up reveal-d1 text-center mb-10">
         {props.label && (
-          <div className="text-[11px] font-semibold uppercase tracking-widest text-green mb-2">
+          <div className="text-[11px] font-semibold uppercase tracking-widest text-primary mb-2">
             {props.label}
           </div>
         )}
         <h2 className="text-2xl @md:text-3xl font-bold tracking-tight mb-2">{props.title}</h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 
@@ -87,14 +87,14 @@ function FeaturesList({ props }: { props: FeaturesProps }) {
           return (
             <div
               key={i}
-              className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} flex gap-4 p-4 rounded-xl bg-bg-2 border border-border-default transition-all hover:border-border-hover`}
+              className={`reveal-fade-up reveal-d${Math.min(i + 2, 8)} flex gap-4 p-4 rounded-xl bg-secondary border border-border transition-all hover:border-border`}
             >
-              <div className="w-10 h-10 rounded-lg bg-green/10 border border-green/20 flex items-center justify-center text-green shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <Icon size={18} />
               </div>
               <div>
                 <h3 className="text-sm font-semibold mb-0.5">{item.title}</h3>
-                <p className="text-[12.5px] text-text-2 leading-relaxed">{item.description}</p>
+                <p className="text-[12.5px] text-muted-foreground leading-relaxed">{item.description}</p>
               </div>
             </div>
           )
@@ -109,13 +109,13 @@ function FeaturesAlternating({ props }: { props: FeaturesProps }) {
     <section className="px-6 @md:px-10 py-16 @md:py-20">
       <div className="reveal-fade-up reveal-d1 text-center mb-12">
         {props.label && (
-          <div className="text-[11px] font-semibold uppercase tracking-widest text-green mb-2">
+          <div className="text-[11px] font-semibold uppercase tracking-widest text-primary mb-2">
             {props.label}
           </div>
         )}
         <h2 className="text-2xl @md:text-3xl font-bold tracking-tight mb-2">{props.title}</h2>
         {props.subtitle && (
-          <p className="text-text-2 text-sm max-w-lg mx-auto">{props.subtitle}</p>
+          <p className="text-muted-foreground text-sm max-w-lg mx-auto">{props.subtitle}</p>
         )}
       </div>
 
@@ -135,18 +135,18 @@ function FeaturesAlternating({ props }: { props: FeaturesProps }) {
                 {imageUrl ? (
                   <img src={imageUrl} alt={item.title} className="w-full h-48 @lg:h-56 object-cover rounded-xl" />
                 ) : (
-                  <div className="w-full h-48 @lg:h-56 rounded-xl bg-bg-2 border border-border-default flex items-center justify-center">
-                    <Icon size={32} className="text-green/30" />
+                  <div className="w-full h-48 @lg:h-56 rounded-xl bg-secondary border border-border flex items-center justify-center">
+                    <Icon size={32} className="text-primary/30" />
                   </div>
                 )}
               </div>
               {/* Text */}
               <div className="flex-1">
-                <div className="w-10 h-10 rounded-lg bg-green/10 border border-green/20 flex items-center justify-center text-green mb-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-3">
                   <Icon size={18} />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                <p className="text-text-2 text-[13px] leading-relaxed">{item.description}</p>
+                <p className="text-muted-foreground text-[13px] leading-relaxed">{item.description}</p>
               </div>
             </div>
           )

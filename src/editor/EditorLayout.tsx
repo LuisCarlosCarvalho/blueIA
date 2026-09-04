@@ -110,15 +110,15 @@ function EditorEmptyState() {
   return (
     <div className="h-full flex items-center justify-center">
       <div className="flex flex-col items-center text-center px-6 max-w-md">
-        <div className="w-12 h-12 rounded-xl bg-bg-3 border border-border-default flex items-center justify-center mb-4">
-          <FolderOpen size={20} className="text-text-3" />
+        <div className="w-12 h-12 rounded-xl bg-muted border border-border flex items-center justify-center mb-4">
+          <FolderOpen size={20} className="text-muted-foreground" />
         </div>
-        <h2 className="text-[16px] font-display font-semibold text-text-1 mb-1">No project selected</h2>
-        <p className="text-text-2 text-[13px] mb-6">Open a project from the Dashboard, or start from a template.</p>
+        <h2 className="text-[16px] font-sans font-semibold text-muted-foreground mb-1">No project selected</h2>
+        <p className="text-muted-foreground text-[13px] mb-6">Open a project from the Dashboard, or start from a template.</p>
 
         <button
           onClick={() => navigate('/')}
-          className="px-5 py-2 rounded-xl bg-green text-black text-[13px] font-semibold hover:bg-green-dim active:scale-[0.97] transition-all mb-6"
+          className="px-5 py-2 rounded-xl bg-primary text-black text-[13px] font-semibold hover:bg-primary-dim active:scale-[0.97] transition-all mb-6"
         >
           Go to Dashboard
         </button>
@@ -131,7 +131,7 @@ function EditorEmptyState() {
               <button
                 key={tpl.id}
                 onClick={() => startFromTemplate(tpl.id, tpl.name)}
-                className="group relative bg-bg-1 border border-border-default rounded-lg p-3 text-left transition-all hover:border-border-hover card-lift hover:card-lift-hover active:scale-[0.97]"
+                className="group relative bg-background border border-border rounded-lg p-3 text-left transition-all hover:border-border card-lift hover:card-lift-hover active:scale-[0.97]"
               >
                 <div
                   className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
@@ -145,10 +145,10 @@ function EditorEmptyState() {
                     >
                       <Icon size={12} />
                     </div>
-                    <div className="text-[11.5px] font-semibold text-text-0">{tpl.name}</div>
+                    <div className="text-[11.5px] font-semibold text-foreground">{tpl.name}</div>
                   </div>
-                  <div className="text-[10px] text-text-2 leading-snug mb-1.5">{tpl.description}</div>
-                  <div className="text-[10px] text-text-3 flex items-center gap-1">
+                  <div className="text-[10px] text-muted-foreground leading-snug mb-1.5">{tpl.description}</div>
+                  <div className="text-[10px] text-muted-foreground flex items-center gap-1">
                     <Layers size={9} />
                     {tpl.blockCount} blocks
                   </div>

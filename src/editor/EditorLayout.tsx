@@ -167,8 +167,42 @@ export function EditorLayout() {
   useGenerationOrchestration()
   const previewMode = useEditorStore((s) => s.previewMode)
   const activeProjectId = useEditorStore((s) => s.activeProjectId)
+  const setActiveProject = useEditorStore((s) => s.setActiveProject)
+  const projects = useProjectsStore((s) => s.projects)
+  const addProject = useProjectsStore((s) => s.addProject)
+  const updateProjectConfig = useProjectsStore((s) => s.updateProjectConfig)
+  const config = useConfigStore((s) => s.config)
+  const setConfig = useConfigStore((s) => s.setConfig)
 
-  if (!activeProjectId) {
+  // Auto-restore / ensure active project on mount
+  useEffect(() => {
+    if (!activeProjectId) {
+      if (projects.length > 0) {
+        // Restore the most recent project
+        const recent = projects[0]
+        setActiveProject(recent.id)
+        if (recent.config && recent.config.blocks && recent.config.blocks.length > 0) {
+          setConfig(recent.config)
+        } else if (config.blocks && config.blocks.length > 0) {
+          updateProjectConfig(recent.id, config)
+        }
+      } else if (config.blocks && config.blocks.length > 0) {
+        // Project in config exists in memory: create project entry for it
+        const newId = addProject(config.name || 'Meu Projeto')
+        setActiveProject(newId)
+        updateProjectConfig(newId, config)
+      } else {
+        // No project at all: load default Starter template
+        const defaultTpl = buildTemplate('writemate', 'Writemate AI')
+        const newId = addProject('Writemate AI')
+        setActiveProject(newId)
+        setConfig(defaultTpl)
+        updateProjectConfig(newId, defaultTpl)
+      }
+    }
+  }, [activeProjectId, projects, config, setActiveProject, setConfig, addProject, updateProjectConfig])
+
+  if (!activeProjectId && (!config.blocks || config.blocks.length === 0)) {
     return <EditorEmptyState />
   }
 

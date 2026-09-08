@@ -33,6 +33,9 @@ const blockIcons: Record<BlockType, typeof Layout> = {
   stats: BarChart3, faq: HelpCircle, team: Users, contact: Mail,
   newsletter: Newspaper, logocloud: Image, divider: Minus, banner: Flag,
   content: FileText, image: ImageIcon, video: Play, gallery: GalleryHorizontalEnd,
+  'services-grid': Grid3X3, 'portfolio-grid': GalleryHorizontalEnd,
+  timeline: FileText, 'team-grid': Users, 'logo-strip': Image,
+  'contact-form': Mail, 'project-modal': Layout,
 }
 
 const blockLabels: Record<BlockType, string> = {
@@ -41,6 +44,9 @@ const blockLabels: Record<BlockType, string> = {
   faq: 'FAQ', team: 'Team', contact: 'Contact', newsletter: 'Newsletter',
   logocloud: 'Logo Cloud', divider: 'Divider', banner: 'Banner',
   content: 'Content', image: 'Image', video: 'Video', gallery: 'Gallery',
+  'services-grid': 'Services Grid', 'portfolio-grid': 'Portfolio Grid',
+  timeline: 'Timeline (About)', 'team-grid': 'Team Grid', 'logo-strip': 'Logo Strip',
+  'contact-form': 'Contact Form', 'project-modal': 'Project Modal',
 }
 
 function SortableLayer({ block, isSelected, onSelect, onDuplicate, onRemove }: {

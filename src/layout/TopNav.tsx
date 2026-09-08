@@ -21,7 +21,7 @@ export function TopNav() {
   const isAdmin = Boolean(user?.labels?.includes('admin'))
 
   return (
-    <header className="h-14 bg-background border-b border-border flex items-center px-4 md:px-8 xl:px-10 gap-3 fixed top-0 left-0 right-0 z-50">
+    <header className="h-14 shrink-0 bg-background border-b border-border flex items-center px-4 md:px-8 xl:px-10 gap-3 sticky top-0 z-50">
       {/* Logo */}
       <NavLink to="/" className="flex items-center mr-6 select-none" title="Blue Bolt Page Studio">
         <img

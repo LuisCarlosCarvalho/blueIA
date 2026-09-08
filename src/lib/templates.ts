@@ -102,19 +102,214 @@ const templates: Template[] = [
   },
 ]
 
-// Metadata for the 4 featured template cards on Dashboard
-// icon: lucide-react icon name, mapped in rendering components
-export const templateMeta = [
-  { id: 'portfolio', name: 'Portfolio', description: 'Showcase your work and skills', accent: '#06b6d4', blockCount: 7, templateIndex: 0, icon: 'Briefcase' },
-  { id: 'restaurant', name: 'Restaurant', description: 'Menu, reservations, and ambiance', accent: '#e8a838', blockCount: 7, templateIndex: 1, icon: 'UtensilsCrossed' },
-  { id: 'agency', name: 'Agency', description: 'Services, case studies, and team', accent: '#228be6', blockCount: 8, templateIndex: 2, icon: 'Building2' },
-  { id: 'blog', name: 'Blog', description: 'Articles, topics, and subscribers', accent: '#4f46e5', blockCount: 7, templateIndex: 3, icon: 'BookOpen' },
-] as const
+// Metadata for the 8 featured template cards on Dashboard
+export interface DashboardTemplateItem {
+  id: string
+  name: string
+  subtitle: string
+  category: string
+  accent: string
+  themePresetId: string
+  previewStyle: 'writemate' | 'fincash' | 'nexstudio' | 'genesis' | 'techself' | 'pixels' | 'agentix' | 'mapple'
+  build: (name: string) => SiteConfig
+}
+
+export const dashboardTemplates: DashboardTemplateItem[] = [
+  {
+    id: 'writemate-ai',
+    name: 'Writemate AI',
+    subtitle: 'Template',
+    category: 'IA & Copywriting',
+    accent: '#6366f1',
+    themePresetId: 'indigo',
+    previewStyle: 'writemate',
+    build: (name = 'Writemate AI') => ({
+      name,
+      theme: getTheme('indigo'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'default', props: { logo: name, links: ['Recursos', 'Modelos', 'Preços', 'Empresas'], ctaText: 'Testar Grátis' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'centered', props: { badge: 'Nova Geração de IA', headline: 'Crie Conteúdo de Alta Conversão com IA', subheadline: 'A plataforma inteligente que transforma ideias em copywriting persuasivo em segundos.', primaryCta: 'Começar Agora Grátis', secondaryCta: 'Ver Demonstração' } },
+        { id: 'block-logocloud-1', type: 'logocloud', variant: 'default', props: { title: 'Usado por mais de 50.000 criadores e marcas' } },
+        { id: 'block-features-1', type: 'features', variant: 'grid', props: { label: 'Funcionalidades', title: 'Tudo o que precisa para escrever melhor', subtitle: 'Potência neural com foco em retenção e vendas.', items: [{ icon: 'Zap', title: 'Geração Ultra Rápida', description: 'Crie artigos, anúncios e landing pages em menos de 10 segundos.' }, { icon: 'Bot', title: 'Agente Treinado em Vendas', description: 'Gatilhos mentais e estruturas testadas para converter mais.' }, { icon: 'Shield', title: 'Plágio Zero & SEO', description: 'Textos originais e otimizados para topo do Google.' }] } },
+        { id: 'block-stats-1', type: 'stats', variant: 'grid', props: { stats: [{ value: '10x', label: 'Mais Rápido' }, { value: '+45%', label: 'Taxa de Conversão' }, { value: '50k+', label: 'Utilizadores Ativos' }, { value: '99.9%', label: 'Satisfação' }] } },
+        { id: 'block-testimonials-1', type: 'testimonials', variant: 'cards', props: { title: 'O que dizem os maiores copywriters', items: [{ quote: 'Mudou radicalmente a nossa velocidade de produção. ROI indiscutível.', name: 'Diogo Silva', role: 'Head de Growth' }, { quote: 'O melhor assistente de copywriting em português que já experimentámos.', name: 'Mariana Costa', role: 'Diretora Criativa' }] } },
+        { id: 'block-pricing-1', type: 'pricing', variant: 'simple', props: { title: 'Planos simples e flexíveis', subtitle: 'Cancele quando quiser. Sem contratos ocultos.' } },
+        { id: 'block-cta-1', type: 'cta', variant: 'simple', props: { headline: 'Pronto para multiplicar os seus resultados?', subheadline: 'Experimente gratuitamente durante 14 dias sem necessidade de cartão.', buttonText: 'Criar Conta Grátis' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'multi-column', props: { logo: name, copyright: `© 2026 ${name}. Todos os direitos reservados.`, links: ['Termos', 'Privacidade', 'Segurança', 'Contacto'] } },
+      ],
+    }),
+  },
+  {
+    id: 'fincash',
+    name: 'Fincash',
+    subtitle: 'Template',
+    category: 'Fintech & Mobile',
+    accent: '#10b981',
+    themePresetId: 'emerald',
+    previewStyle: 'fincash',
+    build: (name = 'Fincash') => ({
+      name,
+      theme: getTheme('emerald'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'centered', props: { logo: name, links: ['Conta Digital', 'Investimentos', 'Cartões', 'Segurança'], ctaText: 'Abrir Conta' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'split', props: { badge: 'Fintech Autorizada', headline: 'O Futuro da Sua Vida Financeira Começa Aqui', subheadline: 'Controle despesas, invista globalmente e receba rendimentos diários num único aplicativo simples.', primaryCta: 'Descarregar App', secondaryCta: 'Comparar Vantagens' } },
+        { id: 'block-features-1', type: 'features', variant: 'alternating', props: { label: 'Vantagens', title: 'Tecnologia que valoriza o seu dinheiro', items: [{ icon: 'Shield', title: 'Segurança de Nível Bancário', description: 'Criptografia de ponta a ponta e proteção de saldos até 100.000€.' }, { icon: 'TrendingUp', title: 'Rendimento Automático', description: 'O seu saldo rende 4.2% ao ano desde o primeiro dia.' }, { icon: 'CreditCard', title: 'Cartão Sem Anuidade', description: 'Cashback em todas as compras e câmbio comercial zero spread.' }] } },
+        { id: 'block-stats-1', type: 'stats', variant: 'counter', props: { items: [{ value: '2.5M€+', label: 'Transacionados' }, { value: '180k+', label: 'Clientes Ativos' }, { value: '0€', label: 'Comissões de Manutenção' }, { value: '4.9/5', label: 'Avaliação na App Store' }] } },
+        { id: 'block-testimonials-1', type: 'testimonials', variant: 'spotlight', props: { items: [{ name: 'Carlos Antunes', role: 'Investidor e Empreendedor', quote: 'A melhor experiência financeira móvel. Simples, rápido e com rentabilidade garantida.', rating: 5 }] } },
+        { id: 'block-cta-1', type: 'cta', variant: 'split', props: { headline: 'Abra a sua conta em menos de 3 minutos', subheadline: 'Sem papelada, sem burocracia e 100% digital.', buttonText: 'Abrir Minha Conta' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'multi-column', props: { logo: name, copyright: `© 2026 ${name} Instituição de Pagamento.`, links: ['Transparência', 'Taxas', 'Termos', 'Ouvidoria'] } },
+      ],
+    }),
+  },
+  {
+    id: 'nexstudio',
+    name: 'NexStudio',
+    subtitle: 'Template',
+    category: 'Design & Estratégia',
+    accent: '#94a3b8',
+    themePresetId: 'slate',
+    previewStyle: 'nexstudio',
+    build: (name = 'NexStudio') => ({
+      name,
+      theme: getTheme('slate'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'default', props: { logo: name, links: ['Projetos', 'Serviços', 'Manifesto', 'Contacto'], ctaText: 'Iniciar Projeto' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'minimal', props: { headline: 'Design e Tecnologia para Marcas Visionárias', subheadline: 'Criamos identidades visuais marcantes, websites de alto impacto e produtos digitais que definem categorias.', primaryCta: 'Ver Casos de Estudo', secondaryCta: 'Falar Connosco' } },
+        { id: 'block-gallery-1', type: 'gallery', variant: 'grid', props: { title: 'Projetos Selecionados' } },
+        { id: 'block-features-1', type: 'features', variant: 'list', props: { title: 'As Nossas Disciplinas', items: [{ icon: 'Palette', title: 'Brand Identity', description: 'Sistemas visuais completos e memoráveis.' }, { icon: 'Code', title: 'Digital Architecture', description: 'Desenvolvimento moderno com máxima performance.' }, { icon: 'Layers', title: 'Design Systems', description: 'Escalabilidade e consistência para produtos digitais.' }] } },
+        { id: 'block-testimonials-1', type: 'testimonials', variant: 'spotlight', props: { items: [{ name: 'Sofia Vilar', role: 'Fundadora da Aura Tech', quote: 'A NexStudio elevou a nossa marca a um padrão internacional indiscutível.', rating: 5 }] } },
+        { id: 'block-cta-1', type: 'cta', variant: 'simple', props: { headline: 'Tem um desafio para nós?', subheadline: 'Vamos construir algo inesquecível juntos.', buttonText: 'Agendar Conversa' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'minimal', props: { logo: name, copyright: `© 2026 ${name}. Lisboa — Londres.`, links: ['Instagram', 'Behance', 'LinkedIn'] } },
+      ],
+    }),
+  },
+  {
+    id: 'genesis',
+    name: 'Genesis',
+    subtitle: 'Template',
+    category: 'Cloud & Tech',
+    accent: '#8b5cf6',
+    themePresetId: 'violet',
+    previewStyle: 'genesis',
+    build: (name = 'Genesis') => ({
+      name,
+      theme: getTheme('violet'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'default', props: { logo: name, links: ['Arquitetura', 'Documentação', 'Ecossistema', 'Preços'], ctaText: 'Deploy em 1-Clique' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'centered', props: { badge: 'Plataforma Serverless Global', headline: 'Infraestrutura Inteligente para Agentes e Microsserviços', subheadline: 'Orquestre código, bancos de dados distribuídos e modelos de inteligência artificial com latência sub-milisegundo.', primaryCta: 'Criar Cluster Grátis', secondaryCta: 'Documentação' } },
+        { id: 'block-logocloud-1', type: 'logocloud', variant: 'default', props: { title: 'Confiado por equipas de engenharia de elite' } },
+        { id: 'block-features-1', type: 'features', variant: 'grid', props: { label: 'Capacidades', title: 'Construído para resiliência extrema', items: [{ icon: 'Zap', title: 'Edge Computing Global', description: 'Mais de 250 pontos de presença em todo o mundo.' }, { icon: 'Bot', title: 'Run times para LLMs', description: 'Execução otimizada de agentes neurais e vector search.' }, { icon: 'Lock', title: 'Isolamento MicroVM', description: 'Segurança absoluta e zero trust por instância.' }] } },
+        { id: 'block-pricing-1', type: 'pricing', variant: 'simple', props: { title: 'Preços baseados no consumo', subtitle: 'Pague apenas pelos recursos que os seus nós utilizarem.' } },
+        { id: 'block-cta-1', type: 'cta', variant: 'simple', props: { headline: 'Comece a construir na Genesis hoje', subheadline: '100$ em créditos de computação grátis no registo.', buttonText: 'Iniciar Agora' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'multi-column', props: { logo: name, copyright: `© 2026 ${name} Cloud Systems Inc.`, links: ['Status', 'API Docs', 'Segurança', 'GitHub'] } },
+      ],
+    }),
+  },
+  {
+    id: 'techself',
+    name: 'TechSelf',
+    subtitle: 'Template',
+    category: 'E-commerce & Hardware',
+    accent: '#3b82f6',
+    themePresetId: 'clean',
+    previewStyle: 'techself',
+    build: (name = 'TechSelf') => ({
+      name,
+      theme: getTheme('clean'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'default', props: { logo: name, links: ['Novidades', 'Dispositivos', 'Acessórios', 'Suporte'], ctaText: 'Ver Loja' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'split', props: { badge: 'Lançamento Exclusivo', headline: 'Tecnologia Minimalista para o Seu Espaço de Trabalho', subheadline: 'Equipamentos concebidos com materiais nobres, precisão milimétrica e estética refinada.', primaryCta: 'Explorar Coleção', secondaryCta: 'Especificações' } },
+        { id: 'block-gallery-1', type: 'gallery', variant: 'masonry', props: { title: 'Galeria de Produtos' } },
+        { id: 'block-features-1', type: 'features', variant: 'grid', props: { label: 'Qualidade', title: 'Engenharia e Sustentabilidade', items: [{ icon: 'Shield', title: 'Garantia de 3 Anos', description: 'Substituição imediata e assistência técnica dedicada.' }, { icon: 'Sparkles', title: 'Alumínio Reciclado', description: 'Materiais sustentáveis de categoria aeroespacial.' }, { icon: 'Zap', title: 'Carregamento Sem Fios', description: 'Compatibilidade universal com norma Qi2.' }] } },
+        { id: 'block-testimonials-1', type: 'testimonials', variant: 'cards', props: { title: 'O que dizem os especialistas de tecnologia', items: [{ quote: 'O acabamento deste teclado e monitor stand redefine o conceito de secretária premium.', name: 'Gonçalo Ramos', role: 'Tech Reviewer' }, { quote: 'Design nórdico puro com funcionalidade impressionante.', name: 'Ana Barreto', role: 'Arquiteta' }] } },
+        { id: 'block-cta-1', type: 'cta', variant: 'simple', props: { headline: 'Transforme o seu setup profissional', subheadline: 'Portes grátis para toda a Europa em compras superiores a 50€.', buttonText: 'Comprar Agora' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'multi-column', props: { logo: name, copyright: `© 2026 ${name} Lifestyle Tech.`, links: ['Envios', 'Devoluções', 'Garantia', 'FAQ'] } },
+      ],
+    }),
+  },
+  {
+    id: 'pixels',
+    name: 'Pixels',
+    subtitle: 'Template',
+    category: 'Portfólio & Arte',
+    accent: '#f43f5e',
+    themePresetId: 'ivory',
+    previewStyle: 'pixels',
+    build: (name = 'Pixels') => ({
+      name,
+      theme: getTheme('ivory'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'default', props: { logo: name, links: ['Galeria', 'Exposições', 'Bio', 'Contacto'], ctaText: 'Encomendar Obra' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'minimal', props: { headline: 'Fotografia Autoral e Narrativas Visuais', subheadline: 'Capturando momentos singulares, arquitetura urbana e retratos profundos através da luz natural.', primaryCta: 'Ver Portfólio Completo', secondaryCta: 'Sobre o Autor' } },
+        { id: 'block-gallery-1', type: 'gallery', variant: 'grid', props: { title: 'Séries em Destaque' } },
+        { id: 'block-stats-1', type: 'stats', variant: 'counter', props: { items: [{ value: '14', label: 'Prémios Internacionais' }, { value: '8', label: 'Exposições Individuais' }, { value: '25+', label: 'Países Fotografados' }, { value: '120+', label: 'Obras em Coleções Privadas' }] } },
+        { id: 'block-testimonials-1', type: 'testimonials', variant: 'spotlight', props: { items: [{ name: 'Helena Paiva', role: 'Curadora de Arte Moderna', quote: 'Um olhar poético e intransigente sobre o espaço contemporâneo.', rating: 5 }] } },
+        { id: 'block-contact-1', type: 'contact', variant: 'form', props: { title: 'Vamos conversar sobre o seu próximo projeto visual', subtitle: 'Disponível para encomendas comerciais e editoriais.' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'minimal', props: { logo: name, copyright: `© 2026 ${name}. Direitos reservados.`, links: ['Instagram', 'Artsy', 'Vimeo'] } },
+      ],
+    }),
+  },
+  {
+    id: 'agentix',
+    name: 'Agentix',
+    subtitle: 'Template',
+    category: 'IA & Automações',
+    accent: '#3b82f6',
+    themePresetId: 'default',
+    previewStyle: 'agentix',
+    build: (name = 'Agentix') => ({
+      name,
+      theme: getTheme('default'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'default', props: { logo: name, links: ['Agentes', 'Workflows', 'Integrações', 'Preços'], ctaText: 'Testar Plataforma' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'centered', props: { badge: 'Ecossistema Multi-Agente', headline: 'Automatize Operações Complexas com Agentes Autónomos', subheadline: 'Conecte fluxos de atendimento, vendas e análise de dados em minutos sem necessidade de código.', primaryCta: 'Criar Meu Primeiro Agente', secondaryCta: 'Ver Casos de Uso' } },
+        { id: 'block-features-1', type: 'features', variant: 'grid', props: { label: 'Capacidades', title: 'Trabalho inteligente a qualquer escala', items: [{ icon: 'Bot', title: 'Agentes Especializados', description: 'Modelos ajustados para suporte, SDR e triagem financeira.' }, { icon: 'Layers', title: 'Integrações Nativas', description: 'Conexão direta com CRM, Slack, WhatsApp e ERPs.' }, { icon: 'Shield', title: 'Controlo & Auditoria', description: 'Logs completos de decisões e aprovações humanas.' }] } },
+        { id: 'block-pricing-1', type: 'pricing', variant: 'simple', props: { title: 'Planos dimensionados para o seu crescimento', subtitle: 'Comece grátis e escale à medida que a automação gera valor.' } },
+        { id: 'block-cta-1', type: 'cta', variant: 'simple', props: { headline: 'Junte-se à revolução dos agentes de IA', subheadline: 'Mais de 1.000 empresas já poupam 40 horas semanais com o Agentix.', buttonText: 'Começar Agora' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'multi-column', props: { logo: name, copyright: `© 2026 ${name} Automation Technologies.`, links: ['Segurança', 'Privacidade', 'Docs', 'Suporte'] } },
+      ],
+    }),
+  },
+  {
+    id: 'mapple',
+    name: 'Mapple',
+    subtitle: 'Template',
+    category: 'Consultoria & Estratégia',
+    accent: '#10b981',
+    themePresetId: 'clean',
+    previewStyle: 'mapple',
+    build: (name = 'Mapple') => ({
+      name,
+      theme: getTheme('clean'),
+      blocks: [
+        { id: 'block-navbar-1', type: 'navbar', variant: 'centered', props: { logo: name, links: ['Metodologia', 'Soluções', 'Resultados', 'Equipa'], ctaText: 'Agendar Diagnóstico' } },
+        { id: 'block-hero-1', type: 'hero', variant: 'split', props: { badge: 'Consultoria Estratégica', headline: 'Escalamos Empresas Líderes através de Inovação Prática', subheadline: 'Ajudamos fundadores e equipas executivas a acelerar receita, otimizar processos e entrar em novos mercados.', primaryCta: 'Solicitar Diagnóstico Gratuito', secondaryCta: 'Nossos Resultados' } },
+        { id: 'block-features-1', type: 'features', variant: 'alternating', props: { label: 'Áreas de Atuação', title: 'Resultados mensuráveis para o seu negócio', items: [{ icon: 'TrendingUp', title: 'Aceleração de Receita', description: 'Revisão de pricing, canais de aquisição e expansão B2B.' }, { icon: 'Layers', title: 'Transformação Digital', description: 'Implementação de processos ágeis e ferramentas modernas.' }, { icon: 'Users', title: 'Liderança & Cultura', description: 'Alinhamento de equipas para execução de alta performance.' }] } },
+        { id: 'block-stats-1', type: 'stats', variant: 'counter', props: { items: [{ value: '450M€+', label: 'Valor Gerado' }, { value: '94%', label: 'Taxa de Sucesso nos Projetos' }, { value: '12+', label: 'Anos de Mercado' }, { value: '65+', label: 'Empresas Aceleradas' }] } },
+        { id: 'block-testimonials-1', type: 'testimonials', variant: 'cards', props: { title: 'Depoimentos de CEOs e Fundadores', items: [{ quote: 'A Mapple redefiniu a nossa estratégia comercial e triplicámos as vendas em 18 meses.', name: 'Bernardo Guimarães', role: 'CEO, Veloce Tech' }, { quote: 'Clareza analítica e execução implacável. Parceiros indispensáveis.', name: 'Inês Caldeira', role: 'COO, Prime Logistics' }] } },
+        { id: 'block-cta-1', type: 'cta', variant: 'split', props: { headline: 'Pronto para o próximo ciclo de crescimento?', subheadline: 'Agende uma sessão estratégica confidencial com os nossos sócios.', buttonText: 'Marcar Diagnóstico' } },
+        { id: 'block-footer-1', type: 'footer', variant: 'multi-column', props: { logo: name, copyright: `© 2026 ${name} Strategic Consulting.`, links: ['Metodologia', 'Artigos', 'Carreiras', 'Contacto'] } },
+      ],
+    }),
+  },
+]
+
+export const templateMeta = dashboardTemplates.map((t, index) => ({
+  id: t.id,
+  name: t.name,
+  description: t.category,
+  accent: t.accent,
+  blockCount: 7,
+  templateIndex: index,
+  icon: 'Layers',
+}))
 
 export function buildTemplate(id: string, name: string): SiteConfig {
+  const t = dashboardTemplates.find((item) => item.id === id)
+  if (t) return t.build(name)
   const meta = templateMeta.find((m) => m.id === id)
   if (!meta) return templates[templates.length - 1].build(name)
-  return templates[meta.templateIndex].build(name)
+  return templates[meta.templateIndex]?.build(name) || templates[0].build(name)
 }
 
 function extractName(prompt: string): string {

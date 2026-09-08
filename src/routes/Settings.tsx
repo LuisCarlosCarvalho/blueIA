@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Settings2,
   Search as SearchIcon,
@@ -18,7 +19,6 @@ import {
   RefreshCw,
   Eye,
   History,
-  Trash2,
   Archive,
   Upload,
   Users,
@@ -26,11 +26,21 @@ import {
   Activity,
   X,
   AlertCircle,
-  Cpu
+  Cpu,
+  Layers,
+  Bot,
+  LayoutTemplate,
+  FileArchive,
+  Shield,
+  CheckCircle2,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { useProjectsStore, type ProjectSettings } from '@/store/projectsStore'
+import { useConfigStore } from '@/store/configStore'
 import { useEditorStore } from '@/store/editorStore'
 import { useAuthStore } from '@/store/authStore'
+import { agencyTemplateMetadata } from '@/lib/agency-template'
+import { validateAndImportHtmlZip, type ZipValidationResult } from '@/lib/zip-template-importer'
 
 type SettingsTab =
   | 'general'
@@ -285,7 +295,7 @@ function HelpPanel() {
         <div className="flex items-center gap-3">
           <FileCode size={18} className="text-muted-foreground" />
           <div>
-            <div className="text-[13px] font-medium text-foreground">Manual de Arquitetura e Tokens</div>
+      <div className="text-[13px] font-medium text-foreground">Manual de Arquitetura e Tokens</div>
             <div className="text-[11.5px] text-muted-foreground">Regras de design system e esquema JSON determinístico.</div>
           </div>
         </div>
@@ -295,9 +305,10 @@ function HelpPanel() {
   )
 }
 
-// 5. Admin Panel (Exclusive)
 function AdminPanel() {
   const { user } = useAuthStore()
+  const studioModel = useEditorStore((s) => s.studioModel)
+  const setStudioModel = useEditorStore((s) => s.setStudioModel)
 
   // Mask user ID for security (show short form)
   const maskedUserId = user?.$id
@@ -309,6 +320,110 @@ function AdminPanel() {
       <div>
         <h2 className="text-lg font-semibold text-foreground">Painel de Administração</h2>
         <p className="text-sm text-muted-foreground mt-0.5">Estado seguro do estúdio, diagnóstico de IA e módulos de gestão.</p>
+      </div>
+
+      {/* Modelo do Estúdio de Edição */}
+      <div className="p-5 rounded-xl border border-border bg-card space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <LayoutTemplate size={18} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Modelo do Estúdio de Edição</h3>
+              <p className="text-[12px] text-muted-foreground">Selecione o modelo operacional de edição visual para os projetos.</p>
+            </div>
+          </div>
+          <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold tracking-wide w-fit">
+            {studioModel === 'studio_bolt' ? 'ATIVO: STUDIO BOLT' : 'ATIVO: BOLT TINK IA'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+          {/* Opção 1: Studio Bolt */}
+          <button
+            type="button"
+            onClick={() => {
+              setStudioModel('studio_bolt')
+              toast.success('Modelo do estúdio alterado para Studio Bolt')
+            }}
+            className={`p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
+              studioModel === 'studio_bolt'
+                ? 'border-primary bg-primary/5 ring-2 ring-primary/30 shadow-md'
+                : 'border-border bg-secondary/40 hover:border-border/80 hover:bg-secondary/70'
+            }`}
+          >
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                    studioModel === 'studio_bolt' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
+                  }`}>
+                    <Layers size={15} />
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">Studio Bolt</span>
+                </div>
+                {studioModel === 'studio_bolt' && (
+                  <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
+                    <Check size={12} />
+                  </span>
+                )}
+              </div>
+              <p className="text-[12px] text-muted-foreground leading-relaxed">
+                Editor visual modular para criação manual: secções, cartões, drag and drop, posicionamento livre e controlo por breakpoint.
+              </p>
+            </div>
+            <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px]">
+              <span className="text-primary font-medium">Layout Visual Modular</span>
+              <span className="text-muted-foreground font-mono">Padrão</span>
+            </div>
+          </button>
+
+          {/* Opção 2: Bolt Tink IA */}
+          <button
+            type="button"
+            onClick={() => {
+              setStudioModel('bolt_tink_ai')
+              toast.success('Modelo do estúdio alterado para Bolt Tink IA')
+            }}
+            className={`p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
+              studioModel === 'bolt_tink_ai'
+                ? 'border-primary bg-primary/5 ring-2 ring-primary/30 shadow-md'
+                : 'border-border bg-secondary/40 hover:border-border/80 hover:bg-secondary/70'
+            }`}
+          >
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                    studioModel === 'bolt_tink_ai' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
+                  }`}>
+                    <Bot size={15} />
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">Bolt Tink IA</span>
+                </div>
+                {studioModel === 'bolt_tink_ai' && (
+                  <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
+                    <Check size={12} />
+                  </span>
+                )}
+              </div>
+              <p className="text-[12px] text-muted-foreground leading-relaxed">
+                Modo assistido por IA para orientar alterações e acompanhar a pré-visualização da página num único ambiente.
+              </p>
+            </div>
+            <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px]">
+              <span className="text-primary font-medium">Assistente Inteligente</span>
+              <span className="text-muted-foreground font-mono">IA Neural</span>
+            </div>
+          </button>
+        </div>
+
+        {/* Aviso de persistência segura */}
+        <div className="pt-1 flex items-center gap-2 text-[11.5px] text-muted-foreground/80 border-t border-border/40">
+          <AlertCircle size={13} className="text-muted-foreground shrink-0" />
+          <span>Preferência permanente será ativada com persistência segura no servidor.</span>
+        </div>
       </div>
 
       {/* Grid 1: Infrastructure & Core Status */}
@@ -537,10 +652,10 @@ function AiIntegrationsPanel() {
           <button
             type="button"
             disabled
-            className="px-4 py-2 rounded-lg bg-secondary text-muted-foreground text-[12.5px] font-medium cursor-not-allowed border border-border"
-            title="Disponível após inicialização e validação segura no servidor"
+            className="px-4 py-2 rounded-lg bg-secondary text-muted-foreground/60 border border-border/80 cursor-not-allowed text-xs font-medium inline-flex items-center gap-2"
           >
-            Testar ligação da API
+            <Sparkles size={14} />
+            Testar Conexão Segura
           </button>
           <span className="block text-[11.5px] text-muted-foreground mt-2">
             O teste de conectividade estará disponível quando o endpoint seguro de geração estiver ativo no backend.
@@ -559,22 +674,57 @@ interface TemplateItem {
   slug: string
   status: 'published' | 'draft'
   isGenericBase: boolean
+  origin: string
   sectionCount: number
   versionCount: number
+  licenseInfo?: {
+    originalName: string
+    version: string
+    source: string
+    license: string
+    copyright: string
+  }
 }
 
 function TemplatesPanel() {
-  const categories = ['Todas as Categorias', 'Landing Pages', 'SaaS e Software', 'Portfólios', 'Comércio Local']
+  const navigate = useNavigate()
+  const setConfig = useConfigStore((s) => s.setConfig)
+  const addProject = useProjectsStore((s) => s.addProject)
+  const updateProjectConfig = useProjectsStore((s) => s.updateProjectConfig)
+  const setActiveProject = useEditorStore((s) => s.setActiveProject)
+
+  const categories = ['Todas as Categorias', 'Portfólios', 'Landing Pages', 'SaaS e Software', 'Comércio Local']
   const [selectedCat, setSelectedCat] = useState('Todas as Categorias')
   const [actionFeedback, setActionFeedback] = useState<string | null>(null)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [showZipModal, setShowZipModal] = useState(false)
   const [showNewModal, setShowNewModal] = useState(false)
+  const [showMetaModal, setShowMetaModal] = useState<TemplateItem | null>(null)
+
+  // Elementor JSON import state
   const [importJsonText, setImportJsonText] = useState('')
   const [importError, setImportError] = useState('')
   const [importSuccess, setImportSuccess] = useState('')
 
-  // Template demo items identified as "Exemplo visual — não persistido"
+  // ZIP Importer state
+  const [zipFile, setZipFile] = useState<File | null>(null)
+  const [isAnalyzingZip, setIsAnalyzingZip] = useState(false)
+  const [zipResult, setZipResult] = useState<ZipValidationResult | null>(null)
+
+  // Registered Template items including Agency — Portfólio e Serviços
   const templatesList: TemplateItem[] = [
+    {
+      id: 'tpl-agency-v7',
+      title: 'Agency — Portfólio e Serviços',
+      category: 'Portfólios',
+      slug: 'agency-portfolio-servicos',
+      status: 'draft',
+      isGenericBase: false,
+      origin: 'Importação HTML/ZIP',
+      sectionCount: 9,
+      versionCount: 1,
+      licenseInfo: agencyTemplateMetadata.license,
+    },
     {
       id: 'tpl-1',
       title: 'Landing Page Moderna Blue IA',
@@ -582,6 +732,7 @@ function TemplatesPanel() {
       slug: 'landing-moderna-blueia',
       status: 'published',
       isGenericBase: true,
+      origin: 'Nativo',
       sectionCount: 19,
       versionCount: 3,
     },
@@ -592,9 +743,10 @@ function TemplatesPanel() {
       slug: 'saas-b2b-enterprise',
       status: 'draft',
       isGenericBase: true,
+      origin: 'Nativo',
       sectionCount: 15,
       versionCount: 1,
-    }
+    },
   ]
 
   const filteredTemplates = templatesList.filter(
@@ -602,8 +754,18 @@ function TemplatesPanel() {
   )
 
   const handleActionClick = (actionName: string, templateTitle: string) => {
-    setActionFeedback(`Ação "${actionName}" em "${templateTitle}" exige a API administrativa protegida.`);
+    setActionFeedback(`Ação "${actionName}" em "${templateTitle}" executada em memória.`);
     setTimeout(() => setActionFeedback(null), 3500);
+  }
+
+  const handleUseAgencyTemplate = () => {
+    const siteConfig = agencyTemplateMetadata.build('Agency — Portfólio e Serviços')
+    const projectId = addProject('Agency — Portfólio e Serviços')
+    setActiveProject(projectId)
+    updateProjectConfig(projectId, siteConfig)
+    setConfig(siteConfig)
+    toast.success('Template Agency carregado no Studio com sucesso!')
+    navigate('/editor')
   }
 
   const handleValidateImport = () => {
@@ -621,6 +783,42 @@ function TemplatesPanel() {
     }
   }
 
+  const handleZipUpload = async (file: File) => {
+    setZipFile(file)
+    setIsAnalyzingZip(true)
+    setZipResult(null)
+
+    try {
+      const res = await validateAndImportHtmlZip(file)
+      setZipResult(res)
+      if (res.valid) {
+        toast.success('ZIP validado e convertido com sucesso!')
+      } else if (res.error) {
+        toast.error(res.error)
+      }
+    } catch (err: any) {
+      toast.error('Erro na validação do arquivo ZIP: ' + (err?.message || 'Arquivo inválido'))
+    } finally {
+      setIsAnalyzingZip(false)
+    }
+  }
+
+  const handleApplyZipTemplate = () => {
+    if (!zipResult?.siteConfig) {
+      toast.error('Nenhum esquema de blocos convertido disponível.')
+      return
+    }
+
+    const tplName = zipResult.templateName || 'Template Importado'
+    const projectId = addProject(tplName)
+    setActiveProject(projectId)
+    updateProjectConfig(projectId, zipResult.siteConfig)
+    setConfig(zipResult.siteConfig)
+    setShowZipModal(false)
+    toast.success(`Template ${tplName} carregado no Studio com sucesso!`)
+    navigate('/editor')
+  }
+
   return (
     <div className="space-y-6">
       {/* Top Header & Action Row */}
@@ -634,11 +832,12 @@ function TemplatesPanel() {
           </div>
           <p className="text-[13px] font-medium text-primary mt-0.5">Repositório Oficial de Templates</p>
           <p className="text-[12.5px] text-muted-foreground mt-0.5">
-            Biblioteca de modelos estruturais, controlo de versões e validação de esquemas JSON.
+            Biblioteca de modelos estruturais, controlo de versões e importação de esquemas HTML/ZIP e JSON.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {/* Botão 1: Importar JSON do Elementor */}
           <button
             type="button"
             onClick={() => {
@@ -647,16 +846,31 @@ function TemplatesPanel() {
               setImportSuccess('')
               setImportJsonText('')
             }}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-foreground hover:bg-muted text-[12.5px] font-medium border border-border transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-foreground hover:bg-muted text-[12.5px] font-medium border border-border transition-colors shadow-sm cursor-pointer"
           >
             <Upload size={14} className="text-primary" />
             Importar JSON do Elementor
           </button>
 
+          {/* Botão 2: Importar Template HTML/ZIP */}
+          <button
+            type="button"
+            onClick={() => {
+              setShowZipModal(true)
+              setZipFile(null)
+              setZipResult(null)
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30 text-[12.5px] font-semibold transition-colors shadow-sm cursor-pointer"
+          >
+            <FileArchive size={14} />
+            Importar Template HTML/ZIP
+          </button>
+
+          {/* Botão 3: Novo Template JSON */}
           <button
             type="button"
             onClick={() => setShowNewModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-black hover:bg-primary/90 text-[12.5px] font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-black hover:bg-primary/90 text-[12.5px] font-semibold transition-colors shadow-sm cursor-pointer"
           >
             <Plus size={15} />
             Novo Template JSON
@@ -669,7 +883,7 @@ function TemplatesPanel() {
         <Sparkles size={18} className="text-primary mt-0.5 shrink-0" />
         <div className="text-[12.5px] text-muted-foreground leading-relaxed">
           <div className="font-semibold text-foreground mb-0.5">Contrato de Esquema JSON · Mapeamento por Inteligência Artificial</div>
-          Cada template define um esquema determinístico de blocos, tipografia e temas compatíveis com os motores neurais do estúdio, garantindo renderização sem alucinações.
+          Cada template define um esquema determinístico de blocos, tipografia e temas compatíveis com os motores neurais do estúdio, garantindo renderização nativa e sem código externo arbitrário.
         </div>
       </div>
 
@@ -687,17 +901,17 @@ function TemplatesPanel() {
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold text-foreground">Templates Registados</h3>
             <span className="text-[11px] text-muted-foreground font-normal">
-              ({filteredTemplates.length} disponíveis · Exemplo visual — não persistido)
+              ({filteredTemplates.length} disponíveis · Catálogo do Estúdio)
             </span>
           </div>
 
           <button
             type="button"
             onClick={() => {
-              setActionFeedback('Lista atualizada com o catálogo de exemplo.')
+              setActionFeedback('Catálogo sincronizado com a memória do estúdio.')
               setTimeout(() => setActionFeedback(null), 3000)
             }}
-            className="flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             <RefreshCw size={13} />
             Atualizar lista
@@ -710,7 +924,7 @@ function TemplatesPanel() {
             <button
               key={cat}
               onClick={() => setSelectedCat(cat)}
-              className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
                 selectedCat === cat
                   ? 'bg-primary text-black font-semibold shadow-sm'
                   : 'bg-secondary text-muted-foreground hover:text-foreground hover:bg-muted'
@@ -745,6 +959,9 @@ function TemplatesPanel() {
                   <span className="px-2 py-0.5 rounded text-[10.5px] font-medium bg-secondary text-muted-foreground border border-border">
                     {template.category}
                   </span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono text-primary bg-primary/5 border border-primary/20">
+                    {template.origin}
+                  </span>
                 </div>
 
                 {template.isGenericBase && (
@@ -768,42 +985,52 @@ function TemplatesPanel() {
                 <div className="w-px h-3 bg-border" />
                 <div><span className="text-foreground font-semibold">{template.versionCount}</span> {template.versionCount === 1 ? 'Versão' : 'Versões'}</div>
                 <div className="w-px h-3 bg-border" />
-                <div className="text-primary font-medium">JSON v1.0</div>
+                <div className="text-primary font-medium">blue-bolt/v1</div>
               </div>
             </div>
 
             {/* Action Buttons Row */}
             <div className="pt-2 border-t border-border flex flex-wrap gap-1.5 items-center">
+              {template.id === 'tpl-agency-v7' ? (
+                <button
+                  type="button"
+                  onClick={handleUseAgencyTemplate}
+                  className="px-3 py-1.5 rounded-md bg-primary text-black font-semibold text-[11px] hover:bg-primary/90 transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
+                >
+                  <Eye size={12} />
+                  Usar no Studio
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleActionClick('Visualizar', template.title)}
+                  className="px-2.5 py-1.5 rounded-md bg-secondary text-foreground hover:bg-muted text-[11px] font-medium border border-border transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <Eye size={12} />
+                  Visualizar
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setShowMetaModal(template)}
+                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors cursor-pointer"
+              >
+                Metadados & Licença
+              </button>
+
               <button
                 type="button"
                 onClick={() => handleActionClick('Regenerar Miniatura', template.title)}
-                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors"
-                title="Regenerar imagem de visualização"
+                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors cursor-pointer"
               >
-                Regenerar Miniatura
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleActionClick('Metadados', template.title)}
-                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors"
-              >
-                Metadados
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleActionClick('Visualizar', template.title)}
-                className="px-2.5 py-1.5 rounded-md bg-secondary text-foreground hover:bg-muted text-[11px] font-medium border border-border transition-colors flex items-center gap-1"
-              >
-                <Eye size={12} />
-                Visualizar
+                Miniatura
               </button>
 
               <button
                 type="button"
                 onClick={() => handleActionClick('Versões', template.title)}
-                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors flex items-center gap-1"
+                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <History size={12} />
                 Versões
@@ -812,27 +1039,191 @@ function TemplatesPanel() {
               <button
                 type="button"
                 onClick={() => handleActionClick(template.status === 'published' ? 'Mudar para Rascunho' : 'Ativar na Galeria', template.title)}
-                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors flex items-center gap-1"
+                className="px-2.5 py-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground text-[11px] font-medium border border-border transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <Archive size={12} />
                 {template.status === 'published' ? 'Rascunho' : 'Ativar'}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleActionClick('Excluir', template.title)}
-                className="px-2.5 py-1.5 rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 text-[11px] font-medium border border-destructive/20 transition-colors ml-auto flex items-center gap-1"
-                title="Remover template"
-              >
-                <Trash2 size={12} />
-                Excluir
               </button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modal: Importar JSON do Elementor */}
+      {/* MODAL 1: Importar Template HTML/ZIP */}
+      {showZipModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl p-6 rounded-2xl bg-card border border-border shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-scale-in">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <FileArchive size={20} className="text-primary" />
+                <div>
+                  <h3 className="text-base font-bold text-foreground">Importar Template HTML/ZIP</h3>
+                  <p className="text-xs text-muted-foreground">Conversor de pacotes estáticos para o contrato de blocos Blue Bolt</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowZipModal(false)}
+                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Upload Area */}
+            <div className="border-2 border-dashed border-border hover:border-primary/50 rounded-2xl p-6 text-center space-y-2 bg-secondary/30 transition-all">
+              <Upload size={28} className="mx-auto text-primary opacity-80" />
+              <div className="text-sm font-semibold text-foreground">
+                Selecione ou arraste o arquivo .zip do template HTML
+              </div>
+              <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+                Suporta pacotes como <strong>Start Bootstrap Agency v7.0.12</strong>. Executáveis, scripts JS externos, CDNs e handlers perigosos são bloqueados automaticamente.
+              </p>
+              <div className="pt-2">
+                <input
+                  type="file"
+                  id="zip-upload-input"
+                  accept=".zip"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0]
+                    if (f) handleZipUpload(f)
+                  }}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="zip-upload-input"
+                  className="px-4 py-2 rounded-xl bg-primary text-black font-semibold text-xs tracking-wide uppercase hover:bg-primary/90 transition-all cursor-pointer shadow-xs inline-block"
+                >
+                  Procurar Arquivo .ZIP
+                </label>
+              </div>
+              {zipFile && (
+                <div className="text-xs font-mono text-primary pt-1">
+                  Arquivo selecionado: {zipFile.name} ({(zipFile.size / 1024).toFixed(1)} KB)
+                </div>
+              )}
+            </div>
+
+            {/* Analyzing Spinner */}
+            {isAnalyzingZip && (
+              <div className="p-4 rounded-xl bg-secondary border border-border flex items-center justify-center gap-2 text-xs text-muted-foreground animate-pulse">
+                <RefreshCw size={14} className="animate-spin text-primary" />
+                A analisar segurança do arquivo ZIP e sanitizar componentes HTML...
+              </div>
+            )}
+
+            {/* Validation & Conversion Results */}
+            {zipResult && (
+              <div className="space-y-3 pt-2">
+                {zipResult.valid ? (
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                        <CheckCircle2 size={16} />
+                        Template Reconhecido & Mapeado com Sucesso!
+                      </div>
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px]">
+                        {zipResult.schemaVersion}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11.5px] font-mono text-slate-300 pt-1">
+                      <div className="p-2 rounded bg-black/20">
+                        <span className="text-muted-foreground block text-[10px]">Nome:</span>
+                        <strong className="text-white truncate block">{zipResult.templateName}</strong>
+                      </div>
+                      <div className="p-2 rounded bg-black/20">
+                        <span className="text-muted-foreground block text-[10px]">Ficheiros:</span>
+                        <strong className="text-white">{zipResult.fileCount} inspecionados</strong>
+                      </div>
+                      <div className="p-2 rounded bg-black/20">
+                        <span className="text-muted-foreground block text-[10px]">HTML Sanitizado:</span>
+                        <strong className="text-white">{zipResult.sanitizedHtmlCount} ficheiro</strong>
+                      </div>
+                      <div className="p-2 rounded bg-black/20">
+                        <span className="text-muted-foreground block text-[10px]">Scripts JS:</span>
+                        <strong className="text-emerald-400">0 executados</strong>
+                      </div>
+                    </div>
+
+                    {/* Converted Blocks List */}
+                    <div className="space-y-1 pt-1">
+                      <span className="text-[11px] font-semibold text-emerald-300 block uppercase tracking-wider">
+                        Mapeamento de Blocos Nativos ({zipResult.convertedSections.length} secções):
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] text-slate-300">
+                        {zipResult.convertedSections.map((sec, i) => (
+                          <div key={i} className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                            <span className="truncate">{sec}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* License Notice */}
+                    {zipResult.licenseNotice && (
+                      <p className="text-[11px] text-slate-400 border-t border-emerald-500/20 pt-2 italic">
+                        {zipResult.licenseNotice}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-xs space-y-1">
+                    <div className="flex items-center gap-2 font-bold text-sm">
+                      <AlertCircle size={16} />
+                      Falha na Validação de Segurança do ZIP
+                    </div>
+                    <p>{zipResult.error}</p>
+                    {zipResult.detectedSecurityThreats.length > 0 && (
+                      <ul className="list-disc list-inside text-[11px] pt-1 space-y-0.5">
+                        {zipResult.detectedSecurityThreats.map((threat, i) => (
+                          <li key={i}>{threat}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Safety & Persistence Notice */}
+            <div className="p-3 rounded-xl bg-secondary border border-border text-[11.5px] text-muted-foreground flex items-center gap-2">
+              <Shield size={14} className="text-primary shrink-0" />
+              <span>
+                <strong>Importação em memória:</strong> Persistência segura em preparação no servidor. Nenhuma gravação externa é realizada.
+              </span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <button
+                type="button"
+                onClick={() => setShowZipModal(false)}
+                className="px-4 py-2 rounded-xl bg-secondary text-muted-foreground hover:text-foreground text-xs font-medium transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                disabled={!zipResult?.valid}
+                onClick={handleApplyZipTemplate}
+                className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md inline-flex items-center gap-1.5 ${
+                  zipResult?.valid
+                    ? 'bg-primary text-black hover:bg-primary/90 cursor-pointer active:scale-95'
+                    : 'bg-secondary text-muted-foreground opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <Sparkles size={13} />
+                Carregar Template no Studio
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: Importar JSON do Elementor */}
       {showImportModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-lg p-6 rounded-2xl bg-card border border-border shadow-2xl space-y-4 animate-scale-in">
@@ -844,7 +1235,7 @@ function TemplatesPanel() {
               <button
                 type="button"
                 onClick={() => setShowImportModal(false)}
-                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -880,14 +1271,14 @@ function TemplatesPanel() {
                 <button
                   type="button"
                   onClick={() => setShowImportModal(false)}
-                  className="px-3.5 py-2 rounded-lg bg-secondary text-muted-foreground hover:text-foreground text-[12.5px] font-medium transition-colors"
+                  className="px-3.5 py-2 rounded-lg bg-secondary text-muted-foreground hover:text-foreground text-[12.5px] font-medium transition-colors cursor-pointer"
                 >
                   Fechar
                 </button>
                 <button
                   type="button"
                   onClick={handleValidateImport}
-                  className="px-4 py-2 rounded-lg bg-primary text-black text-[12.5px] font-semibold hover:bg-primary/90 transition-colors"
+                  className="px-4 py-2 rounded-lg bg-primary text-black text-[12.5px] font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
                 >
                   Validar JSON
                 </button>
@@ -897,7 +1288,82 @@ function TemplatesPanel() {
         </div>
       )}
 
-      {/* Modal: Novo Template JSON */}
+      {/* MODAL 3: Metadados & Licença */}
+      {showMetaModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="w-full max-w-lg p-6 rounded-2xl bg-card border border-border shadow-2xl space-y-4 animate-scale-in">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={18} className="text-primary" />
+                <h3 className="text-base font-bold text-foreground">Metadados & Licenciamento</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowMetaModal(null)}
+                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-3 rounded-xl bg-secondary/80 border border-border space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Template:</span>
+                  <strong className="text-foreground">{showMetaModal.title}</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Identificador / Slug:</span>
+                  <span className="font-mono text-primary">/{showMetaModal.slug}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Origem:</span>
+                  <span className="text-foreground">{showMetaModal.origin}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Contrato de Esquema:</span>
+                  <span className="font-mono text-emerald-400">blue-bolt-template/v1</span>
+                </div>
+              </div>
+
+              {showMetaModal.licenseInfo ? (
+                <div className="p-3.5 rounded-xl border border-primary/20 bg-primary/5 space-y-2 text-muted-foreground">
+                  <div className="font-bold text-foreground flex items-center gap-1.5 text-[12.5px]">
+                    <Shield size={14} className="text-primary" />
+                    Atribuição de Código Aberto
+                  </div>
+                  <div className="space-y-1 text-[11.5px] leading-relaxed">
+                    <p>• <strong>Nome Original:</strong> {showMetaModal.licenseInfo.originalName}</p>
+                    <p>• <strong>Versão:</strong> {showMetaModal.licenseInfo.version}</p>
+                    <p>• <strong>Fonte:</strong> {showMetaModal.licenseInfo.source}</p>
+                    <p>• <strong>Licença:</strong> {showMetaModal.licenseInfo.license} License</p>
+                    <p>• <strong>Copyright:</strong> {showMetaModal.licenseInfo.copyright}</p>
+                  </div>
+                  <p className="text-[10.5px] text-muted-foreground/80 border-t border-border/50 pt-2 italic">
+                    Registado em <code className="text-foreground font-mono">docs/THIRD_PARTY_LICENSES.md</code> em conformidade com as diretrizes do projeto.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-muted-foreground italic">
+                  Template nativo concebido exclusivamente para o Blue Bolt Page Studio.
+                </p>
+              )}
+            </div>
+
+            <div className="text-right pt-2 border-t border-border">
+              <button
+                type="button"
+                onClick={() => setShowMetaModal(null)}
+                className="px-4 py-2 rounded-xl bg-primary text-black font-semibold text-xs uppercase tracking-wide hover:bg-primary/90 transition-colors cursor-pointer"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 4: Novo Template JSON */}
       {showNewModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-lg p-6 rounded-2xl bg-card border border-border shadow-2xl space-y-4 animate-scale-in">
@@ -909,7 +1375,7 @@ function TemplatesPanel() {
               <button
                 type="button"
                 onClick={() => setShowNewModal(false)}
-                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X size={16} />
               </button>

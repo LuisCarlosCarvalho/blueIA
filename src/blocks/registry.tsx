@@ -20,6 +20,12 @@ import { ContentBlock } from './content/ContentBlock'
 import { ImageBlock } from './image/ImageBlock'
 import { VideoBlock } from './video/VideoBlock'
 import { GalleryBlock } from './gallery/GalleryBlock'
+import { ServicesGridBlock } from './features/ServicesGridBlock'
+import { PortfolioGridBlock } from './gallery/PortfolioGridBlock'
+import { TimelineBlock } from './timeline/TimelineBlock'
+import { TeamGridBlock } from './team/TeamGridBlock'
+import { LogoStripBlock } from './logocloud/LogoStripBlock'
+import { AgencyContactBlock } from './contact/AgencyContactBlock'
 
 // Error boundary for individual blocks
 class BlockErrorBoundary extends Component<
@@ -78,6 +84,12 @@ const blockRenderers: Record<string, React.ComponentType<{ block: BlockConfig }>
   image: ImageBlock,
   video: VideoBlock,
   gallery: GalleryBlock,
+  'services-grid': ServicesGridBlock,
+  'portfolio-grid': PortfolioGridBlock,
+  timeline: TimelineBlock,
+  'team-grid': TeamGridBlock,
+  'logo-strip': LogoStripBlock,
+  'contact-form': AgencyContactBlock,
 }
 
 export function RenderBlock({ block }: { block: BlockConfig }): ReactNode {

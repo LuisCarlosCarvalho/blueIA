@@ -18,13 +18,66 @@ export type BlockType =
   | 'image'
   | 'video'
   | 'gallery'
+  | 'services-grid'
+  | 'portfolio-grid'
+  | 'timeline'
+  | 'team-grid'
+  | 'logo-strip'
+  | 'contact-form'
+  | 'project-modal'
 
 export type BlockVariant = string
+
+export type SectionBackground =
+  | { type: 'color'; color: string; opacity?: number }
+  | { type: 'gradient'; from: string; to: string; direction?: string }
+  | { type: 'image'; url: string; poster?: string; overlayOpacity?: number; position?: string; isLocalBlob?: boolean }
+  | { type: 'video'; url: string; poster?: string; overlayOpacity?: number; isLocalBlob?: boolean }
+
+export interface FreeElementPosition {
+  x: number
+  y: number
+  width?: number
+  height?: number
+  zIndex?: number
+}
+
+export type BreakpointKey = 'desktop' | 'tablet' | 'mobile'
+
+export interface FreeLayoutMap {
+  desktop?: Record<string, FreeElementPosition>
+  tablet?: Record<string, FreeElementPosition>
+  mobile?: Record<string, FreeElementPosition>
+}
+
+export interface SectionLayoutConfig {
+  mode?: 'structured' | 'free'
+  paddingTop?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+  paddingBottom?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+  maxWidth?: 'full' | 'boxed' | 'narrow'
+  align?: 'left' | 'center' | 'right'
+  columns?: 1 | 2 | 3 | 4
+  direction?: 'row' | 'row-reverse' | 'col'
+  order?: 'text-first' | 'image-first'
+  ctaAlign?: 'left' | 'center' | 'right'
+  ctaWidth?: 'auto' | 'fluid' | 'full'
+  splitRatio?: '50-50' | '60-40' | '40-60' | '70-30'
+  freeLayout?: FreeLayoutMap
+}
+
+export interface BlockResponsiveConfig {
+  tablet?: Partial<SectionLayoutConfig> & { props?: Record<string, unknown> }
+  mobile?: Partial<SectionLayoutConfig> & { props?: Record<string, unknown> }
+}
 
 export interface BlockConfig {
   id: string
   type: BlockType
   variant: BlockVariant
+  hidden?: boolean
+  background?: SectionBackground
+  layout?: SectionLayoutConfig
+  responsive?: BlockResponsiveConfig
   props: Record<string, unknown>
 }
 
@@ -55,6 +108,9 @@ export interface ThemeConfig {
   // Radius
   radius: number
   radiusLg: number
+  // Visual style & button style
+  visualStyle?: 'glass' | 'clean' | 'contrast'
+  buttonStyle?: 'default' | 'glass' | 'outline' | 'pill'
 }
 
 export interface PageConfig {
@@ -66,6 +122,10 @@ export interface PageConfig {
 
 export interface SiteConfig {
   name: string
+  clientName?: string
+  segment?: string
+  niche?: string
+  templateId?: string
   pages?: PageConfig[]
   blocks: BlockConfig[]
   theme?: Partial<ThemeConfig>

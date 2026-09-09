@@ -1,5 +1,13 @@
 import { create } from 'zustand'
 
+// ──────────────────────────────────────────────────────────────────────────
+// Persistence helpers — only studioModel is persisted; no project data,
+// no undo history, no sensitive content.
+// ──────────────────────────────────────────────────────────────────────────
+
+const STUDIO_MODEL_KEY = 'bb-studio-model'
+const VALID_STUDIO_MODELS: StudioModel[] = ['studio_bolt', 'bolt_tink_ai']
+
 export type Viewport = 'desktop' | 'tablet' | 'mobile'
 export type LeftTab = 'ai' | 'navigator' | 'elements' | 'design'
 export type InspectorTab = 'design' | 'layout' | 'advanced'
@@ -14,6 +22,18 @@ export interface AiProposal {
 }
 
 export type StudioModel = 'studio_bolt' | 'bolt_tink_ai'
+
+function readStoredStudioModel(): StudioModel {
+  try {
+    const stored = localStorage.getItem(STUDIO_MODEL_KEY)
+    if (stored && (VALID_STUDIO_MODELS as string[]).includes(stored)) {
+      return stored as StudioModel
+    }
+  } catch {
+    // localStorage unavailable (e.g. private mode, SSR) — use default
+  }
+  return 'studio_bolt'
+}
 
 interface EditorState {
   selectedBlockId: string | null
@@ -65,7 +85,7 @@ export const useEditorStore = create<EditorState>()((set) => ({
   previewMode: false,
   activeProjectId: null,
   aiProposal: null,
-  studioModel: 'studio_bolt',
+  studioModel: readStoredStudioModel(),
   isGenerating: false,
   generationPrompt: null,
   generationError: null,
@@ -77,7 +97,14 @@ export const useEditorStore = create<EditorState>()((set) => ({
   setInspectorTab: (tab) => set({ inspectorTab: tab }),
   setAiProposal: (p) => set({ aiProposal: p }),
   clearAiProposal: () => set({ aiProposal: null }),
-  setStudioModel: (model) => set({ studioModel: model }),
+  setStudioModel: (model) => {
+    try {
+      localStorage.setItem(STUDIO_MODEL_KEY, model)
+    } catch {
+      // localStorage unavailable — update in-memory only
+    }
+    set({ studioModel: model })
+  },
   toggleJsonDrawer: () => set((s) => ({ jsonDrawerOpen: !s.jsonDrawerOpen })),
   toggleHistory: () => set((s) => ({ historyOpen: !s.historyOpen })),
   toggleShortcutsModal: () => set((s) => ({ shortcutsModalOpen: !s.shortcutsModalOpen })),

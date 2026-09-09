@@ -129,4 +129,13 @@ export interface SiteConfig {
   pages?: PageConfig[]
   blocks: BlockConfig[]
   theme?: Partial<ThemeConfig>
+  /** Schema canónico do documento — identifica a versão do formato Blue Bolt */
+  schemaVersion?: 'blue-bolt-template/v1'
+  /** Tecnologia de origem do template, usada na Gestão de Templates */
+  originTechnology?:
+    | 'blue-bolt-json'
+    | 'html-static'
+    | 'bootstrap'
+    | 'elementor-json'
+    | 'react-controlled'
 }

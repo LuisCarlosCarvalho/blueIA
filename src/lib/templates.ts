@@ -304,12 +304,21 @@ export const templateMeta = dashboardTemplates.map((t, index) => ({
   icon: 'Layers',
 }))
 
+/** Adiciona campos canónicos Blue Bolt ao resultado de qualquer build de template */
+function withCanonicalFields(config: SiteConfig): SiteConfig {
+  return {
+    ...config,
+    schemaVersion: 'blue-bolt-template/v1',
+    originTechnology: 'blue-bolt-json',
+  }
+}
+
 export function buildTemplate(id: string, name: string): SiteConfig {
   const t = dashboardTemplates.find((item) => item.id === id)
-  if (t) return t.build(name)
+  if (t) return withCanonicalFields(t.build(name))
   const meta = templateMeta.find((m) => m.id === id)
-  if (!meta) return templates[templates.length - 1].build(name)
-  return templates[meta.templateIndex]?.build(name) || templates[0].build(name)
+  if (!meta) return withCanonicalFields(templates[templates.length - 1].build(name))
+  return withCanonicalFields(templates[meta.templateIndex]?.build(name) || templates[0].build(name))
 }
 
 function extractName(prompt: string): string {
@@ -325,10 +334,10 @@ export function getTemplateForPrompt(prompt: string): SiteConfig {
   for (const template of templates) {
     if (template.keywords.length === 0) continue
     if (template.keywords.some((kw) => lower.includes(kw))) {
-      return template.build(name)
+      return withCanonicalFields(template.build(name))
     }
   }
 
   // Default: SaaS template (last in array)
-  return templates[templates.length - 1].build(name)
+  return withCanonicalFields(templates[templates.length - 1].build(name))
 }

@@ -228,7 +228,7 @@ export function EditorTopBar() {
       </div>
 
       {/* Separador visual */}
-      <div className="w-px h-6 bg-border mx-2 shrink-0 hidden md:block" />
+      <div className="w-px h-6 bg-border mx-1 shrink-0 hidden md:block" />
 
       {/* ── GRUPO 2: Nome do projecto + viewport + zoom + undo/redo ──────── */}
       <div className="flex items-center gap-2 min-w-0 shrink">
@@ -304,7 +304,7 @@ export function EditorTopBar() {
               }`}
             >
               <Icon size={13} />
-              <span className="hidden lg:inline">{label}</span>
+              <span className="hidden xl:inline">{label}</span>
             </button>
           ))}
         </div>
@@ -347,7 +347,7 @@ export function EditorTopBar() {
       <div className="flex-1" />
 
       {/* ── GRUPO 3: Preview + Save + Publish + More ─────────────────────── */}
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className="flex items-center gap-1 shrink-0">
         {/* Pré-visualizar */}
         <button
           type="button"
@@ -360,7 +360,7 @@ export function EditorTopBar() {
           title="Alternar Modo Pré-visualização"
         >
           <Eye size={13} />
-          <span className="hidden sm:inline">{previewMode ? 'Sair' : 'Pré-visualizar'}</span>
+          <span className="hidden xl:inline">{previewMode ? 'Sair' : 'Pré-visualizar'}</span>
         </button>
 
         {/* Guardar */}
@@ -371,7 +371,7 @@ export function EditorTopBar() {
           title="Guardar em memória"
         >
           <Save size={13} className="text-primary" />
-          <span className="hidden sm:inline">Guardar</span>
+          <span className="hidden xl:inline">Guardar</span>
         </button>
 
         {/* Menu Publicar */}

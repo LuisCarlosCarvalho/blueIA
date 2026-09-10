@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { FolderOpen, Layers, Briefcase, UtensilsCrossed, Building2, BookOpen } from 'lucide-react'
-import { CanvasToolbar } from './CanvasToolbar'
+import { EditorTopBar } from './EditorTopBar'
 import { LeftSidebar } from './LeftSidebar'
 import { Canvas } from './Canvas'
 import { RightSidebar } from './RightSidebar'
@@ -208,10 +208,10 @@ export function EditorLayout() {
 
   return (
     <div className="h-full flex flex-col relative">
-      <div className="flex-1 flex overflow-hidden">
+      <EditorTopBar />
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {!previewMode && <LeftSidebar />}
         <div className="flex-1 flex flex-col min-w-0 relative">
-          <CanvasToolbar />
           <div className="flex-1 flex flex-col overflow-hidden relative">
             <Canvas />
             <JsonDrawer />

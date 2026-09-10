@@ -10,7 +10,10 @@ export function AppLayout() {
   return (
     <div className={isEditor ? "h-screen w-screen flex flex-col overflow-hidden" : "min-h-screen w-full flex flex-col bg-background"}>
       <a href="#main-content" className="skip-to-content">Skip to content</a>
-      <TopNav />
+      {/* TopNav só é exibida fora do editor.
+          No editor, EditorTopBar (dentro de BoltTinkAiLayout/EditorLayout)
+          substitui-a como barra superior unificada de 100% da largura. */}
+      {!isEditor && <TopNav />}
       <main id="main-content" className={isEditor ? "flex-1 overflow-hidden" : "flex-1 w-full"} role="main">
         <div key={location.pathname} className={isEditor ? "h-full animate-fade-in-up" : "w-full animate-fade-in-up"}>
           <Outlet />

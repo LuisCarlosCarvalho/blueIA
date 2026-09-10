@@ -10,7 +10,7 @@ import {
   Layers,
 } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
-import { CanvasToolbar } from './CanvasToolbar'
+import { EditorTopBar } from './EditorTopBar'
 import { JsonDrawer } from './JsonDrawer'
 import { GenerationOverlay } from './GenerationOverlay'
 import { useConfigStore } from '@/store/configStore'
@@ -202,7 +202,7 @@ export function BoltTinkAiLayout() {
         │  direito da janela.                                             │
         └─────────────────────────────────────────────────────────────────┘
       */}
-      <CanvasToolbar />
+      <EditorTopBar />
 
       {/* Área principal: painel esquerdo + divisor + canvas */}
       <div ref={containerRef} className="flex-1 flex overflow-hidden min-h-0">

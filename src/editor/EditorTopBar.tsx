@@ -184,7 +184,7 @@ export function EditorTopBar() {
 
   return (
     <header
-      className="h-14 shrink-0 bg-background border-b border-border flex items-center px-3 gap-0 sticky top-0 z-50 select-none overflow-hidden"
+      className="h-14 shrink-0 bg-background border-b border-border flex items-center px-3 gap-0 sticky top-0 z-50 select-none"
       role="banner"
     >
       {/* ── GRUPO 1: Logo + Nav links ─────────────────────────────────── */}
@@ -231,9 +231,9 @@ export function EditorTopBar() {
       <div className="w-px h-6 bg-border mx-2 shrink-0 hidden md:block" />
 
       {/* ── GRUPO 2: Nome do projecto + viewport + zoom + undo/redo ──────── */}
-      <div className="flex items-center gap-2 shrink-0">
-        {/* Nome do projecto editável */}
-        <div className="hidden lg:flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0 shrink">
+        {/* Nome do projecto editável — só visível em XL+ */}
+        <div className="hidden xl:flex items-center gap-2">
           {isEditingName ? (
             <input
               type="text"
@@ -257,8 +257,8 @@ export function EditorTopBar() {
             </span>
           )}
 
-          {/* Badge "Em memória" */}
-          <span className="hidden xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-medium">
+          {/* Badge "Em memória" — só em 2XL+ */}
+          <span className="hidden 2xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-medium">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
             Em memória
           </span>
@@ -489,19 +489,20 @@ export function EditorTopBar() {
       <div className="flex items-center gap-2 shrink-0">
         {user && (
           <>
-            {/* Info textual (oculta em mobile) */}
-            <div className="hidden md:flex flex-col items-end">
+            {/* Nome + badge ADMIN (visível a partir de lg) */}
+            <div className="hidden lg:flex flex-col items-end min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-[12px] font-medium text-foreground leading-tight">
+                <span className="text-[12px] font-medium text-foreground leading-tight truncate max-w-[120px]">
                   {user.name || 'Utilizador'}
                 </span>
                 {isAdmin && (
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-primary/10 text-primary border border-primary/20 tracking-wider">
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-primary/10 text-primary border border-primary/20 tracking-wider shrink-0">
                     ADMIN
                   </span>
                 )}
               </div>
-              <span className="text-[10px] text-muted-foreground leading-tight">{user.email}</span>
+              {/* Email apenas em ecrãs muito largos */}
+              <span className="hidden xl:block text-[10px] text-muted-foreground leading-tight truncate max-w-[140px]">{user.email}</span>
             </div>
 
             {/* Avatar */}

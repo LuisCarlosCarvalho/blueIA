@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
-import vercel from 'vite-plugin-vercel'
+import vercel from 'vite-plugin-vercel/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), vercel()],

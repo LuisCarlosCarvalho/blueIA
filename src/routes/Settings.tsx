@@ -34,12 +34,16 @@ import {
   Shield,
   CheckCircle2,
   FolderOpen,
+  Palette,
+  Save,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useProjectsStore, type ProjectSettings } from '@/store/projectsStore'
 import { useConfigStore } from '@/store/configStore'
 import { useEditorStore } from '@/store/editorStore'
 import { useAuthStore } from '@/store/authStore'
+import { useTemplatesStore } from '@/store/templatesStore'
+import { RenderBlock } from '@/blocks/registry'
 import { agencyTemplateMetadata } from '@/lib/agency-template'
 import { validateAndImportHtmlZip, type ZipValidationResult } from '@/lib/zip-template-importer'
 
@@ -668,6 +672,7 @@ function TemplatesPanel() {
   const addProject = useProjectsStore((s) => s.addProject)
   const updateProjectConfig = useProjectsStore((s) => s.updateProjectConfig)
   const setActiveProject = useEditorStore((s) => s.setActiveProject)
+  const addTemplate = useTemplatesStore((s) => s.addTemplate)
 
   const categories = ['Todas as Categorias', 'Portfólios', 'Landing Pages', 'SaaS e Software', 'Comércio Local']
   const [selectedCat, setSelectedCat] = useState('Todas as Categorias')
@@ -676,6 +681,7 @@ function TemplatesPanel() {
   const [showZipModal, setShowZipModal] = useState(false)
   const [showNewModal, setShowNewModal] = useState(false)
   const [showMetaModal, setShowMetaModal] = useState<TemplateItem | null>(null)
+  const [previewConfig, setPreviewConfig] = useState<any | null>(null)
 
   // Elementor JSON import state
   const [importJsonText, setImportJsonText] = useState('')
@@ -979,11 +985,17 @@ function TemplatesPanel() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => handleActionClick('Visualizar', template.title)}
+                  onClick={() => {
+                    setPreviewConfig({
+                      name: template.title,
+                      category: template.category,
+                      blocks: template.id === 'tpl-agency-v7' ? agencyTemplateMetadata.build(template.title).blocks : []
+                    })
+                  }}
                   className="px-2.5 py-1.5 rounded-md bg-secondary text-foreground hover:bg-muted text-[11px] font-medium border border-border transition-colors flex items-center gap-1 cursor-pointer"
                 >
                   <Eye size={12} />
-                  Visualizar
+                  Pré-visualizar Template
                 </button>
               )}
 
@@ -1024,6 +1036,81 @@ function TemplatesPanel() {
           </div>
         ))}
       </div>
+
+      {/* MODAL 4: Pré-Visualização */}
+      {previewConfig && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex flex-col animate-fade-in">
+          {/* Header / Actions */}
+          <div className="h-14 border-b border-border/50 bg-background/50 backdrop-blur flex items-center justify-between px-6 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
+                <LayoutTemplate size={16} className="text-primary" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">{previewConfig.name}</h3>
+                <p className="text-[11px] text-muted-foreground">Pré-visualização do Template</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPreviewConfig(null)}
+                className="px-4 py-2 rounded-lg bg-secondary text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  addTemplate({
+                    name: previewConfig.name,
+                    category: previewConfig.category || 'Portfólios',
+                    subtitle: 'Importado manualmente',
+                    accent: '#3b82f6',
+                    config: previewConfig
+                  })
+                  toast.success('Template guardado na sua biblioteca!')
+                  setPreviewConfig(null)
+                  navigate('/')
+                }}
+                className="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2"
+              >
+                <Save size={14} />
+                Importar para Templates
+              </button>
+            </div>
+          </div>
+          
+          {/* Preview Area */}
+          <div className="flex-1 overflow-auto bg-dot-grid">
+            <div className="w-full max-w-6xl mx-auto my-8 bg-background shadow-2xl rounded-2xl overflow-hidden border border-border flex flex-col min-h-[80vh]">
+              <div className="h-8 bg-secondary/80 border-b border-border/50 flex items-center px-4 gap-2">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                </div>
+                <div className="flex-1 text-center">
+                  <span className="text-[10px] bg-background/50 px-3 py-1 rounded text-muted-foreground font-mono">
+                    localhost:3000/preview
+                  </span>
+                </div>
+              </div>
+              <div className="flex-1 pointer-events-none relative">
+                {previewConfig.blocks?.map((block: any) => (
+                  <RenderBlock key={block.id} block={block} />
+                ))}
+                {(!previewConfig.blocks || previewConfig.blocks.length === 0) && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center space-y-2">
+                      <Palette className="w-12 h-12 text-muted-foreground/30 mx-auto" />
+                      <p className="text-sm text-muted-foreground">Template vazio ou formato não suportado visualmente.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MODAL 1: Importar Template HTML/ZIP */}
       {showZipModal && (
@@ -1294,20 +1381,15 @@ function TemplatesPanel() {
                           blocks: Array.isArray(parsed.blocks) ? parsed.blocks : []
                         }
 
-                        const projectId = addProject(tplName)
-                        setActiveProject(projectId)
-                        updateProjectConfig(projectId, config)
-                        setConfig(config)
+                        setPreviewConfig(config)
                         setShowImportModal(false)
-                        toast.success(`Template ${tplName} carregado com sucesso!`)
-                        navigate('/')
                       } catch (e) {
                         setImportError('Erro ao aplicar JSON: formato interno inválido')
                       }
                     }}
                     className="px-4 py-2 rounded-lg bg-emerald-500 text-black text-[12.5px] font-bold shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:bg-emerald-400 transition-all cursor-pointer"
                   >
-                    Visualizar no Dashboard
+                    Pré-visualizar Template
                   </button>
                 ) : (
                   <button

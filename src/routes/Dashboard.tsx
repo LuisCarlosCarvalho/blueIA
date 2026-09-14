@@ -10,10 +10,12 @@ import {
   Trash2,
   Pencil,
   Sparkles,
+  Layout,
 } from 'lucide-react'
 import { useProjectsStore, type Project } from '@/store/projectsStore'
 import { useConfigStore } from '@/store/configStore'
 import { useEditorStore } from '@/store/editorStore'
+import { useTemplatesStore, type CustomTemplate } from '@/store/templatesStore'
 import { hexToRgb } from '@/lib/theme-presets'
 import { dashboardTemplates, type DashboardTemplateItem } from '@/lib/templates'
 
@@ -374,8 +376,12 @@ function TemplateMockupPreview({ style }: { style: DashboardTemplateItem['previe
 
     default:
       return (
-        <div className="w-full h-full bg-secondary flex items-center justify-center">
-          <div className="w-8 h-8 rounded-lg bg-card border border-border" />
+        <div className="w-full h-full bg-background relative flex items-center justify-center p-3 select-none border-t-[8px]" style={{ borderColor: style || '#cbd5e1' }}>
+          <div className="flex flex-col items-center gap-2">
+            <Layout className="text-muted-foreground w-8 h-8 opacity-50" />
+            <div className="w-16 h-2 bg-muted rounded-full" />
+            <div className="w-10 h-2 bg-muted rounded-full" />
+          </div>
         </div>
       )
   }
@@ -390,9 +396,11 @@ function TemplatesSection() {
   const updateProjectConfig = useProjectsStore((s) => s.updateProjectConfig)
   const setActiveProject = useEditorStore((s) => s.setActiveProject)
   const setConfig = useConfigStore((s) => s.setConfig)
+  const templates = useTemplatesStore((s) => s.templates)
+  const deleteTemplate = useTemplatesStore((s) => s.deleteTemplate)
 
-  function handleSelectTemplate(template: DashboardTemplateItem) {
-    const siteConfig = template.build(template.name)
+  function handleSelectTemplate(template: CustomTemplate) {
+    const siteConfig = template.config
     const projectId = addProject(template.name)
     setActiveProject(projectId)
     updateProjectConfig(projectId, siteConfig)
@@ -405,35 +413,63 @@ function TemplatesSection() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-[15px] font-semibold text-foreground tracking-tight">
-          Templates
+          Templates Pessoais
         </h2>
       </div>
 
-      {/* Grelha 4 colunas desktop / 2 tablet / 1 mobile */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        {dashboardTemplates.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => handleSelectTemplate(item)}
-            className="group rounded-2xl border border-border bg-card overflow-hidden transition-all duration-200 hover:border-primary/50 hover:shadow-md cursor-pointer flex flex-col"
+      {templates.length === 0 ? (
+        <div className="p-8 text-center border border-dashed border-border rounded-xl bg-secondary/30">
+          <Layout className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-foreground mb-1">Nenhum template guardado</h3>
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto mb-4">
+            Importe ficheiros JSON ou ZIP no ecrã de Definições para construir a sua biblioteca de templates.
+          </p>
+          <button
+            onClick={() => navigate('/settings')}
+            className="px-4 py-2 bg-primary text-black font-bold text-xs rounded-lg hover:bg-primary/90 transition-colors"
           >
-            {/* Miniatura visual em mockup */}
-            <div className="h-36 w-full relative overflow-hidden bg-secondary border-b border-border/50">
-              <TemplateMockupPreview style={item.previewStyle} />
+            Ir para Definições
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {templates.map((item) => (
+            <div
+              key={item.id}
+              className="group rounded-2xl border border-border bg-card overflow-hidden transition-all duration-200 hover:border-primary/50 hover:shadow-md flex flex-col relative"
+            >
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  deleteTemplate(item.id)
+                  toast.success('Template apagado.')
+                }}
+                className="absolute top-2 right-2 p-1.5 bg-background/80 backdrop-blur border border-border rounded-lg text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                title="Apagar template"
+              >
+                <Trash2 size={14} />
+              </button>
+              
+              <div
+                onClick={() => handleSelectTemplate(item)}
+                className="cursor-pointer flex flex-col h-full"
+              >
+                <div className="h-36 w-full relative overflow-hidden bg-secondary border-b border-border/50">
+                  <TemplateMockupPreview style={item.accent || '#3b82f6'} />
+                </div>
+                <div className="p-3.5 space-y-0.5">
+                  <h3 className="text-[13.5px] font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                    {item.name}
+                  </h3>
+                  <p className="text-[11.5px] text-muted-foreground font-medium">
+                    {item.subtitle || 'Template Customizado'}
+                  </p>
+                </div>
+              </div>
             </div>
-
-            {/* Informações do Template */}
-            <div className="p-3.5 space-y-0.5">
-              <h3 className="text-[13.5px] font-semibold text-foreground group-hover:text-primary transition-colors truncate">
-                {item.name}
-              </h3>
-              <p className="text-[11.5px] text-muted-foreground font-medium">
-                {item.subtitle}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

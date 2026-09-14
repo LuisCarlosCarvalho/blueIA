@@ -1,5 +1,5 @@
 import React from 'react'
-import Lottie from 'lottie-react'
+import { Lottie } from 'lottie-react'
 
 export function LottieBlock({ props }: { props: Record<string, any> }) {
   const { animationUrl, height = '300px', loop = true, autoplay = true } = props

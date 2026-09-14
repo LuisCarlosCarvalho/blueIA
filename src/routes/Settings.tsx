@@ -1371,14 +1371,34 @@ function TemplatesPanel() {
                     type="button"
                     onClick={() => {
                       try {
-                        const parsed = JSON.parse(importJsonText)
-                        const tplName = parsed.name || parsed.title || 'JSON Importado'
+                        let parsed = JSON.parse(importJsonText)
+                        
+                        // Obter array de blocos/elementos
+                        let blocksArray = Array.isArray(parsed.blocks) ? parsed.blocks : [];
+                        if (blocksArray.length === 0 && Array.isArray(parsed.content)) {
+                          blocksArray = parsed.content;
+                        }
+
+                        // Verificar se é formato Elementor
+                        const isElementor = blocksArray.length > 0 && ('elType' in blocksArray[0] || 'widgetType' in blocksArray[0]);
+
+                        if (isElementor) {
+                           blocksArray = [{
+                             id: 'elementor-root',
+                             type: 'elementor',
+                             props: {
+                               elements: blocksArray
+                             }
+                           }]
+                        }
+
+                        const tplName = (parsed.title || parsed.name || 'JSON Importado').replace('[Modelo] [Elementor] ', '')
                         
                         // Normalização protetora para evitar crashes na store (SiteConfig requer 'blocks')
                         const config = {
                           ...parsed,
                           name: tplName,
-                          blocks: Array.isArray(parsed.blocks) ? parsed.blocks : []
+                          blocks: blocksArray
                         }
 
                         setPreviewConfig(config)

@@ -28,7 +28,6 @@ import { LogoStripBlock } from './logocloud/LogoStripBlock'
 import { AgencyContactBlock } from './contact/AgencyContactBlock'
 import { ThreeJsBlock } from './advanced/ThreeJsBlock'
 import { LottieBlock } from './advanced/LottieBlock'
-import { ElementorBlock } from './elementor/ElementorBlock'
 import gsap from 'gsap'
 
 // Error boundary for individual blocks
@@ -96,7 +95,6 @@ const blockRenderers: Record<string, React.ComponentType<{ block: BlockConfig }>
   'contact-form': AgencyContactBlock,
   'threejs': ({ block }) => <ThreeJsBlock props={block.props} />,
   'lottie': ({ block }) => <LottieBlock props={block.props} />,
-  'elementor': ({ block }) => <ElementorBlock props={block.props} />,
 }
 
 function GsapWrapper({ block, children }: { block: BlockConfig; children: ReactNode }) {

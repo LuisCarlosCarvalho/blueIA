@@ -45,7 +45,9 @@ import { useAuthStore } from '@/store/authStore'
 import { useTemplatesStore } from '@/store/templatesStore'
 import { RenderBlock } from '@/blocks/registry'
 import { agencyTemplateMetadata } from '@/lib/agency-template'
+import { parseElementorToBlueBolt } from '@/lib/elementor-parser'
 import { validateAndImportHtmlZip, type ZipValidationResult } from '@/lib/zip-template-importer'
+
 
 type SettingsTab =
   | 'general'
@@ -1383,13 +1385,8 @@ function TemplatesPanel() {
                         const isElementor = blocksArray.length > 0 && ('elType' in blocksArray[0] || 'widgetType' in blocksArray[0]);
 
                         if (isElementor) {
-                           blocksArray = [{
-                             id: 'elementor-root',
-                             type: 'elementor',
-                             props: {
-                               elements: blocksArray
-                             }
-                           }]
+                           // Conversão heurística de Elementor para blocos nativos do Blue Bolt
+                           blocksArray = parseElementorToBlueBolt(blocksArray)
                         }
 
                         const tplName = (parsed.title || parsed.name || 'JSON Importado').replace('[Modelo] [Elementor] ', '')

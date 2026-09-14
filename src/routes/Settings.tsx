@@ -1279,13 +1279,37 @@ function TemplatesPanel() {
                 >
                   Fechar
                 </button>
-                <button
-                  type="button"
-                  onClick={handleValidateImport}
-                  className="px-4 py-2 rounded-lg bg-primary text-black text-[12.5px] font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
-                >
-                  Validar JSON
-                </button>
+                {importSuccess ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try {
+                        const config = JSON.parse(importJsonText)
+                        const tplName = config.name || config.title || 'JSON Importado'
+                        const projectId = addProject(tplName)
+                        setActiveProject(projectId)
+                        updateProjectConfig(projectId, config)
+                        setConfig(config)
+                        setShowImportModal(false)
+                        toast.success(`Template ${tplName} carregado com sucesso!`)
+                        navigate('/')
+                      } catch (e) {
+                        setImportError('Erro ao aplicar JSON')
+                      }
+                    }}
+                    className="px-4 py-2 rounded-lg bg-emerald-500 text-black text-[12.5px] font-bold shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:bg-emerald-400 transition-all cursor-pointer"
+                  >
+                    Visualizar no Dashboard
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleValidateImport}
+                    className="px-4 py-2 rounded-lg bg-primary text-black text-[12.5px] font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
+                  >
+                    Validar JSON
+                  </button>
+                )}
               </div>
             </div>
           </div>

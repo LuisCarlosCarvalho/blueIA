@@ -33,6 +33,7 @@ import {
   FileArchive,
   Shield,
   CheckCircle2,
+  FolderOpen,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useProjectsStore, type ProjectSettings } from '@/store/projectsStore'

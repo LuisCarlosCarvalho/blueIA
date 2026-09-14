@@ -631,7 +631,8 @@ function AiIntegrationsPanel() {
             As chaves de API para geração e integração com a IA (como <code className="text-foreground bg-background px-1.5 py-0.5 rounded font-mono text-[11px]">GEMINI_API_KEY</code>) ficam alocadas exclusivamente no servidor backend. O frontend nunca tem acesso direto às chaves nem efetua chamadas diretas não autenticadas.
           </p>
         </div>
-
+        <div className="pt-2">
+          <span className="block text-[11.5px] text-muted-foreground mt-2">
             O motor estruturado encontra-se ativo. Pedidos de geração de UI e blocos avançados (3D, GSAP) estão operacionais.
           </span>
         </div>

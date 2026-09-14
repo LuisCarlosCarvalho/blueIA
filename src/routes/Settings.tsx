@@ -1228,6 +1228,34 @@ function TemplatesPanel() {
               className="w-full p-3 rounded-lg bg-secondary border border-border text-foreground font-mono text-[12px] outline-none focus:border-primary resize-y"
             />
 
+            <div className="flex items-center gap-2">
+              <input
+                type="file"
+                id="json-upload-input"
+                accept=".json"
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (f) {
+                    const reader = new FileReader()
+                    reader.onload = (e) => {
+                      const text = e.target?.result as string
+                      setImportJsonText(text)
+                    }
+                    reader.readAsText(f)
+                  }
+                }}
+                className="hidden"
+              />
+              <label
+                htmlFor="json-upload-input"
+                className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-[11.5px] font-semibold border border-primary/20 cursor-pointer flex items-center gap-1.5 transition-colors"
+              >
+                <FolderOpen size={14} />
+                Abrir Ficheiro .JSON
+              </label>
+              <span className="text-[11px] text-muted-foreground">Ou cole o texto na caixa acima.</span>
+            </div>
+
             {importError && (
               <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-[12.5px]">
                 {importError}

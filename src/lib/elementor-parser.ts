@@ -1,5 +1,4 @@
 import { BlockConfig } from '../blocks/types'
-import { v4 as uuidv4 } from 'uuid'
 
 interface ElementorNode {
   id?: string
@@ -71,7 +70,7 @@ function attemptMapToCompositeBlock(container: ElementorNode): BlockConfig | nul
     // Se for o primeiro bloco (muito grande, com botão) -> Hero
     if (buttons.length > 0) {
       return {
-        id: container.id || uuidv4(),
+        id: container.id || crypto.randomUUID(),
         type: 'hero',
         variant: 'default',
         props: {
@@ -85,7 +84,7 @@ function attemptMapToCompositeBlock(container: ElementorNode): BlockConfig | nul
     
     // Se tiver apenas heading e texto, podemos mapear para 'content' ou 'cta' simplificado
     return {
-      id: container.id || uuidv4(),
+      id: container.id || crypto.randomUUID(),
       type: 'content',
       variant: 'default',
       props: {
@@ -99,7 +98,7 @@ function attemptMapToCompositeBlock(container: ElementorNode): BlockConfig | nul
   if (iconLists.length > 0) {
     const items = iconLists[0].settings?.icon_list || []
     return {
-      id: container.id || uuidv4(),
+      id: container.id || crypto.randomUUID(),
       type: 'features',
       variant: 'default',
       props: {
@@ -122,7 +121,7 @@ function attemptMapToCompositeBlock(container: ElementorNode): BlockConfig | nul
  */
 function mapWidgetToBlock(widget: ElementorNode): BlockConfig | null {
   const { widgetType, settings = {}, id } = widget
-  const uid = id || uuidv4()
+  const uid = id || crypto.randomUUID()
 
   switch (widgetType) {
     case 'heading':

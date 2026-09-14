@@ -1,4 +1,4 @@
-import { BlockConfig } from '../blocks/types'
+import type { BlockConfig } from '../blocks/types'
 
 interface ElementorNode {
   id?: string

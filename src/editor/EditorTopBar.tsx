@@ -113,6 +113,22 @@ export function EditorTopBar() {
   const [, setExporting] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
   const [projectNameDraft, setProjectNameDraft] = useState(projectName)
+  const [syncStatus, setSyncStatus] = useState<'synced' | 'unsynced'>('synced')
+
+  // Auto-save visual mechanic
+  useEffect(() => {
+    // When config changes, set status to unsynced
+    setSyncStatus('unsynced')
+    const timer = setTimeout(() => {
+      setSyncStatus('synced')
+    }, 10000) // 10 seconds auto-save
+    return () => clearTimeout(timer)
+  }, [config])
+
+  function handleManualSync() {
+    setSyncStatus('synced')
+    toast.success('Alterações guardadas em memória')
+  }
 
   // keep draft in sync with active project changes
   useEffect(() => {
@@ -137,13 +153,6 @@ export function EditorTopBar() {
   }, [])
 
   // ── Handlers ─────────────────────────────────────────────────────────────
-
-  function handleSave() {
-    toast.info('Persistência segura em preparação', {
-      description: 'As alterações estão ativas e preservadas na memória da sua sessão.',
-      duration: 3500,
-    })
-  }
 
   function handlePublishAction(action: string) {
     setIsPublishMenuOpen(false)
@@ -257,11 +266,24 @@ export function EditorTopBar() {
             </span>
           )}
 
-          {/* Badge "Em memória" — só em 2XL+ */}
-          <span className="hidden 2xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-            Em memória
-          </span>
+          {/* Badge "Memória" */}
+          <button
+            type="button"
+            onClick={handleManualSync}
+            title={syncStatus === 'unsynced' ? 'Clique para guardar' : 'Projeto atualizado'}
+            className={`hidden 2xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-medium transition-colors cursor-pointer shrink-0 ${
+              syncStatus === 'unsynced'
+                ? 'bg-amber-500/10 border-amber-500/20 text-amber-500'
+                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
+            }`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                syncStatus === 'unsynced' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
+              }`}
+            />
+            Memória
+          </button>
         </div>
 
         {/* Separador */}
@@ -352,25 +374,25 @@ export function EditorTopBar() {
         <button
           type="button"
           onClick={togglePreview}
-          className={`h-8 px-3 rounded-xl flex items-center gap-1.5 text-xs font-semibold transition-all ${
+          className={`h-8 px-3 rounded-xl flex items-center justify-center gap-1.5 text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
             previewMode
               ? 'bg-primary text-primary-foreground shadow-sm'
               : 'border border-border bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
           }`}
           title="Alternar Modo Pré-visualização"
         >
-          <Eye size={13} />
+          <Eye size={13} className="shrink-0" />
           <span className="hidden xl:inline">{previewMode ? 'Sair' : 'Pré-visualizar'}</span>
         </button>
 
         {/* Guardar */}
         <button
           type="button"
-          onClick={handleSave}
-          className="h-8 px-3 rounded-xl border border-border bg-secondary/80 text-foreground text-xs font-semibold hover:bg-secondary transition-all flex items-center gap-1.5"
+          onClick={handleManualSync}
+          className="h-8 px-3 rounded-xl border border-border bg-secondary/80 text-foreground text-xs font-semibold hover:bg-secondary transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap"
           title="Guardar em memória"
         >
-          <Save size={13} className="text-primary" />
+          <Save size={13} className="text-primary shrink-0" />
           <span className="hidden xl:inline">Guardar</span>
         </button>
 

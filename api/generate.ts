@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { authenticateGeneration } from './lib/generation-auth.js'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
@@ -21,11 +22,20 @@ function checkRateLimit(ip: string): boolean {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Cache-Control', 'no-store')
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  // Check Honest API configuration
+  let userId: string | null
+  try {
+    userId = await authenticateGeneration(req)
+  } catch {
+    return res.status(503).json({ error: 'Autenticação do serviço de IA indisponível.' })
+  }
+  if (!userId) return res.status(401).json({ error: 'Autenticação necessária para usar a IA.' })
+
+  // Provider credentials remain exclusively on the server.
   if (!GEMINI_API_KEY) {
     return res.status(503).json({
       error: 'Assistência por IA temporariamente indisponível: GEMINI_API_KEY não configurada no servidor.',
@@ -33,12 +43,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown'
-  if (!checkRateLimit(clientIp)) {
+  if (!checkRateLimit(userId)) {
     return res.status(429).json({ error: 'Limite de pedidos excedido. Por favor, tente novamente num instante.' })
   }
 
   const { action = 'generate_page', prompt, text, mode, segment, niche } = req.body || {}
+  if (!['generate_page', 'refine_text', 'suggest_sections'].includes(action) ||
+    [mode, segment, niche].some((value) => value !== undefined && (typeof value !== 'string' || value.length > 200))) {
+    return res.status(400).json({ error: 'Pedido de IA inválido.' })
+  }
 
   // Limit input sizes
   if (prompt && typeof prompt === 'string' && prompt.length > 1500) {
@@ -85,7 +98,12 @@ Retorne um JSON com:
       if (!prompt || typeof prompt !== 'string') {
         return res.status(400).json({ error: 'O prompt de criação é obrigatório.' })
       }
-      systemInstruction = `Você é um arquiteto e designer especialista do Blue Bolt Studio.
+      systemInstruction = `Você é um arquiteto e designer especialista do Blue Bolt Studio, com as seguintes Skills ativas:
+1. Owl-Listener/ai-design-skills: Aplique heurísticas de design de alta conversão, uso estratégico de espaços em branco, contraste, e Glassmorphism quando apropriado.
+2. greensock/gsap-skills: Adicione a propriedade "gsapAnimation" a blocos para criar animações de entrada ou scroll (ex: { "type": "fade-up", "duration": 1, "delay": 0.2 }).
+3. img2threejs/img2threejs: Pode utilizar o bloco "ThreeJsBlock" para renderizar cenas 3D interativas. A propriedade props deve conter o "modelUrl" ou "sceneType".
+4. lottiefiles/motion-design-skill: Pode utilizar o bloco "LottieBlock" para exibir animações vetoriais via props.animationUrl.
+
 Gere uma configuração JSON completa de site com schema { "name": string, "theme": object, "blocks": array }.
 Retorne APENAS JSON válido, sem markdown nem explicações externas.`
       userMessage = `Gere uma configuração completa de landing page para: ${prompt}. Estilo: ${segment || 'Moderno'}.`
@@ -111,8 +129,7 @@ Retorne APENAS JSON válido, sem markdown nem explicações externas.`
     clearTimeout(timeout)
 
     if (!response.ok) {
-      const errText = await response.text()
-      return res.status(502).json({ error: `Erro na comunicação com a API de IA: ${response.status}`, details: errText })
+      return res.status(502).json({ error: 'Erro na comunicação com o serviço de IA.' })
     }
 
     const data = await response.json()
@@ -130,5 +147,7 @@ Retorne APENAS JSON válido, sem markdown nem explicações externas.`
       return res.status(504).json({ error: 'Tempo limite de geração excedido (25s).' })
     }
     return res.status(500).json({ error: 'Falha no processamento do pedido de IA.' })
+  } finally {
+    clearTimeout(timeout)
   }
 }

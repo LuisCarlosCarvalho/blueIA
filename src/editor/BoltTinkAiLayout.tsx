@@ -338,16 +338,19 @@ export function BoltTinkAiLayout() {
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
-                  className="px-2.5 py-1 rounded-md border border-border bg-secondary/80 text-foreground text-[11px] font-medium flex items-center gap-1 hover:bg-secondary transition-all cursor-pointer"
-                  title="Editar elemento selecionado"
+                  className="px-2.5 py-1 rounded-md border border-border bg-secondary/80 text-foreground text-[11px] font-medium flex items-center gap-1 hover:bg-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                  title="Em preparação"
+                  aria-label="Editar elemento selecionado — em preparação"
                 >
                   <Pencil size={11} className="text-primary" />
                   <span>Editar</span>
                 </button>
                 <button
                   type="button"
-                  className="px-2.5 py-1 rounded-md border border-border bg-secondary/80 text-foreground text-[11px] font-medium flex items-center gap-1 hover:bg-secondary transition-all cursor-pointer"
-                  title="Gerar nova secção ou página com IA"
+                  className="px-2.5 py-1 rounded-md border border-border bg-secondary/80 text-foreground text-[11px] font-medium flex items-center gap-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                  title="Em preparação"
                 >
                   <Plus size={11} className="text-primary" />
                   <span>Gerar página</span>
@@ -359,14 +362,16 @@ export function BoltTinkAiLayout() {
               <textarea
                 value={promptInput}
                 onChange={(e) => setPromptInput(e.target.value)}
-                placeholder="O que deseja alterar?"
+                disabled
+                placeholder="Compositor em preparação"
                 rows={3}
                 className="w-full p-3 pr-10 rounded-xl border border-border bg-secondary text-foreground text-xs placeholder:text-muted-foreground/70 outline-none focus:border-primary transition-all resize-none font-sans"
               />
               <button
                 type="button"
-                className="absolute right-2.5 bottom-2.5 w-7 h-7 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-sm hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
-                title="Enviar instrução"
+                className="absolute right-2.5 bottom-2.5 w-7 h-7 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled
+                title="Enviar instrução — em preparação"
               >
                 <Send size={13} />
               </button>
@@ -377,7 +382,7 @@ export function BoltTinkAiLayout() {
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 <span className="font-medium text-foreground">Bolt Tink IA</span>
               </div>
-              <span className="text-[10px] text-muted-foreground font-mono">IA em preparação</span>
+              <span className="text-[10px] text-muted-foreground">Compositor em preparação</span>
             </div>
           </div>
         </div>

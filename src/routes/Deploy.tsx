@@ -15,7 +15,7 @@ import { useConfigStore } from '@/store/configStore'
 import { useEditorStore } from '@/store/editorStore'
 import { useProjectsStore } from '@/store/projectsStore'
 import { exportToHTML, downloadHTML, previewHTML } from '@/lib/export-html'
-import { publishSite } from '@/lib/publish-site'
+import { publishSite, PUBLICATION_UNAVAILABLE } from '@/lib/publish-site'
 
 const readyOptions = [
   { icon: Download, label: 'Static HTML', description: 'Download a standalone HTML file', action: 'html' },
@@ -33,7 +33,6 @@ export function Deploy() {
   const project = activeProjectId ? projects.find((p) => p.id === activeProjectId) : null
   const deployUrl = project?.deployUrl
   const lastDeployedAt = project?.lastDeployedAt
-  const hasDeployKey = !!project?.settings?.deployAccessKey?.trim()
 
   const [exporting, setExporting] = useState(false)
   const [publishing, setPublishing] = useState(false)
@@ -81,12 +80,12 @@ export function Deploy() {
 
     setPublishing(true)
     try {
-      const { liveUrl, deploymentId } = await publishSite({
+      const { liveUrl, deploymentId, readyState } = await publishSite({
         config,
         projectName: project?.name || config.name,
         settings: project?.settings,
       })
-      setDeployInfo(activeProjectId, liveUrl, deploymentId)
+      setDeployInfo(activeProjectId, liveUrl, deploymentId, readyState)
       toast.success('Published')
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Deploy failed')
@@ -138,7 +137,7 @@ export function Deploy() {
         </div>
       </div>
 
-      {hasDeployKey && (
+      {(
         <div className="px-4 md:px-12 pt-8 animate-fade-in-up stagger-3">
           <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">Publish</h2>
           <div className="p-5 rounded-xl border bg-background border-border">
@@ -149,7 +148,7 @@ export function Deploy() {
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold">Publish to Web</h3>
                 <p className="text-[11.5px] text-muted-foreground mt-0.5">
-                  Deploy your site to a live URL in seconds
+                  {PUBLICATION_UNAVAILABLE}
                 </p>
 
                 {deployUrl && (
@@ -187,7 +186,7 @@ export function Deploy() {
                 <div className="mt-3 flex items-center gap-2">
                   <button
                     onClick={handlePublish}
-                    disabled={publishing}
+                    disabled
                     className="px-4 py-1.5 rounded-lg bg-primary text-bg-0 text-[12.5px] font-semibold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                   >
                     {publishing ? (

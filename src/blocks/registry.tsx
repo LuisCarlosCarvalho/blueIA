@@ -1,5 +1,5 @@
 import type { BlockConfig } from './types'
-import { Component, type ReactNode } from 'react'
+import React, { Component, type ReactNode } from 'react'
 
 import { NavbarBlock } from './navbar/NavbarBlock'
 import { HeroBlock } from './hero/HeroBlock'
@@ -26,6 +26,9 @@ import { TimelineBlock } from './timeline/TimelineBlock'
 import { TeamGridBlock } from './team/TeamGridBlock'
 import { LogoStripBlock } from './logocloud/LogoStripBlock'
 import { AgencyContactBlock } from './contact/AgencyContactBlock'
+import { ThreeJsBlock } from './advanced/ThreeJsBlock'
+import { LottieBlock } from './advanced/LottieBlock'
+import gsap from 'gsap'
 
 // Error boundary for individual blocks
 class BlockErrorBoundary extends Component<
@@ -90,13 +93,41 @@ const blockRenderers: Record<string, React.ComponentType<{ block: BlockConfig }>
   'team-grid': TeamGridBlock,
   'logo-strip': LogoStripBlock,
   'contact-form': AgencyContactBlock,
+  'threejs': ({ block }) => <ThreeJsBlock props={block.props} />,
+  'lottie': ({ block }) => <LottieBlock props={block.props} />,
+}
+
+function GsapWrapper({ block, children }: { block: BlockConfig; children: ReactNode }) {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  
+  React.useEffect(() => {
+    if (block.props?.gsapAnimation && containerRef.current) {
+      const anim = block.props.gsapAnimation as any
+      // Basic gsap implementation 
+      if (anim.type === 'fade-up') {
+        gsap.fromTo(containerRef.current, 
+          { y: 50, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: anim.duration || 1, delay: anim.delay || 0 }
+        )
+      } else if (anim.type === 'fade-in') {
+        gsap.fromTo(containerRef.current, 
+          { opacity: 0 }, 
+          { opacity: 1, duration: anim.duration || 1, delay: anim.delay || 0 }
+        )
+      }
+    }
+  }, [block.props?.gsapAnimation])
+
+  return <div ref={containerRef}>{children}</div>
 }
 
 export function RenderBlock({ block }: { block: BlockConfig }): ReactNode {
   const Renderer = blockRenderers[block.type] || PlaceholderBlock
   return (
     <BlockErrorBoundary blockType={block.type}>
-      <Renderer block={block} />
+      <GsapWrapper block={block}>
+        <Renderer block={block} />
+      </GsapWrapper>
     </BlockErrorBoundary>
   )
 }

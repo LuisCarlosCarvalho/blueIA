@@ -41,6 +41,7 @@ export function BlockWrapper({ block, isSelected, onSelect, children }: Props) {
   })
   const { duplicateBlock, removeBlock, moveBlock, updateBlock } = useConfigStore()
   const { selectedBlockId, selectBlock, previewMode } = useEditorStore()
+  const selectedElementId = useEditorStore((s) => s.selectedElementId)
   const scrollRef = useRef<HTMLDivElement>(null)
   const { ref: revealRef, isRevealed } = useScrollReveal(!previewMode)
 
@@ -174,7 +175,6 @@ export function BlockWrapper({ block, isSelected, onSelect, children }: Props) {
     ...getBackgroundStyle(block),
   }
 
-  const selectedElementId = useEditorStore((s) => s.selectedElementId)
   const isDirectlySelected = isSelected && (!selectedElementId || selectedElementId === block.id)
 
   return (

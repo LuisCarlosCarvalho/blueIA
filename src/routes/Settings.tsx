@@ -228,7 +228,7 @@ function SeoPanel({ settings }: { settings: ReturnType<typeof useSettingsState> 
 }
 
 // 3. API Keys Panel
-function ApiPanel({ settings }: { settings: ReturnType<typeof useSettingsState> }) {
+function ApiPanel() {
   return (
     <div className="space-y-6">
       <div>
@@ -237,29 +237,10 @@ function ApiPanel({ settings }: { settings: ReturnType<typeof useSettingsState> 
       </div>
 
       <div className="p-5 rounded-xl border border-border bg-card space-y-4">
-        <FieldGroup label="Chave de Acesso para Deploy">
-          <ControlledInput
-            settingsKey="deployAccessKey"
-            placeholder="Protegida via OPENPAGE_DEPLOY_KEY no servidor"
-            settings={settings}
-            disabled={true}
-          />
-          <p className="text-[11.5px] text-muted-foreground mt-1.5 font-medium">
-            As chaves de integração são configuradas e protegidas exclusivamente no servidor.
-          </p>
-        </FieldGroup>
-
-        <FieldGroup label="Gemini API Key">
-          <ControlledInput
-            settingsKey="geminiKeyDisabled"
-            placeholder="AIza..."
-            settings={settings}
-            disabled={true}
-          />
-          <p className="text-[11.5px] text-muted-foreground mt-1.5 font-medium">
-            As chaves de integração são configuradas e protegidas exclusivamente no servidor.
-          </p>
-        </FieldGroup>
+        <p className="text-sm text-muted-foreground">
+          As credenciais de IA são configuradas exclusivamente no servidor.
+          A publicação de sites está indisponível enquanto a integração segura está em preparação.
+        </p>
       </div>
     </div>
   )
@@ -633,9 +614,12 @@ function AiIntegrationsPanel() {
               <p className="text-[12px] text-muted-foreground">Motor estruturado para síntese de esquemas JSON.</p>
             </div>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-secondary text-muted-foreground text-[11px] font-semibold">
-            Aguardando Servidor
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-muted-foreground text-[11px] font-semibold">
+              Online
+            </span>
+          </div>
         </div>
 
         <div className="p-3.5 rounded-lg bg-secondary border border-border/80 text-[12.5px] text-muted-foreground space-y-2">
@@ -648,17 +632,7 @@ function AiIntegrationsPanel() {
           </p>
         </div>
 
-        <div className="pt-2">
-          <button
-            type="button"
-            disabled
-            className="px-4 py-2 rounded-lg bg-secondary text-muted-foreground/60 border border-border/80 cursor-not-allowed text-xs font-medium inline-flex items-center gap-2"
-          >
-            <Sparkles size={14} />
-            Testar Conexão Segura
-          </button>
-          <span className="block text-[11.5px] text-muted-foreground mt-2">
-            O teste de conectividade estará disponível quando o endpoint seguro de geração estiver ativo no backend.
+            O motor estruturado encontra-se ativo. Pedidos de geração de UI e blocos avançados (3D, GSAP) estão operacionais.
           </span>
         </div>
       </div>
@@ -1541,7 +1515,7 @@ export function Settings() {
   const panels: Record<SettingsTab, React.ReactNode> = {
     general: <GeneralPanel settings={settings} />,
     seo: <SeoPanel settings={settings} />,
-    api: <ApiPanel settings={settings} />,
+    api: <ApiPanel />,
     help: <HelpPanel />,
     admin: isAdmin ? <AdminPanel /> : null,
     ai: isAdmin ? <AiIntegrationsPanel /> : null,

@@ -35,6 +35,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { requestGeneration } from '@/lib/request-generation'
 import { useConfigStore } from '@/store/configStore'
 import { useEditorStore } from '@/store/editorStore'
 import { blockMetadata } from '@/lib/block-metadata'
@@ -84,123 +85,41 @@ function AiTab() {
     'Portfólio minimalista para arquiteto',
   ]
 
-  async function handleCreatePageWithAi(textPrompt: string) {
+  function handleCreatePageWithAi(textPrompt: string) {
     const trimmed = textPrompt.trim()
-    if (!trimmed) return
-
-    setIsGenerating(true)
-    toast.info('A processar pedido com IA server-side...')
-
-    try {
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'generate_page',
-          prompt: trimmed,
-          segment: config.segment,
-          niche: config.niche,
-        }),
-      })
-
-      if (res.ok) {
-        const data = await res.json()
-        setAiProposal({
-          type: 'structure',
-          before: config.name,
-          after: data.name || `Projeto: ${trimmed}`,
-          description: `Estrutura gerada via IA para "${trimmed}" com estilo ${visualStyle}.`,
-        })
-        toast.success('Sugestão de página pronta para revisão!')
-      } else {
-        // Fallback or honest message
-        const err = await res.json().catch(() => ({}))
-        if (err.configured === false) {
-          toast.info('IA em modo heurístico local (GEMINI_API_KEY do servidor não configurada)')
-        }
-        setAiProposal({
-          type: 'structure',
-          before: config.name,
-          after: `Projeto: ${trimmed}`,
-          description: `Estrutura gerada para "${trimmed}" (${visualStyle}).`,
-        })
-        toast.success('Sugestão de página pronta para revisão!')
-      }
-    } catch {
-      // Local development fallback
-      setAiProposal({
-        type: 'structure',
-        before: config.name,
-        after: `Projeto: ${trimmed}`,
-        description: `Estrutura gerada para "${trimmed}" (${visualStyle}).`,
-      })
-      toast.success('Sugestão de página pronta para revisão!')
-    } finally {
-      setIsGenerating(false)
-    }
+    if (!trimmed || isGenerating || useEditorStore.getState().isGenerating) return
+    useEditorStore.getState().setGenerating(trimmed)
   }
 
   async function handleRefineText(action: 'improve' | 'summarize' | 'commercial' | 'niche') {
-    if (!selectedBlock) {
-      toast.error('Selecione primeiro uma secção ou elemento no canvas.')
+    if (!selectedBlock || isGenerating) {
+      if (!selectedBlock) toast.error('Selecione primeiro uma secção no canvas.')
       return
     }
-
-    const currentHeadline = (selectedBlock.props as any).headline || (selectedBlock.props as any).title || 'Título'
-    let refined = currentHeadline
-    let explanation = `Refinamento comercial do título para ${config.segment || 'o seu nicho'}.`
-
-    try {
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'refine_text',
-          text: currentHeadline,
-          mode: action,
-          segment: config.segment,
-          niche: config.niche,
-        }),
-      })
-
-      if (res.ok) {
-        const data = await res.json()
-        if (data.refinedText) {
-          refined = data.refinedText
-          explanation = data.explanation || explanation
-        }
-      } else {
-        // Deterministic fallback
-        if (action === 'improve') {
-          refined = `A Solução Definitiva em ${config.niche || 'Alta Performance'}: ${currentHeadline}`
-        } else if (action === 'summarize') {
-          refined = currentHeadline.split(':')[0] || currentHeadline
-        } else if (action === 'commercial') {
-          refined = `Multiplique os seus Resultados: ${currentHeadline}`
-        } else if (action === 'niche') {
-          refined = `${currentHeadline} — Especializado para ${config.segment || 'o seu mercado'}`
-        }
-      }
-    } catch {
-      if (action === 'improve') {
-        refined = `A Solução Definitiva em ${config.niche || 'Alta Performance'}: ${currentHeadline}`
-      } else if (action === 'summarize') {
-        refined = currentHeadline.split(':')[0] || currentHeadline
-      } else if (action === 'commercial') {
-        refined = `Multiplique os seus Resultados: ${currentHeadline}`
-      } else if (action === 'niche') {
-        refined = `${currentHeadline} — Especializado para ${config.segment || 'o seu mercado'}`
-      }
+    const propKey = typeof selectedBlock.props.headline === 'string' ? 'headline' : 'title'
+    const currentHeadline = selectedBlock.props[propKey]
+    if (typeof currentHeadline !== 'string') {
+      toast.error('Este elemento não possui um título para refinar.')
+      return
     }
-
-    setAiProposal({
-      type: 'text',
-      blockId: selectedBlock.id,
-      propKey: (selectedBlock.props as any).headline ? 'headline' : 'title',
-      before: currentHeadline,
-      after: refined,
-      description: explanation,
-    })
+    setIsGenerating(true)
+    try {
+      const data = await requestGeneration({
+        action: 'refine_text', text: currentHeadline, mode: action,
+        segment: config.segment, niche: config.niche,
+      }, AbortSignal.timeout(30000))
+      if (typeof data.refinedText !== 'string' || !data.refinedText.trim()) {
+        throw new Error('A IA não devolveu um texto válido.')
+      }
+      setAiProposal({ type: 'text', blockId: selectedBlock.id, propKey,
+        before: currentHeadline, after: data.refinedText,
+        description: typeof data.explanation === 'string' ? data.explanation : 'Texto refinado pela IA.',
+      })
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Não foi possível refinar o texto.')
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   function handleApproveProposal() {
@@ -210,7 +129,7 @@ function AiTab() {
       updateBlockProps(aiProposal.blockId, { [aiProposal.propKey]: aiProposal.after })
       toast.success('Alteração aplicada com sucesso!')
     } else if (aiProposal.type === 'structure') {
-      toast.success('Estrutura de IA confirmada!')
+      toast.info('Geração de estrutura em preparação. Use Criar página com IA.')
     }
 
     clearAiProposal()

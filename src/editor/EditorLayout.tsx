@@ -1,6 +1,4 @@
-import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'sonner'
 import { FolderOpen, Layers, Briefcase, UtensilsCrossed, Building2, BookOpen } from 'lucide-react'
 import { EditorTopBar } from './EditorTopBar'
 import { LeftSidebar } from './LeftSidebar'
@@ -12,87 +10,11 @@ import { GenerationOverlay } from './GenerationOverlay'
 import { useConfigStore } from '@/store/configStore'
 import { useEditorStore } from '@/store/editorStore'
 import { useProjectsStore } from '@/store/projectsStore'
-import { generateSiteConfig } from '@/lib/generate-site'
 import { templateMeta, buildTemplate } from '@/lib/templates'
 import { hexToRgb } from '@/lib/theme-presets'
 
 const templateIcons: Record<string, typeof Briefcase> = {
   Briefcase, UtensilsCrossed, Building2, BookOpen,
-}
-
-function useAutoSaveToProject() {
-  const config = useConfigStore((s) => s.config)
-  const activeProjectId = useEditorStore((s) => s.activeProjectId)
-  const updateProjectConfig = useProjectsStore((s) => s.updateProjectConfig)
-  const loadedConfigRef = useRef<string | null>(null)
-
-  // Snapshot the config at load time so we can diff
-  useEffect(() => {
-    loadedConfigRef.current = JSON.stringify(config)
-  }, [activeProjectId]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!activeProjectId) return
-    const serialized = JSON.stringify(config)
-    // Only save when config actually differs from what was loaded
-    if (serialized === loadedConfigRef.current) return
-    updateProjectConfig(activeProjectId, config)
-  }, [config, activeProjectId, updateProjectConfig])
-}
-
-function useGenerationOrchestration() {
-  const isGenerating = useEditorStore((s) => s.isGenerating)
-  const generationPrompt = useEditorStore((s) => s.generationPrompt)
-  const clearGeneration = useEditorStore((s) => s.clearGeneration)
-  const setGenerationError = useEditorStore((s) => s.setGenerationError)
-  const activeProjectId = useEditorStore((s) => s.activeProjectId)
-  const setConfig = useConfigStore((s) => s.setConfig)
-  const updateProjectConfig = useProjectsStore((s) => s.updateProjectConfig)
-  const renameProject = useProjectsStore((s) => s.renameProject)
-  const abortRef = useRef<AbortController | null>(null)
-
-  useEffect(() => {
-    if (!isGenerating || !generationPrompt) return
-
-    const controller = new AbortController()
-    abortRef.current = controller
-
-    // Timeout after 30s to prevent infinite loading
-    const timeout = setTimeout(() => {
-      controller.abort()
-      setGenerationError('Generation timed out')
-      toast.error('Generation timed out. Try again or add a Gemini API key in Settings.')
-      clearGeneration()
-    }, 30000)
-
-    generateSiteConfig(generationPrompt, controller.signal)
-      .then(({ config, source }) => {
-        clearTimeout(timeout)
-        if (controller.signal.aborted) return
-        setConfig(config)
-        if (activeProjectId) {
-          updateProjectConfig(activeProjectId, config)
-          if (config.name) renameProject(activeProjectId, config.name)
-        }
-        clearGeneration()
-        if (source === 'template') {
-          toast('Generated from template. Add a Gemini API key in Settings for AI generation.')
-        }
-      })
-      .catch((err) => {
-        clearTimeout(timeout)
-        if (err instanceof Error && err.name === 'AbortError') return
-        setGenerationError(err instanceof Error ? err.message : 'Generation failed')
-        toast.error(err instanceof Error ? err.message : 'Generation failed')
-        clearGeneration()
-      })
-
-    return () => {
-      clearTimeout(timeout)
-      controller.abort()
-      abortRef.current = null
-    }
-  }, [isGenerating, generationPrompt]) // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 function EditorEmptyState() {
@@ -163,44 +85,9 @@ function EditorEmptyState() {
 }
 
 export function EditorLayout() {
-  useAutoSaveToProject()
-  useGenerationOrchestration()
   const previewMode = useEditorStore((s) => s.previewMode)
   const activeProjectId = useEditorStore((s) => s.activeProjectId)
-  const setActiveProject = useEditorStore((s) => s.setActiveProject)
-  const projects = useProjectsStore((s) => s.projects)
-  const addProject = useProjectsStore((s) => s.addProject)
-  const updateProjectConfig = useProjectsStore((s) => s.updateProjectConfig)
   const config = useConfigStore((s) => s.config)
-  const setConfig = useConfigStore((s) => s.setConfig)
-
-  // Auto-restore / ensure active project on mount
-  useEffect(() => {
-    if (!activeProjectId) {
-      if (projects.length > 0) {
-        // Restore the most recent project
-        const recent = projects[0]
-        setActiveProject(recent.id)
-        if (recent.config && recent.config.blocks && recent.config.blocks.length > 0) {
-          setConfig(recent.config)
-        } else if (config.blocks && config.blocks.length > 0) {
-          updateProjectConfig(recent.id, config)
-        }
-      } else if (config.blocks && config.blocks.length > 0) {
-        // Project in config exists in memory: create project entry for it
-        const newId = addProject(config.name || 'Meu Projeto')
-        setActiveProject(newId)
-        updateProjectConfig(newId, config)
-      } else {
-        // No project at all: load default Starter template
-        const defaultTpl = buildTemplate('writemate', 'Writemate AI')
-        const newId = addProject('Writemate AI')
-        setActiveProject(newId)
-        setConfig(defaultTpl)
-        updateProjectConfig(newId, defaultTpl)
-      }
-    }
-  }, [activeProjectId, projects, config, setActiveProject, setConfig, addProject, updateProjectConfig])
 
   if (!activeProjectId && (!config.blocks || config.blocks.length === 0)) {
     return <EditorEmptyState />

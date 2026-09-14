@@ -1,6 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { SiteConfig } from '@/blocks/types'
+import { publicSettings, removeLegacyAiCredential } from '@/lib/local-settings'
+
+removeLegacyAiCredential()
 
 export interface Project {
   id: string
@@ -26,7 +29,6 @@ export interface ProjectSettings {
   customDomain?: string
   gaId?: string
   posthogKey?: string
-  deployAccessKey?: string
 }
 
 interface ProjectsState {
@@ -37,7 +39,7 @@ interface ProjectsState {
   renameProject: (id: string, name: string) => void
   updateProjectConfig: (id: string, config: SiteConfig) => void
   updateProjectSettings: (id: string, settings: Partial<ProjectSettings>) => void
-  setDeployInfo: (id: string, url: string, deploymentId: string) => void
+  setDeployInfo: (id: string, url: string, deploymentId: string, readyState: string) => void
 }
 
 export const useProjectsStore = create<ProjectsState>()(
@@ -98,18 +100,38 @@ export const useProjectsStore = create<ProjectsState>()(
       updateProjectSettings: (id, settings) =>
         set((state) => ({
           projects: state.projects.map((p) =>
-            p.id === id ? { ...p, settings: { ...p.settings, ...settings } } : p
+            p.id === id ? { ...p, settings: publicSettings({ ...p.settings, ...settings }) } : p
           ),
         })),
-      setDeployInfo: (id, url, deploymentId) =>
+      setDeployInfo: (id, url, deploymentId, readyState) => {
+        if (readyState !== 'READY' || !deploymentId || !/^https:\/\/[^\s/]+(?:\/[^\s]*)?$/.test(url)) return
         set((state) => ({
           projects: state.projects.map((p) =>
             p.id === id
               ? { ...p, deployUrl: url, deploymentId, lastDeployedAt: new Date().toISOString(), status: 'published' as const }
               : p
           ),
-        })),
+        }))
+      },
     }),
-    { name: 'blueia-projects' }
+    {
+      name: 'blueia-projects',
+      version: 1,
+      migrate: (persisted) => {
+        const state = persisted as { projects?: Project[] }
+        return { projects: (state.projects || []).map((project) => ({
+          ...project, settings: publicSettings(project.settings),
+        })) }
+      },
+      partialize: (state) => ({ projects: state.projects.map((project) => ({
+        ...project, settings: publicSettings(project.settings),
+      })) }),
+      merge: (persisted, current) => {
+        const state = persisted as { projects?: Project[] } | undefined
+        return { ...current, projects: (state?.projects || []).map((project) => ({
+          ...project, settings: publicSettings(project.settings),
+        })) }
+      },
+    }
   )
 )

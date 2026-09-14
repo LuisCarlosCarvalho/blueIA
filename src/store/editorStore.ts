@@ -6,6 +6,11 @@ import { create } from 'zustand'
 // ──────────────────────────────────────────────────────────────────────────
 
 const STUDIO_MODEL_KEY = 'bb-studio-model'
+const ACTIVE_PROJECT_KEY = 'bb-active-project'
+
+function readActiveProject(): string | null {
+  try { return localStorage.getItem(ACTIVE_PROJECT_KEY) } catch { return null }
+}
 const VALID_STUDIO_MODELS: StudioModel[] = ['studio_bolt', 'bolt_tink_ai']
 
 export type Viewport = 'desktop' | 'tablet' | 'mobile'
@@ -83,7 +88,7 @@ export const useEditorStore = create<EditorState>()((set) => ({
   historyOpen: false,
   shortcutsModalOpen: false,
   previewMode: false,
-  activeProjectId: null,
+  activeProjectId: readActiveProject(),
   aiProposal: null,
   studioModel: readStoredStudioModel(),
   isGenerating: false,
@@ -109,7 +114,13 @@ export const useEditorStore = create<EditorState>()((set) => ({
   toggleHistory: () => set((s) => ({ historyOpen: !s.historyOpen })),
   toggleShortcutsModal: () => set((s) => ({ shortcutsModalOpen: !s.shortcutsModalOpen })),
   togglePreview: () => set((s) => ({ previewMode: !s.previewMode, ...(!s.previewMode ? { selectedBlockId: null } : {}) })),
-  setActiveProject: (id) => set({ activeProjectId: id }),
+  setActiveProject: (id) => {
+    try {
+      if (id) localStorage.setItem(ACTIVE_PROJECT_KEY, id)
+      else localStorage.removeItem(ACTIVE_PROJECT_KEY)
+    } catch { /* Continue in memory when storage is unavailable. */ }
+    set({ activeProjectId: id })
+  },
   setGenerating: (prompt) => set({ isGenerating: !!prompt, generationPrompt: prompt, generationError: null }),
   setGenerationError: (err) => set({ generationError: err }),
   clearGeneration: () => set({ isGenerating: false, generationPrompt: null }),

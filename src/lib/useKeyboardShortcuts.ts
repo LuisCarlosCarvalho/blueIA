@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useEditorStore } from '@/store/editorStore'
 import { useConfigStore } from '@/store/configStore'
+import { isTextEditingTarget } from './keyboard-target'
 
 export function useKeyboardShortcuts() {
   const navigate = useNavigate()
@@ -12,8 +13,8 @@ export function useKeyboardShortcuts() {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       // Don't fire in inputs
-      const tag = (e.target as HTMLElement).tagName
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      const target = e.target
+      if (target instanceof HTMLElement && isTextEditingTarget(target)) return
 
       // Nav shortcuts: 1-5
       if (!e.metaKey && !e.ctrlKey && !e.altKey) {

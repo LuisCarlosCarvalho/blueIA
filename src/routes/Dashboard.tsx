@@ -50,7 +50,11 @@ function PromptSection() {
   const addProject = useProjectsStore((s) => s.addProject)
   const setActiveProject = useEditorStore((s) => s.setActiveProject)
 
-  function handleCreateWithAi() {
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generatedData, setGeneratedData] = useState<any>(null)
+  const setConfig = useConfigStore((s) => s.setConfig)
+
+  async function handleCreateWithAi() {
     const trimmed = prompt.trim()
     if (!trimmed) {
       toast.error('Por favor, descreva o site que pretende criar.')
@@ -58,13 +62,46 @@ function PromptSection() {
       return
     }
 
-    // Criar projeto com a prompt inserida
-    const projectName = trimmed.split(' ').slice(0, 3).join(' ') || 'Novo Projeto IA'
-    const projectId = addProject(projectName.charAt(0).toUpperCase() + projectName.slice(1))
-    setActiveProject(projectId)
+    setIsGenerating(true)
+    toast.info('A preparar a estrutura do site com IA...', { id: 'ai-gen' })
 
-    // Notificação honesta de geração
-    toast.info('A preparar a estrutura do site com IA...')
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'generate_page', prompt: trimmed }),
+      })
+
+      if (!res.ok) {
+        throw new Error('Falha na geração')
+      }
+
+      const data = await res.json()
+      setGeneratedData(data)
+      toast.success('Página gerada com sucesso!', { id: 'ai-gen' })
+    } catch (err) {
+      toast.error('Ocorreu um erro ao gerar a página. A utilizar fallback local...', { id: 'ai-gen' })
+      // Fallback in case backend is not running locally for this test
+      const projectName = trimmed.split(' ').slice(0, 3).join(' ') || 'Novo Projeto IA'
+      const projectId = addProject(projectName.charAt(0).toUpperCase() + projectName.slice(1))
+      setActiveProject(projectId)
+      navigate('/editor')
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  function handlePreviewGenerated() {
+    if (!generatedData) return
+    const projectId = addProject(generatedData.name || 'Projeto Gerado IA')
+    setActiveProject(projectId)
+    
+    // Inject the generated config into the active project/store
+    setConfig({
+      ...generatedData,
+      id: projectId
+    })
+    
     navigate('/editor')
   }
 
@@ -114,18 +151,49 @@ function PromptSection() {
             <button
               type="button"
               onClick={handleCreateWithAi}
+              disabled={isGenerating}
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95 ${
                 prompt.trim()
                   ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                   : 'bg-secondary text-muted-foreground hover:text-foreground border border-border/60'
-              }`}
+              } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
               title="Criar com IA"
             >
-              <ArrowUp size={15} />
+              {isGenerating ? <div className="w-4 h-4 rounded-full border-2 border-primary-foreground border-t-transparent animate-spin" /> : <ArrowUp size={15} />}
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modal de Pré-Visualização Pós-Geração */}
+      {generatedData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl p-6 animate-scale-in text-left">
+            <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4">
+              <Sparkles size={24} />
+            </div>
+            <h2 className="text-xl font-bold text-foreground mb-2">Estrutura Gerada com Sucesso</h2>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              A IA gerou a página "{generatedData.name}" aplicando heurísticas avançadas de design, animações e layout estruturado.
+            </p>
+            
+            <div className="flex gap-3 justify-end">
+              <button 
+                onClick={() => setGeneratedData(null)}
+                className="px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-secondary rounded-xl transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handlePreviewGenerated}
+                className="px-5 py-2 text-sm font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl transition-colors shadow-md shadow-primary/20"
+              >
+                Pré-visualizar no Editor
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

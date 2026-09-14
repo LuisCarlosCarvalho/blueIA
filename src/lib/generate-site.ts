@@ -1,77 +1,19 @@
 import type { SiteConfig, BlockConfig, ThemeConfig } from '@/blocks/types'
 import { blockMetadata } from '@/lib/block-metadata'
-import { GENERATION_PROMPT } from '@/lib/generation-prompt'
-import { getTemplateForPrompt } from '@/lib/templates'
+import { requestGeneration } from '@/lib/request-generation'
 
 const VALID_BLOCK_TYPES = new Set<string>(blockMetadata.map((b) => b.type))
 const VARIANT_MAP = Object.fromEntries(blockMetadata.map((b) => [b.type, new Set(b.variants)]))
 const DEFAULT_PROPS_MAP = Object.fromEntries(blockMetadata.map((b) => [b.type, b.defaultProps]))
 
-const GEMINI_MODEL = 'gemini-3-flash-preview'
-const STORAGE_KEY = 'blueia-gemini-key'
-
 export interface GenerationResult {
   config: SiteConfig
-  source: 'ai' | 'template'
+  source: 'ai'
 }
 
 export async function generateSiteConfig(prompt: string, signal?: AbortSignal): Promise<GenerationResult> {
-  // 1. Try client-side Gemini if key exists
-  const apiKey = localStorage.getItem(STORAGE_KEY)
-  if (apiKey) {
-    try {
-      const config = await callGeminiDirect(prompt, apiKey, signal)
-      return { config, source: 'ai' }
-    } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') throw err
-      // Fall through to server
-    }
-  }
-
-  // 2. Try server endpoint
-  try {
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }),
-      signal,
-    })
-
-    const contentType = res.headers.get('content-type') || ''
-    if (contentType.includes('application/json') && res.ok) {
-      const raw = await res.json()
-      return { config: validateSiteConfig(raw, prompt), source: 'ai' }
-    }
-  } catch (err) {
-    if (err instanceof Error && err.name === 'AbortError') throw err
-  }
-
-  // 3. Smart fallback template (instant, no fake progress)
-  return { config: getTemplateForPrompt(prompt), source: 'template' }
-}
-
-async function callGeminiDirect(prompt: string, apiKey: string, signal?: AbortSignal): Promise<SiteConfig> {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal,
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: `Generate a website configuration for: ${prompt}` }] }],
-        systemInstruction: { parts: [{ text: GENERATION_PROMPT }] },
-        generationConfig: { responseMimeType: 'application/json', temperature: 0.8 },
-      }),
-    },
-  )
-
-  if (!res.ok) throw new Error(`Gemini API error: ${res.status}`)
-
-  const data = await res.json()
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text
-  if (!text) throw new Error('Empty Gemini response')
-
-  return validateSiteConfig(JSON.parse(text), prompt)
+  const raw = await requestGeneration({ action: 'generate_page', prompt }, signal)
+  return { config: validateSiteConfig(raw, prompt), source: 'ai' }
 }
 
 function isValidHex(s: unknown): s is string {
@@ -111,6 +53,7 @@ function validateTheme(raw: Record<string, unknown>): Partial<ThemeConfig> {
 }
 
 function validateBlock(raw: Record<string, unknown>, index: number): BlockConfig | null {
+  if (!raw || typeof raw !== 'object') return null
   const type = raw.type as string
   if (!type || !VALID_BLOCK_TYPES.has(type)) return null
 
@@ -142,7 +85,7 @@ function validatePageBlocks(rawBlocks: unknown[]): BlockConfig[] {
 
 export function validateSiteConfig(raw: unknown, prompt?: string): SiteConfig {
   if (!raw || typeof raw !== 'object') {
-    return getTemplateForPrompt(prompt || '')
+    throw new Error('A IA devolveu uma configuração de página inválida.')
   }
 
   const obj = raw as Record<string, unknown>
@@ -180,7 +123,7 @@ export function validateSiteConfig(raw: unknown, prompt?: string): SiteConfig {
   }
 
   if (!pages && blocks.length === 0) {
-    return getTemplateForPrompt(prompt || '')
+    throw new Error('A IA devolveu uma configuração de página inválida.')
   }
 
   // If no pages but have blocks, wrap into single Home page

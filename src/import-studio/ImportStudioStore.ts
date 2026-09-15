@@ -14,6 +14,7 @@ interface ImportStudioState {
   inspectorTab: ImportInspectorTab
   selectedElementId: string | null
   saveState: 'saved' | 'saving' | 'error'
+  isLeftPanelOpen: boolean
   
   // Persisted data
   originalSource: any
@@ -24,6 +25,7 @@ interface ImportStudioState {
   setViewport: (vp: ImportViewport) => void
   setZoom: (z: number) => void
   setLeftTab: (tab: ImportLeftTab) => void
+  setLeftPanelOpen: (isOpen: boolean) => void
   setInspectorTab: (tab: ImportInspectorTab) => void
   setSelectedElementId: (id: string | null) => void
   setSaveState: (state: 'saved' | 'saving' | 'error') => void
@@ -44,6 +46,7 @@ export const useImportStudioStore = create<ImportStudioState>()((set, get) => ({
   inspectorTab: 'styles',
   selectedElementId: null,
   saveState: 'saved',
+  isLeftPanelOpen: false,
 
   originalSource: null,
   sourceType: null,
@@ -52,7 +55,8 @@ export const useImportStudioStore = create<ImportStudioState>()((set, get) => ({
   setActiveProject: (id) => set({ activeProjectId: id }),
   setViewport: (vp) => set({ viewport: vp }),
   setZoom: (z) => set({ zoom: Math.max(50, Math.min(150, z)) }),
-  setLeftTab: (tab) => set({ leftTab: tab }),
+  setLeftTab: (tab) => set({ leftTab: tab, isLeftPanelOpen: true }),
+  setLeftPanelOpen: (isOpen) => set({ isLeftPanelOpen: isOpen }),
   setInspectorTab: (tab) => set({ inspectorTab: tab }),
   setSelectedElementId: (id) => set({ selectedElementId: id }),
   setSaveState: (state) => set({ saveState: state }),

@@ -19,7 +19,7 @@ const TABS = [
 ] as const
 
 export function ImportLeftSidebar() {
-  const { leftTab, setLeftTab, compatibilityReport } = useImportStudioStore()
+  const { leftTab, setLeftTab, compatibilityReport, isLeftPanelOpen, setLeftPanelOpen } = useImportStudioStore()
   const [result, setResult] = useState<ElementorImportResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isApplied, setIsApplied] = useState(false)
@@ -51,104 +51,129 @@ export function ImportLeftSidebar() {
       result.report
     )
     
-    // We import into GrapesJS
-    // ImportCanvas relies on editorAdapter which is a singleton
     editorAdapter.loadHTML(result.html, result.css)
     setIsApplied(true)
   }
 
   const reportToDisplay = result ? result.report : compatibilityReport
 
+  const toggleTab = (tabId: string) => {
+    if (leftTab === tabId && isLeftPanelOpen) {
+      setLeftPanelOpen(false)
+    } else {
+      setLeftTab(tabId as ImportLeftTab)
+    }
+  }
+
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <div className="h-12 border-b border-border flex items-center px-2 gap-1 shrink-0">
+    <div className="flex h-full bg-background overflow-hidden relative">
+      {/* ── TRILHO (RAIL) ──────────────────────────────────────────────── */}
+      <div className="w-[56px] flex-shrink-0 border-r border-border flex flex-col items-center py-2 bg-secondary/20 z-10">
         {TABS.map((tab) => {
           const Icon = tab.icon
-          const isActive = leftTab === tab.id
+          const isActive = leftTab === tab.id && isLeftPanelOpen
           return (
             <button
               key={tab.id}
-              onClick={() => setLeftTab(tab.id as ImportLeftTab)}
-              className={`flex-1 h-8 rounded-lg flex items-center justify-center transition-all ${
-                isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              onClick={() => toggleTab(tab.id)}
+              className={`w-10 h-10 mb-2 rounded-xl flex items-center justify-center transition-all ${
+                isActive ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
               }`}
               title={tab.label}
             >
-              <Icon size={16} />
+              <Icon size={18} />
             </button>
           )
         })}
       </div>
       
-      <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-        {leftTab === 'blocks' && <BlocksPanel />}
-        {leftTab === 'layers' && <LayersPanel />}
-        {leftTab === 'styles' && <GlobalStylesPanel />}
-        {leftTab === 'assets' && <AssetsPanel />}
-        
-        {leftTab === 'import' && (
-          <div className="flex flex-col gap-4 p-4">
-            <h3 className="text-sm font-semibold text-foreground">Import Project</h3>
+      {/* ── PAINEL EXPANSÍVEL ──────────────────────────────────────────── */}
+      <div 
+        className={`flex flex-col bg-background transition-all overflow-hidden duration-300 ease-in-out border-r border-border`}
+        style={{ width: isLeftPanelOpen ? 280 : 0, opacity: isLeftPanelOpen ? 1 : 0 }}
+      >
+        {/* Cabeçalho do Painel */}
+        <div className="h-14 border-b border-border flex items-center justify-between px-4 shrink-0">
+          <span className="font-semibold text-sm text-foreground">
+            {TABS.find(t => t.id === leftTab)?.label}
+          </span>
+          <button 
+            onClick={() => setLeftPanelOpen(false)}
+            className="text-muted-foreground hover:text-foreground p-1 rounded-md hover:bg-secondary transition-colors"
+          >
+            <XCircle size={16} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+          <div className="p-0 h-full">
+            {leftTab === 'blocks' && <BlocksPanel />}
+            {leftTab === 'layers' && <LayersPanel />}
+            {leftTab === 'styles' && <GlobalStylesPanel />}
+            {leftTab === 'assets' && <AssetsPanel />}
             
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-medium text-muted-foreground">Import Elementor (JSON)</label>
-              <input 
-                type="file" 
-                accept=".json" 
-                onChange={handleElementorUpload}
-                className="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" 
-              />
-            </div>
-
-            {error && (
-              <div className="text-xs text-red-500 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
-                {error}
-              </div>
-            )}
-
-            {reportToDisplay.length > 0 && (
-              <div className="flex flex-col gap-3 mt-2">
-                <div className="text-xs font-semibold">Compatibility Report</div>
-                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto bg-muted p-2 rounded-lg border border-border">
-                  {reportToDisplay.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-[11px]">
-                      {item.status === 'converted' && <CheckCircle size={12} className="text-green-500 mt-0.5 shrink-0" />}
-                      {item.status === 'unsupported' && <AlertTriangle size={12} className="text-yellow-500 mt-0.5 shrink-0" />}
-                      {item.status === 'blocked' && <XCircle size={12} className="text-red-500 mt-0.5 shrink-0" />}
-                      <div className="flex flex-col">
-                        <span className="font-medium">{item.elType} {item.widgetType ? `(${item.widgetType})` : ''}</span>
-                        {item.reason && <span className="text-muted-foreground">{item.reason}</span>}
-                        {item.status === 'converted' && <span className="text-muted-foreground">Convertido com sucesso</span>}
-                        {item.status === 'unsupported' && <span className="text-muted-foreground">Preservado no arquivo original. Não suportado.</span>}
-                      </div>
-                    </div>
-                  ))}
+            {leftTab === 'import' && (
+              <div className="flex flex-col gap-4 p-4">
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-medium text-muted-foreground">Import Elementor (JSON)</label>
+                  <input 
+                    type="file" 
+                    accept=".json" 
+                    onChange={handleElementorUpload}
+                    className="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" 
+                  />
                 </div>
-                
-                {result && !isApplied && (
-                  <button 
-                    onClick={handleApply}
-                    className="h-8 px-4 flex items-center justify-center gap-2 rounded-lg bg-primary text-black hover:bg-primary-dim text-[12px] font-semibold transition-all mt-2"
-                  >
-                    Open in Import Studio
-                  </button>
+
+                {error && (
+                  <div className="text-xs text-destructive bg-destructive/10 p-3 rounded-lg border border-destructive/20">
+                    {error}
+                  </div>
                 )}
-                
-                {(!result || isApplied) && (
-                  <div className="text-xs text-green-500 font-medium text-center">
-                    Renderizado no Canvas!
+
+                {reportToDisplay.length > 0 && (
+                  <div className="flex flex-col gap-3 mt-2">
+                    <div className="text-xs font-semibold">Relatório de Compatibilidade</div>
+                    <div className="flex flex-col gap-2 max-h-60 overflow-y-auto custom-scrollbar bg-secondary/30 p-2 rounded-lg border border-border">
+                      {reportToDisplay.map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-[11px]">
+                          {item.status === 'converted' && <CheckCircle size={12} className="text-emerald-500 mt-0.5 shrink-0" />}
+                          {item.status === 'unsupported' && <AlertTriangle size={12} className="text-amber-500 mt-0.5 shrink-0" />}
+                          {item.status === 'blocked' && <XCircle size={12} className="text-destructive mt-0.5 shrink-0" />}
+                          <div className="flex flex-col">
+                            <span className="font-medium">{item.elType} {item.widgetType ? `(${item.widgetType})` : ''}</span>
+                            {item.reason && <span className="text-muted-foreground">{item.reason}</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {result && !isApplied && (
+                      <button 
+                        onClick={handleApply}
+                        className="h-9 px-4 flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold transition-all shadow-sm"
+                      >
+                        Abrir no Studio Elementor
+                      </button>
+                    )}
+                    
+                    {(!result || isApplied) && (
+                      <div className="text-xs text-emerald-500 font-medium flex items-center gap-1.5 bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/20">
+                        <CheckCircle size={14} />
+                        <span>Renderizado no Canvas!</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {reportToDisplay.length === 0 && !error && (
+                  <div className="mt-4 text-xs text-muted-foreground bg-secondary/50 p-3 rounded-lg border border-border text-center">
+                    Nenhum ficheiro importado ainda.
                   </div>
                 )}
               </div>
             )}
-
-            {reportToDisplay.length === 0 && !error && (
-              <div className="mt-4 text-xs text-muted-foreground bg-muted p-3 rounded-lg border border-border">
-                Nenhum ficheiro importado ainda.
-              </div>
-            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

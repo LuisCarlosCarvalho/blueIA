@@ -11,7 +11,7 @@ const ACTIVE_PROJECT_KEY = 'bb-active-project'
 function readActiveProject(): string | null {
   try { return localStorage.getItem(ACTIVE_PROJECT_KEY) } catch { return null }
 }
-const VALID_STUDIO_MODELS: StudioModel[] = ['studio_bolt', 'bolt_tink_ai']
+const VALID_STUDIO_MODELS: StudioModel[] = ['studio_bolt', 'bolt_tink_ai', 'import_studio']
 
 export type Viewport = 'desktop' | 'tablet' | 'mobile'
 export type LeftTab = 'ai' | 'navigator' | 'elements' | 'design'
@@ -26,7 +26,7 @@ export interface AiProposal {
   description: string
 }
 
-export type StudioModel = 'studio_bolt' | 'bolt_tink_ai'
+export type StudioModel = 'studio_bolt' | 'bolt_tink_ai' | 'import_studio'
 
 function readStoredStudioModel(): StudioModel {
   try {

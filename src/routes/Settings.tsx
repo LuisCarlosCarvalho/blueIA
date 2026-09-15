@@ -323,11 +323,11 @@ function AdminPanel() {
             </div>
           </div>
           <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold tracking-wide w-fit">
-            {studioModel === 'studio_bolt' ? 'ATIVO: STUDIO BOLT' : 'ATIVO: BOLT TINK IA'}
+            {studioModel === 'studio_bolt' ? 'ATIVO: STUDIO BOLT' : studioModel === 'bolt_tink_ai' ? 'ATIVO: BOLT TINK IA' : 'ATIVO: IMPORT STUDIO'}
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
           {/* Opção 1: Studio Bolt */}
           <button
             type="button"
@@ -403,6 +403,45 @@ function AdminPanel() {
             <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px]">
               <span className="text-primary font-medium">Assistente Inteligente</span>
               <span className="text-muted-foreground font-mono">IA Neural</span>
+            </div>
+          </button>
+
+          {/* Opção 3: Import Studio */}
+          <button
+            type="button"
+            onClick={() => {
+              setStudioModel('import_studio')
+              toast.success('Modelo do estúdio alterado para Import Studio')
+            }}
+            className={`p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
+              studioModel === 'import_studio'
+                ? 'border-primary bg-primary/5 ring-2 ring-primary/30 shadow-md'
+                : 'border-border bg-secondary/40 hover:border-border/80 hover:bg-secondary/70'
+            }`}
+          >
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                    studioModel === 'import_studio' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
+                  }`}>
+                    <Download size={15} />
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">Import Studio</span>
+                </div>
+                {studioModel === 'import_studio' && (
+                  <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
+                    <Check size={12} />
+                  </span>
+                )}
+              </div>
+              <p className="text-[12px] text-muted-foreground leading-relaxed">
+                Ambiente otimizado para importar e processar templates de fontes externas com conversão segura.
+              </p>
+            </div>
+            <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px]">
+              <span className="text-primary font-medium">Conversor Externo</span>
+              <span className="text-muted-foreground font-mono">Compatibilidade</span>
             </div>
           </button>
         </div>

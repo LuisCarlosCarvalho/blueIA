@@ -60,6 +60,9 @@ class BlockErrorBoundary extends Component<
 
 // Fallback for unregistered block types
 function PlaceholderBlock({ block }: { block: BlockConfig }) {
+  if ((block.type as string) === 'elementor' || (block.type as string) === 'elementor-json') {
+    return null
+  }
   return (
     <div className="px-9 py-7 text-center text-muted-foreground text-sm">
       {block.type} block (coming soon)

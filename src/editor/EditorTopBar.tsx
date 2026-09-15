@@ -93,6 +93,8 @@ export function EditorTopBar() {
     activeProjectId,
     toggleShortcutsModal,
     toggleJsonDrawer,
+    studioModel,
+    setStudioModel,
   } = useEditorStore()
 
   // ── Config store ────────────────────────────────────────────────────────
@@ -238,6 +240,23 @@ export function EditorTopBar() {
 
       {/* Separador visual */}
       <div className="w-px h-6 bg-border mx-1 shrink-0 hidden md:block" />
+
+      {/* Workspace Mode Selector */}
+      <div className="hidden md:flex items-center rounded-xl bg-secondary/80 p-0.5 border border-border/80 mr-2">
+        <select
+          value={studioModel}
+          onChange={(e) => {
+            setStudioModel(e.target.value as 'studio_bolt' | 'bolt_tink_ai' | 'import_studio')
+            toast.success(`Modo alterado para ${e.target.options[e.target.selectedIndex].text}`)
+          }}
+          className="bg-transparent text-xs font-semibold text-foreground outline-none cursor-pointer px-2 py-1 h-full appearance-none"
+        >
+          <option value="studio_bolt">Studio Bolt</option>
+          <option value="bolt_tink_ai">Bolt Tink IA</option>
+          <option value="import_studio">Import Studio</option>
+        </select>
+        <ChevronDown size={12} className="text-muted-foreground mr-1" />
+      </div>
 
       {/* ── GRUPO 2: Nome do projecto + viewport + zoom + undo/redo ──────── */}
       <div className="flex items-center gap-2 min-w-0 shrink">
